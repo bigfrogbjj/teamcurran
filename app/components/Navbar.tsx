@@ -30,16 +30,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <span className="text-white font-black text-xl tracking-widest uppercase leading-none">
-            Team<span className="text-brand">Curran</span>
-          </span>
           <Image
             src="/logo tc.png"
             alt="Curran Jiu-Jitsu"
-            width={90}
-            height={22}
-            className="h-5 w-auto"
+            width={120}
+            height={30}
+            className="h-7 w-auto"
           />
+          <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
+            Academy Headquarters
+          </span>
         </Link>
 
         {/* Desktop nav */}
