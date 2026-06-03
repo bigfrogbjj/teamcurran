@@ -6,7 +6,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="text-white font-black text-xl tracking-widest uppercase mb-2">
-              Team<span className="text-red-600">Curran</span>
+              Team<span className="text-brand">Curran</span>
             </div>
             <p className="text-gray-500 text-xs uppercase tracking-widest mb-4">
               Jiu-Jitsu Academy
@@ -34,7 +34,7 @@ export default function Footer() {
                 { label: "Contact Us", href: "#contact" },
               ].map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-gray-400 hover:text-red-500 text-sm transition-colors">
+                  <a href={l.href} className="text-gray-400 hover:text-brand text-sm transition-colors">
                     {l.label}
                   </a>
                 </li>
@@ -50,10 +50,10 @@ export default function Footer() {
             <address className="not-italic space-y-2 text-sm text-gray-400">
               <p>102 W Woodstock St</p>
               <p>Crystal Lake, IL 60014</p>
-              <a href="tel:8153560454" className="block hover:text-red-500 transition-colors">
+              <a href="tel:8153560454" className="block hover:text-brand transition-colors">
                 (815) 356-0454
               </a>
-              <a href="mailto:chuck@teamcurran.com" className="block hover:text-red-500 transition-colors">
+              <a href="mailto:chuck@teamcurran.com" className="block hover:text-brand transition-colors">
                 chuck@teamcurran.com
               </a>
             </address>
@@ -64,7 +64,7 @@ export default function Footer() {
                 href="https://www.instagram.com/teamcurranbjj"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-red-700 text-gray-300 hover:text-white p-2.5 rounded transition-colors"
+                className="bg-gray-800 hover:bg-blue-800 text-gray-300 hover:text-white p-2.5 rounded transition-colors"
                 aria-label="Instagram"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ export default function Footer() {
                 href="https://www.facebook.com/teamcurranbjj"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-red-700 text-gray-300 hover:text-white p-2.5 rounded transition-colors"
+                className="bg-gray-800 hover:bg-blue-800 text-gray-300 hover:text-white p-2.5 rounded transition-colors"
                 aria-label="Facebook"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

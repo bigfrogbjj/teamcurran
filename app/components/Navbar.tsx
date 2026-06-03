@@ -25,12 +25,12 @@ export default function Navbar() {
   const [dropdown, setDropdown] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-red-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <span className="text-white font-black text-xl tracking-widest uppercase">
-            Team<span className="text-red-600">Curran</span>
+            Team<span className="text-brand">Curran</span>
           </span>
           <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
             Jiu-Jitsu Academy
@@ -45,7 +45,7 @@ export default function Navbar() {
                 <button
                   onMouseEnter={() => setDropdown(true)}
                   onMouseLeave={() => setDropdown(false)}
-                  className="text-gray-300 hover:text-red-500 text-sm font-semibold tracking-wide uppercase transition-colors"
+                  className="text-gray-300 hover:text-brand text-sm font-semibold tracking-wide uppercase transition-colors"
                 >
                   {link.label}
                 </button>
@@ -53,13 +53,13 @@ export default function Navbar() {
                   <div
                     onMouseEnter={() => setDropdown(true)}
                     onMouseLeave={() => setDropdown(false)}
-                    className="absolute top-full left-0 mt-1 w-48 bg-black border border-red-800 rounded shadow-lg py-1"
+                    className="absolute top-full left-0 mt-1 w-48 bg-black border border-blue-800 rounded shadow-lg py-1"
                   >
                     {link.children.map((c) => (
                       <a
                         key={c.label}
                         href={c.href}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-red-500 hover:bg-gray-900 transition-colors"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:text-brand hover:bg-gray-900 transition-colors"
                         onClick={() => setDropdown(false)}
                       >
                         {c.label}
@@ -72,7 +72,7 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-gray-300 hover:text-red-500 text-sm font-semibold tracking-wide uppercase transition-colors"
+                className="text-gray-300 hover:text-brand text-sm font-semibold tracking-wide uppercase transition-colors"
               >
                 {link.label}
               </a>
@@ -80,7 +80,7 @@ export default function Navbar() {
           )}
           <a
             href="#trial"
-            className="ml-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded transition-colors uppercase tracking-wide"
+            className="ml-2 bg-brand hover:bg-blue-800 text-white text-sm font-bold px-4 py-2 rounded transition-colors uppercase tracking-wide"
           >
             Free Trial
           </a>
@@ -100,12 +100,12 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-black border-t border-red-900 px-4 py-4 flex flex-col gap-3">
+        <div className="md:hidden bg-black border-t border-blue-900 px-4 py-4 flex flex-col gap-3">
           {links.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-gray-300 hover:text-red-500 font-semibold uppercase tracking-wide text-sm"
+              className="text-gray-300 hover:text-brand font-semibold uppercase tracking-wide text-sm"
               onClick={() => setOpen(false)}
             >
               {link.label}
@@ -113,7 +113,7 @@ export default function Navbar() {
           ))}
           <a
             href="#trial"
-            className="bg-red-600 text-white text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
+            className="bg-brand text-white text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
             onClick={() => setOpen(false)}
           >
             Free Trial

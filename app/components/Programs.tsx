@@ -36,13 +36,13 @@ export default function Programs() {
     <section id="programs" className="bg-black py-24 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <p className="text-red-500 text-xs font-bold tracking-[0.3em] uppercase mb-3">
+          <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-3">
             What We Offer
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white uppercase">
-            Our <span className="text-red-600">Programs</span>
+            Our <span className="text-brand">Programs</span>
           </h2>
-          <div className="w-16 h-1 bg-red-600 mx-auto mt-6" />
+          <div className="w-16 h-1 bg-brand mx-auto mt-6" />
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -50,7 +50,7 @@ export default function Programs() {
             <div
               key={prog.id}
               id={prog.id}
-              className="group bg-gray-900 border border-gray-800 hover:border-red-700 rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-900/20"
+              className="group bg-gray-900 border border-gray-800 hover:border-blue-700 rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-900/20"
             >
               <div className="aspect-video overflow-hidden">
                 <img
@@ -63,7 +63,7 @@ export default function Programs() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-xl font-black text-white uppercase">{prog.title}</h3>
-                    <p className="text-red-500 text-xs font-bold tracking-wider uppercase mt-0.5">
+                    <p className="text-brand text-xs font-bold tracking-wider uppercase mt-0.5">
                       {prog.subtitle}
                     </p>
                   </div>
@@ -81,7 +81,7 @@ export default function Programs() {
                 </ul>
                 <a
                   href="#contact"
-                  className="block text-center bg-red-600 hover:bg-red-700 text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
+                  className="block text-center bg-brand hover:bg-blue-800 text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
                 >
                   Get Started
                 </a>
@@ -93,22 +93,22 @@ export default function Programs() {
         {/* Trial CTA */}
         <div
           id="trial"
-          className="mt-16 bg-gradient-to-r from-red-900/40 to-red-800/20 border border-red-800 rounded-xl p-8 sm:p-12 text-center"
+          className="mt-16 bg-gradient-to-r from-blue-900/40 to-blue-800/20 border border-blue-800 rounded-xl p-8 sm:p-12 text-center"
         >
-          <p className="text-red-400 text-xs font-bold tracking-[0.3em] uppercase mb-3">
+          <p className="text-blue-400 text-xs font-bold tracking-[0.3em] uppercase mb-3">
             New Student Offer
           </p>
           <h3 className="text-3xl sm:text-4xl font-black text-white uppercase mb-3">
             2-Week Trial
           </h3>
-          <p className="text-6xl font-black text-red-500 mb-3">$45</p>
+          <p className="text-6xl font-black text-brand mb-3">$45</p>
           <p className="text-gray-300 max-w-lg mx-auto mb-8">
             Try any of our programs for two full weeks. Experience the Team Curran difference — no
             long-term commitment required.
           </p>
           <a
             href="#contact"
-            className="inline-block bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-10 py-4 rounded transition-colors shadow-lg shadow-red-900/50"
+            className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-10 py-4 rounded transition-colors shadow-lg shadow-blue-900/50"
           >
             Claim Your Trial
           </a>

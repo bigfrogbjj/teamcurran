@@ -56,15 +56,15 @@ export default function OnlineTraining() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Text */}
           <div>
-            <p className="text-red-500 text-xs font-bold tracking-[0.3em] uppercase mb-4">
+            <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-4">
               Team Curran Online
             </p>
             <h2 className="text-4xl sm:text-6xl font-black text-white uppercase leading-none mb-6">
               Train With Us<br />
-              <span className="text-red-600">Anywhere.</span><br />
+              <span className="text-brand">Anywhere.</span><br />
               Anytime.
             </h2>
-            <div className="w-16 h-1 bg-red-600 mb-8" />
+            <div className="w-16 h-1 bg-brand mb-8" />
             <p className="text-gray-300 text-lg leading-relaxed mb-10">
               Stream our ever-expanding library of techniques, instructionals, and live class recordings.
               Get the same curriculum taught by Professor Jeff Curran — directly to your screen.
@@ -101,7 +101,7 @@ export default function OnlineTraining() {
 
             <a
               href="#contact"
-              className="inline-block bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors shadow-lg shadow-red-900/40"
+              className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors shadow-lg shadow-blue-900/40"
             >
               Get Access — Team Curran Online
             </a>
@@ -110,7 +110,7 @@ export default function OnlineTraining() {
           {/* Right: Phone mockup */}
           <div className="relative flex justify-center">
             {/* Glow */}
-            <div className="absolute inset-0 bg-red-600/10 rounded-full blur-3xl scale-75" />
+            <div className="absolute inset-0 bg-brand/10 rounded-full blur-3xl scale-75" />
 
             {/* Phone frame */}
             <div className="relative w-64 sm:w-72">
@@ -124,13 +124,13 @@ export default function OnlineTraining() {
                 <div className="bg-gray-950 px-3 pb-6 space-y-2.5">
                   {/* App header */}
                   <div className="bg-black px-3 py-3 flex items-center justify-between">
-                    <span className="text-white font-black text-xs tracking-widest uppercase">Team<span className="text-red-600">Curran</span></span>
+                    <span className="text-white font-black text-xs tracking-widest uppercase">Team<span className="text-brand">Curran</span></span>
                     <span className="text-gray-500 text-xs">Online</span>
                   </div>
 
                   {/* Video cards */}
                   {[
-                    { title: "Guard Passing", sub: "Fundamentals · 12 videos", color: "from-red-900 to-red-950" },
+                    { title: "Guard Passing", sub: "Fundamentals · 12 videos", color: "from-blue-950 to-blue-950" },
                     { title: "Back Takes", sub: "Mixed Level · 18 videos", color: "from-gray-800 to-gray-900" },
                     { title: "Leg Locks", sub: "Advanced · 24 videos", color: "from-blue-900 to-blue-950" },
                     { title: "Muay Thai", sub: "All Levels · 30 videos", color: "from-orange-900 to-orange-950" },

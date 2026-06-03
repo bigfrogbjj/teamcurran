@@ -2,7 +2,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-red-950 opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-blue-950 opacity-90" />
 
       {/* Placeholder hero image area */}
       <div
@@ -15,34 +15,34 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <p className="text-red-500 text-sm font-bold tracking-[0.3em] uppercase mb-4">
+        <p className="text-brand text-sm font-bold tracking-[0.3em] uppercase mb-4">
           Crystal Lake, IL · Est. 1997
         </p>
         <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-4 tracking-tight">
           Team
-          <span className="text-red-600"> Curran</span>
+          <span className="text-brand"> Curran</span>
         </h1>
         <p className="text-2xl sm:text-3xl text-gray-300 font-light mb-3 tracking-widest uppercase">
           Jiu-Jitsu Academy
         </p>
-        <div className="w-24 h-1 bg-red-600 mx-auto mb-6" />
+        <div className="w-24 h-1 bg-brand mx-auto mb-6" />
         <p className="text-gray-300 text-lg sm:text-xl italic mb-3 max-w-2xl mx-auto">
           "Leverage over Strength. Timing over Speed."
         </p>
-        <p className="text-red-400 font-bold tracking-[0.25em] uppercase text-sm mb-10">
+        <p className="text-blue-400 font-bold tracking-[0.25em] uppercase text-sm mb-10">
           Passion · Persistence · Perfection
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#trial"
-            className="bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors shadow-lg shadow-red-900/50"
+            className="bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors shadow-lg shadow-blue-900/50"
           >
             Start Your 2-Week Trial — $45
           </a>
           <a
             href="#programs"
-            className="border-2 border-white/30 hover:border-red-500 text-white font-bold uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors"
+            className="border-2 border-white/30 hover:border-blue-500 text-white font-bold uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors"
           >
             Explore Programs
           </a>
@@ -56,7 +56,7 @@ export default function Hero() {
             { value: "1997", label: "Founded" },
           ].map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-3xl font-black text-red-500">{s.value}</div>
+              <div className="text-3xl font-black text-brand">{s.value}</div>
               <div className="text-gray-400 text-xs uppercase tracking-wider mt-1">
                 {s.label}
               </div>
@@ -67,7 +67,7 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
