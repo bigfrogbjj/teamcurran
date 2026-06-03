@@ -1,0 +1,125 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "#about" },
+  {
+    label: "Programs",
+    href: "#programs",
+    children: [
+      { label: "Adult Jiu-Jitsu", href: "#adult-bjj" },
+      { label: "Adult Muay Thai", href: "#muay-thai" },
+      { label: "Junior Jiu-Jitsu", href: "#junior-bjj" },
+      { label: "2-Week Trial", href: "#trial" },
+    ],
+  },
+  { label: "Schedule", href: "#schedule" },
+  { label: "Contact", href: "#contact" },
+];
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-red-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-white font-black text-xl tracking-widest uppercase">
+            Team<span className="text-red-600">Curran</span>
+          </span>
+          <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
+            Jiu-Jitsu Academy
+          </span>
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-6">
+          {links.map((link) =>
+            link.children ? (
+              <div key={link.label} className="relative">
+                <button
+                  onMouseEnter={() => setDropdown(true)}
+                  onMouseLeave={() => setDropdown(false)}
+                  className="text-gray-300 hover:text-red-500 text-sm font-semibold tracking-wide uppercase transition-colors"
+                >
+                  {link.label}
+                </button>
+                {dropdown && (
+                  <div
+                    onMouseEnter={() => setDropdown(true)}
+                    onMouseLeave={() => setDropdown(false)}
+                    className="absolute top-full left-0 mt-1 w-48 bg-black border border-red-800 rounded shadow-lg py-1"
+                  >
+                    {link.children.map((c) => (
+                      <a
+                        key={c.label}
+                        href={c.href}
+                        className="block px-4 py-2 text-sm text-gray-300 hover:text-red-500 hover:bg-gray-900 transition-colors"
+                        onClick={() => setDropdown(false)}
+                      >
+                        {c.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-gray-300 hover:text-red-500 text-sm font-semibold tracking-wide uppercase transition-colors"
+              >
+                {link.label}
+              </a>
+            )
+          )}
+          <a
+            href="#trial"
+            className="ml-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded transition-colors uppercase tracking-wide"
+          >
+            Free Trial
+          </a>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden text-white p-2"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
+          <div className={`w-6 h-0.5 bg-white mb-1.5 transition-all ${open ? "rotate-45 translate-y-2" : ""}`} />
+          <div className={`w-6 h-0.5 bg-white mb-1.5 transition-all ${open ? "opacity-0" : ""}`} />
+          <div className={`w-6 h-0.5 bg-white transition-all ${open ? "-rotate-45 -translate-y-2" : ""}`} />
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="md:hidden bg-black border-t border-red-900 px-4 py-4 flex flex-col gap-3">
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-gray-300 hover:text-red-500 font-semibold uppercase tracking-wide text-sm"
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          <a
+            href="#trial"
+            className="bg-red-600 text-white text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
+            onClick={() => setOpen(false)}
+          >
+            Free Trial
+          </a>
+        </div>
+      )}
+    </nav>
+  );
+}
