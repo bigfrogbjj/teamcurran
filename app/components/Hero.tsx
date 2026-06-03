@@ -13,7 +13,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <p className="text-brand text-sm font-bold tracking-[0.3em] uppercase mb-6">
+        <p className="text-white text-sm font-bold tracking-[0.3em] uppercase mb-6">
           Crystal Lake, IL · Est. 1997
         </p>
         <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-3 tracking-tight">
