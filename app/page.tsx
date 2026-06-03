@@ -16,9 +16,9 @@ export default function Home() {
         <Hero />
         <About />
         <Programs />
+        <JoinUs />
         <Schedule />
         <OnlineTraining />
-        <JoinUs />
         <Contact />
       </main>
       <Footer />
