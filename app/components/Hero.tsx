@@ -21,15 +21,13 @@ export default function Hero() {
           <span className="text-brand"> Curran</span>
         </h1>
         <div className="flex justify-center mb-4">
-          <div className="bg-white rounded-md px-4 py-2">
-            <Image
-              src="/Team Curran logo website.png"
-              alt="Curran Jiu-Jitsu"
-              width={280}
-              height={70}
-              className="h-12 w-auto"
-            />
-          </div>
+          <Image
+            src="/logo tc.png"
+            alt="Curran Jiu-Jitsu"
+            width={280}
+            height={70}
+            className="h-12 w-auto"
+          />
         </div>
         <div className="w-24 h-1 bg-brand mx-auto mb-6" />
         <p className="text-gray-300 text-lg sm:text-xl italic mb-3 max-w-2xl mx-auto">

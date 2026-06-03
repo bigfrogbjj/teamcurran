@@ -33,15 +33,13 @@ export default function Navbar() {
           <span className="text-white font-black text-xl tracking-widest uppercase leading-none">
             Team<span className="text-brand">Curran</span>
           </span>
-          <div className="bg-white rounded px-2 py-0.5">
-            <Image
-              src="/Team Curran logo website.png"
-              alt="Curran Jiu-Jitsu"
-              width={90}
-              height={22}
-              className="h-5 w-auto"
-            />
-          </div>
+          <Image
+            src="/logo tc.png"
+            alt="Curran Jiu-Jitsu"
+            width={90}
+            height={22}
+            className="h-5 w-auto"
+          />
         </Link>
 
         {/* Desktop nav */}
