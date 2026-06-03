@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/team curran circle logo.png"
+            src="/Team Curran Circle Logo.png"
             alt="Team Curran Jiu-Jitsu"
             width={75}
             height={75}
