@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Team Curran Jiu-Jitsu Academy | Crystal Lake, IL",
   description:
-    "Brazilian Jiu-Jitsu, Muay Thai, and Junior BJJ programs in Crystal Lake, IL. Train under 4th Degree Black Belt Professor Jeff Curran. Start with a 2-week trial for $45.",
+    "Brazilian Jiu-Jitsu, Muay Thai, and Junior BJJ programs in Crystal Lake, IL. Train under 5th Degree Black Belt Professor Jeff Curran. Start with a 2-week trial for $45.",
 };
 
 export default function RootLayout({

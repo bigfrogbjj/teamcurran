@@ -14,7 +14,7 @@ export default function About() {
             </div>
             {/* Accent badge */}
             <div className="absolute -bottom-6 -right-6 bg-brand text-white px-6 py-4 rounded text-center shadow-xl">
-              <div className="text-3xl font-black">4th°</div>
+              <div className="text-3xl font-black">5th°</div>
               <div className="text-xs uppercase tracking-widest font-bold">Black Belt</div>
             </div>
           </div>
@@ -30,10 +30,10 @@ export default function About() {
             <div className="w-16 h-1 bg-brand mb-8" />
 
             <p className="text-gray-300 leading-relaxed mb-4">
-              Professor Jeff Curran is a 4th Degree Black Belt under the legendary{" "}
+              Professor Jeff Curran is a 5th Degree Black Belt under the legendary{" "}
               <strong className="text-white">Master Pedro Sauer</strong>, and one of the most
               accomplished martial artists in the world. With over{" "}
-              <strong className="text-white">27 years of competitive martial arts experience</strong>,
+              <strong className="text-white">35 years of competitive martial arts experience</strong>,
               Jeff founded his first school in 1997 and has since built a globally recognized team.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
@@ -50,7 +50,7 @@ export default function About() {
             <div className="flex flex-wrap gap-3">
               {[
                 "Pedro Sauer Association",
-                "27+ Years Experience",
+                "35+ Years Experience",
                 "Gracie Jiu-Jitsu",
                 "MMA Veteran",
               ].map((badge) => (

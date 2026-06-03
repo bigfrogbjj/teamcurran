@@ -47,8 +47,8 @@ export default function Hero() {
         {/* Stats row */}
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
           {[
-            { value: "27+", label: "Years Experience" },
-            { value: "4th", label: "Degree Black Belt" },
+            { value: "35+", label: "Years Experience" },
+            { value: "5th", label: "Degree Black Belt" },
             { value: "1997", label: "Founded" },
           ].map((s) => (
             <div key={s.label} className="text-center">
