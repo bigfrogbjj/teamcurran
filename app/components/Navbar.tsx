@@ -36,10 +36,10 @@ export default function Navbar() {
             alt="Team Curran Jiu-Jitsu"
             width={75}
             height={75}
-            className="h-[75px] w-auto"
+            className="h-[50px] sm:h-[75px] w-auto"
           />
-          <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
-            Academy Headquarters
+          <span className="text-gray-300 text-sm sm:text-base tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
+            ACADEMY HEADQUARTERS
           </span>
         </Link>
 
