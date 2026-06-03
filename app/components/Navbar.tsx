@@ -38,7 +38,7 @@ export default function Navbar() {
             height={75}
             className="h-[50px] sm:h-[75px] w-auto"
           />
-          <span className="text-gray-300 text-sm sm:text-base tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
+          <span className="text-gray-300 text-lg sm:text-2xl tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
             ACADEMY HEADQUARTERS
           </span>
         </Link>
