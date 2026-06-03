@@ -1,17 +1,13 @@
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-blue-950 opacity-90" />
-
-      {/* Placeholder hero image area */}
+      {/* Hero photo */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{
-          backgroundImage:
-            "url('https://placehold.co/1920x1080/1a1a1a/333333?text=Team+Curran+BJJ')",
-        }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/8U0A2416.jpg')" }}
       />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/65" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">

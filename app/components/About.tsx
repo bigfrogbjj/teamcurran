@@ -7,7 +7,7 @@ export default function About() {
           <div className="relative">
             <div className="aspect-[4/5] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40">
               <img
-                src="https://export-download.canva.com/10b81ac2-9fd1-4cd4-b0db-315e90dbfac3/0/0009-1926920012282008426.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260603%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260603T092434Z&X-Amz-Expires=35891&X-Amz-Signature=ac1ae186d34d9a971f13f4af3811263d2d15ebe54abc1ccb171141c9d3c0237c&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2003%20Jun%202026%2019%3A22%3A45%20GMT"
+                src="/DM1A9471-3.jpg"
                 alt="Professor Jeff Curran"
                 className="w-full h-full object-cover"
               />

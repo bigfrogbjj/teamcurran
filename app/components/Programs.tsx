@@ -7,7 +7,7 @@ const programs = [
       "Master the art of Gracie Jiu-Jitsu — a complete system of submission holds, defensive positioning, and leverage-based techniques. Whether your goal is self-defense, fitness, or competition, our adult BJJ program has a place for you.",
     highlights: ["Submission Grappling", "Self-Defense", "Competition Prep", "All Skill Levels"],
     color: "red",
-    img: "https://placehold.co/600x400/1a1a1a/444444?text=Adult+BJJ",
+    img: "/8U0A2065.jpg",
   },
   {
     id: "muay-thai",
@@ -17,7 +17,7 @@ const programs = [
       "Develop powerful striking skills and improve your overall fitness with our Muay Thai program. Learn the art of eight limbs — punches, kicks, elbows, and knees — with a focus on practical self-defense applications.",
     highlights: ["Striking Fundamentals", "Fitness & Conditioning", "Self-Defense", "Pad Work"],
     color: "orange",
-    img: "https://placehold.co/600x400/1a1a1a/444444?text=Muay+Thai",
+    img: "/8U0A2181.jpg",
   },
   {
     id: "junior-bjj",
@@ -27,7 +27,7 @@ const programs = [
       "Build confidence, discipline, and real-world self-defense skills in a safe and encouraging environment. Our junior program helps kids develop strong character as much as physical technique.",
     highlights: ["Anti-Bullying Skills", "Builds Confidence", "Character Development", "Safe Environment"],
     color: "blue",
-    img: "https://placehold.co/600x400/1a1a1a/444444?text=Junior+BJJ",
+    img: "/8U0A2337.jpg",
   },
 ];
 
