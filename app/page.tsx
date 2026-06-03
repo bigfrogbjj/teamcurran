@@ -4,6 +4,7 @@ import About from "./components/About";
 import Programs from "./components/Programs";
 import Schedule from "./components/Schedule";
 import OnlineTraining from "./components/OnlineTraining";
+import Instructors from "./components/Instructors";
 import JoinUs from "./components/JoinUs";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -16,6 +17,7 @@ export default function Home() {
         <Hero />
         <About />
         <Programs />
+        <Instructors />
         <JoinUs />
         <Schedule />
         <OnlineTraining />
