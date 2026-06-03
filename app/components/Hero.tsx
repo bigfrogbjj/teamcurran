@@ -60,8 +60,8 @@ export default function Hero() {
             { value: "1997", label: "Founded" },
           ].map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-3xl font-black text-brand">{s.value}</div>
-              <div className="text-gray-400 text-xs uppercase tracking-wider mt-1">
+              <div className="text-3xl font-black text-white">{s.value}</div>
+              <div className="text-gray-300 text-xs uppercase tracking-wider mt-1">
                 {s.label}
               </div>
             </div>
