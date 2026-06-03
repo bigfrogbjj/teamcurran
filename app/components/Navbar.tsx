@@ -27,7 +27,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -35,7 +35,7 @@ export default function Navbar() {
             alt="Curran Jiu-Jitsu"
             width={120}
             height={30}
-            className="h-7 w-auto"
+            className="h-[65px] w-auto"
           />
           <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
             Academy Headquarters
