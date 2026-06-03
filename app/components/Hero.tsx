@@ -22,7 +22,7 @@ export default function Hero() {
         </h1>
         <div className="flex justify-center mb-4">
           <Image
-            src="/logo tc.png"
+            src="/Team Curran C .png"
             alt="Curran Jiu-Jitsu"
             width={280}
             height={70}
