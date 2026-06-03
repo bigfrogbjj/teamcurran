@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
@@ -11,16 +13,24 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <p className="text-brand text-sm font-bold tracking-[0.3em] uppercase mb-4">
+        <p className="text-brand text-sm font-bold tracking-[0.3em] uppercase mb-6">
           Crystal Lake, IL · Est. 1997
         </p>
-        <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-4 tracking-tight">
+        <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-3 tracking-tight">
           Team
           <span className="text-brand"> Curran</span>
         </h1>
-        <p className="text-2xl sm:text-3xl text-gray-300 font-light mb-3 tracking-widest uppercase">
-          Jiu-Jitsu Academy
-        </p>
+        <div className="flex justify-center mb-4">
+          <div className="bg-white rounded-md px-4 py-2">
+            <Image
+              src="/Team Curran logo website.png"
+              alt="Curran Jiu-Jitsu"
+              width={280}
+              height={70}
+              className="h-12 w-auto"
+            />
+          </div>
+        </div>
         <div className="w-24 h-1 bg-brand mx-auto mb-6" />
         <p className="text-gray-300 text-lg sm:text-xl italic mb-3 max-w-2xl mx-auto">
           "Leverage over Strength. Timing over Speed."

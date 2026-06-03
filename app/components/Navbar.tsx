@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { label: "Home", href: "/" },
@@ -28,13 +29,19 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-white font-black text-xl tracking-widest uppercase">
+        <Link href="/" className="flex items-center gap-3">
+          <span className="text-white font-black text-xl tracking-widest uppercase leading-none">
             Team<span className="text-brand">Curran</span>
           </span>
-          <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
-            Jiu-Jitsu Academy
-          </span>
+          <div className="bg-white rounded px-2 py-0.5">
+            <Image
+              src="/Team Curran logo website.png"
+              alt="Curran Jiu-Jitsu"
+              width={90}
+              height={22}
+              className="h-5 w-auto"
+            />
+          </div>
         </Link>
 
         {/* Desktop nav */}
