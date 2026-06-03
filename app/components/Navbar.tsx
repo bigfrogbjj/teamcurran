@@ -32,11 +32,11 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo tc.png"
-            alt="Curran Jiu-Jitsu"
-            width={120}
-            height={30}
-            className="h-[65px] w-auto"
+            src="/team curran circle logo.png"
+            alt="Team Curran Jiu-Jitsu"
+            width={75}
+            height={75}
+            className="h-[75px] w-auto"
           />
           <span className="text-gray-400 text-xs tracking-widest uppercase hidden sm:block">
             Academy Headquarters
