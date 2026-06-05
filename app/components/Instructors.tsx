@@ -23,6 +23,22 @@ const instructors = [
     bio: "Justin is an undefeated amateur MMA competitor (5-0) and a skilled instructor for both Adult Jiu-Jitsu and Thaiboxing. His competitive background and technical precision make him an exceptional coach for students of all levels.",
     img: "/8U0A2065.jpg",
   },
+  {
+    name: "John Hudson",
+    title: "Instructor",
+    rank: "Black Belt under Professor Jeff Curran",
+    specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
+    bio: "John Hudson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
+    img: "/8U0A2337.jpg",
+  },
+  {
+    name: "AJ Serrato",
+    title: "Instructor",
+    rank: "Black Belt under Professor Jeff Curran",
+    specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
+    bio: "AJ Serrato is a Black Belt under Professor Jeff Curran and an instructor at Team Curran Academy Headquarters. AJ brings energy, technical depth, and a passion for developing students at every level of their Jiu-Jitsu journey.",
+    img: "/DM1A9471-3.jpg",
+  },
 ];
 
 export default function Instructors() {
@@ -39,7 +55,7 @@ export default function Instructors() {
           <div className="w-16 h-1 bg-brand mx-auto mt-6" />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {instructors.map((instructor) => (
             <div
               key={instructor.name}
