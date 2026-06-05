@@ -13,7 +13,7 @@ const instructors = [
     rank: "Adult Thaiboxing & Kids Jiu-Jitsu",
     specialties: ["Adult Muay Thai", "Kids Jiu-Jitsu"],
     bio: "Chuck has been a cornerstone of Team Curran since the very first day the gym opened in 1997. Over 20+ years he transitioned from dedicated student to co-owner and instructor, managing both the Adult Thaiboxing and Junior Jiu-Jitsu programs. Chuck is a true embodiment of the Team Curran family.",
-    img: "/8U0A2181.jpg",
+    img: "/Chuck Pilcher.jpg",
   },
   {
     name: "Justin Seeberger",
@@ -21,7 +21,7 @@ const instructors = [
     rank: "Adult Jiu-Jitsu & Thaiboxing",
     specialties: ["Adult Jiu-Jitsu", "Thaiboxing"],
     bio: "Justin is an undefeated amateur MMA competitor (5-0) and a skilled instructor for both Adult Jiu-Jitsu and Thaiboxing. His competitive background and technical precision make him an exceptional coach for students of all levels.",
-    img: "/8U0A2065.jpg",
+    img: "/Justin Seeberger.jpg",
   },
   {
     name: "John Hudson",
@@ -29,7 +29,7 @@ const instructors = [
     rank: "Black Belt under Professor Jeff Curran",
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "John Hudson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
-    img: "/8U0A2337.jpg",
+    img: "/John Hudson.jpg",
   },
   {
     name: "AJ Serrato",
@@ -37,7 +37,7 @@ const instructors = [
     rank: "Black Belt under Professor Jeff Curran",
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "AJ Serrato is a Black Belt under Professor Jeff Curran and an instructor at Team Curran Academy Headquarters. AJ brings energy, technical depth, and a passion for developing students at every level of their Jiu-Jitsu journey.",
-    img: "/DM1A9471-3.jpg",
+    img: "/AJ Serrato.jpg",
   },
 ];
 
