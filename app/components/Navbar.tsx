@@ -48,13 +48,14 @@ export default function Navbar() {
           {links.map((link) =>
             link.children ? (
               <div key={link.label} className="relative">
-                <button
+                <a
+                  href={link.href}
                   onMouseEnter={() => setDropdown(true)}
                   onMouseLeave={() => setDropdown(false)}
                   className="text-gray-300 hover:text-brand text-sm font-semibold tracking-wide uppercase transition-colors"
                 >
                   {link.label}
-                </button>
+                </a>
                 {dropdown && (
                   <div
                     onMouseEnter={() => setDropdown(true)}
