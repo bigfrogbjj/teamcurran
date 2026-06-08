@@ -3,46 +3,19 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 
 const affiliates = [
-  {
-    slug: "cedar-valley",
-    name: "Cedar Valley Jiu-Jitsu",
-    location: "Waterloo, IA",
-    website: "cedarvalleybjj.com",
-    description: "Team Curran certified affiliate serving the Cedar Valley area of Iowa with world-class BJJ instruction.",
-    img: "/8U0A2181.jpg",
-  },
-  {
-    slug: "team-haanpaa",
-    name: "Team Haanpaa Martial Arts",
-    location: "Rockford, IL & Beloit, WI",
-    website: "teamhaanpaa.com",
-    description: "BJJ, Muay Thai, and Kids Martial Arts serving Rockford and the state-line area.",
-    img: "/8U0A2065.jpg",
-  },
-  {
-    slug: "dekalb-county",
-    name: "DeKalb County BJJ",
-    location: "Hinckley, IL",
-    website: "dekalbcountybjj.com",
-    description: "Brazilian Jiu-Jitsu and Muay Thai for all levels in DeKalb County, Illinois.",
-    img: "/8U0A2337.jpg",
-  },
-  {
-    slug: "madison-wi",
-    name: "Team Curran – Madison, WI",
-    location: "Madison, WI",
-    website: "wi-mafc.com",
-    description: "Team Curran's official affiliate academy in Madison, Wisconsin.",
-    img: "/8U0A2416.jpg",
-  },
-  {
-    slug: "open-guard",
-    name: "Open Guard Jiu-Jitsu",
-    location: "Oconomowoc, WI",
-    website: "openguardgym.com",
-    description: "A family-centered BJJ, Kickboxing, and Hapkido academy in Oconomowoc, WI.",
-    img: "/DM1A9471-3.jpg",
-  },
+  { slug: "team-haanpaa-rockford", name: "Team Haanpaa Rockford", location: "Rockford, IL", website: "teamhaanpaa.com", img: "/8U0A2065.jpg" },
+  { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/8U0A2181.jpg" },
+  { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/8U0A2416.jpg" },
+  { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cedarvalleybjj.com", img: "/8U0A2337.jpg" },
+  { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/DM1A9471-3.jpg" },
+  { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinmartialarts.com", img: "/DM1A9501.jpg" },
+  { slug: "pa-grappling", name: "PA Grappling", location: "Pennsylvania", website: "", img: "/8U0A2065.jpg" },
+  { slug: "open-guard", name: "Open Guard Gym", location: "Oconomowoc, WI", website: "openguardgym.com", img: "/8U0A2181.jpg" },
+  { slug: "chattanooga-grappling", name: "Chattanooga Grappling Club", location: "Chattanooga, TN", website: "", img: "/8U0A2416.jpg" },
+  { slug: "dekalb-county", name: "DeKalb County BJJ", location: "Hinckley, IL", website: "dekalbcountybjj.com", img: "/8U0A2337.jpg" },
+  { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "graciedestin.com", img: "/DM1A9471-3.jpg" },
+  { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/DM1A9501.jpg" },
+  { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/8U0A2065.jpg" },
 ];
 
 export default function AffiliatesPage() {
@@ -51,7 +24,7 @@ export default function AffiliatesPage() {
       <Navbar />
       <main className="bg-black min-h-screen">
         {/* Hero */}
-        <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
+        <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden pt-20">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/8U0A2416.jpg')" }} />
           <div className="absolute inset-0 bg-black/70" />
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
@@ -61,12 +34,12 @@ export default function AffiliatesPage() {
             </h1>
             <div className="w-24 h-1 bg-brand mx-auto mb-6" />
             <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Team Curran certified schools share the same values, curriculum, and standards of excellence. Find a location near you.
+              Team Curran certified schools across the country — sharing the same values, curriculum, and standards of excellence.
             </p>
           </div>
         </section>
 
-        {/* Affiliate grid */}
+        {/* Grid */}
         <section className="py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-14">
@@ -75,7 +48,7 @@ export default function AffiliatesPage() {
               <div className="w-16 h-1 bg-brand mx-auto mt-6" />
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {affiliates.map((a) => (
                 <Link
                   key={a.slug}
@@ -83,18 +56,12 @@ export default function AffiliatesPage() {
                   className="group bg-gray-900 border border-gray-800 hover:border-brand rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-900/20"
                 >
                   <div className="aspect-video overflow-hidden">
-                    <div
-                      className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                      style={{ backgroundImage: `url('${a.img}')` }}
-                    />
+                    <div className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url('${a.img}')` }} />
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-black text-white uppercase mb-1">{a.name}</h3>
+                  <div className="p-5">
+                    <h3 className="text-base font-black text-white uppercase mb-1 leading-tight">{a.name}</h3>
                     <p className="text-brand text-xs font-bold tracking-wider uppercase mb-3">{a.location}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">{a.description}</p>
-                    <span className="text-brand text-xs font-bold uppercase tracking-widest group-hover:underline">
-                      VIEW ACADEMY →
-                    </span>
+                    <span className="text-brand text-xs font-bold uppercase tracking-widest group-hover:underline">VIEW ACADEMY →</span>
                   </div>
                 </Link>
               ))}
@@ -102,7 +69,7 @@ export default function AffiliatesPage() {
           </div>
         </section>
 
-        {/* Why affiliate */}
+        {/* Why Affiliate */}
         <section className="bg-gray-950 py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-14">
