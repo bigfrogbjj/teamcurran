@@ -41,7 +41,7 @@ export default function Page() {
                   <p className="text-gray-300 text-sm whitespace-pre-line">{item.value}</p>
                 </div>
               ))}
-              <a href="https://maps.google.com/?q=Chattanooga+Grappling+Club+TN" target="_blank" rel="noopener noreferrer" className="block text-center border-2 border-brand text-brand hover:bg-brand hover:text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">GET DIRECTIONS</a>
+              <a href="https://www.instagram.com/chattanoogagrapplingclub/" target="_blank" rel="noopener noreferrer" className="block text-center bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">FOLLOW ON INSTAGRAM</a>
             </div>
           </div>
         </section>
