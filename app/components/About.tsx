@@ -3,17 +3,24 @@ export default function About() {
     <section id="about" className="bg-gray-950 py-24 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          {/* Photo placeholder */}
-          <div className="relative">
-            <div className="aspect-[4/5] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40">
+          {/* Photos */}
+          <div className="relative grid grid-cols-2 gap-3">
+            <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40 col-span-1">
               <img
                 src="/DM1A9471-3.jpg"
                 alt="Professor Jeff Curran"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+            <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40 col-span-1 mt-8">
+              <img
+                src="/11.jpg"
+                alt="Professor Jeff Curran teaching"
+                className="w-full h-full object-cover object-top"
               />
             </div>
             {/* Accent badge */}
-            <div className="absolute -bottom-6 -right-6 bg-brand text-white px-6 py-4 rounded text-center shadow-xl">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-brand text-white px-6 py-4 rounded text-center shadow-xl z-10">
               <div className="text-3xl font-black">5th°</div>
               <div className="text-xs uppercase tracking-widest font-bold">Black Belt</div>
             </div>
