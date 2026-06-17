@@ -7,7 +7,7 @@ const programs = [
       "Master the art of Gracie Jiu-Jitsu — a complete system of submission holds, defensive positioning, and leverage-based techniques. Whether your goal is self-defense, fitness, or competition, our adult BJJ program has a place for you.",
     highlights: ["Submission Grappling", "Self-Defense", "Competition Prep", "All Skill Levels"],
     color: "red",
-    img: "/10.jpg",
+    img: "/gi-bjj-guard.jpg",
   },
   {
     id: "muay-thai",

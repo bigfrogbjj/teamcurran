@@ -14,7 +14,7 @@ export default function About() {
             </div>
             <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40 col-span-1 mt-8">
               <img
-                src="/11.jpg"
+                src="/gi-bjj-instruction.jpg"
                 alt="Professor Jeff Curran teaching"
                 className="w-full h-full object-cover object-top"
               />
