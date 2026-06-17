@@ -17,8 +17,8 @@ export default function Hero() {
           Crystal Lake, IL · Est. 1997
         </p>
         <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-2 tracking-tight">
-          Team
-          <span className="text-brand"> Curran</span>
+          Curran
+          <span className="text-brand"> Jiu-Jitsu</span>
         </h1>
         <p className="text-xl sm:text-2xl font-black text-white uppercase tracking-widest mb-3">
           Pedro Sauer Team
