@@ -33,7 +33,7 @@ const programs = [
 
 export default function Programs() {
   return (
-    <section id="programs" className="bg-black py-24 px-4">
+    <section id="programs" className="bg-black py-24 px-4 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-3">
