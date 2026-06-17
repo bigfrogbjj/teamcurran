@@ -62,10 +62,11 @@ export default function Instructors() {
               className="group bg-gray-900 border border-gray-800 hover:border-brand rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-900/20"
             >
               {/* Photo */}
-              <div className="aspect-[4/3] overflow-hidden">
-                <div
-                  className="w-full h-full bg-cover bg-top group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url('${instructor.img}')` }}
+              <div className="aspect-[3/4] overflow-hidden">
+                <img
+                  src={instructor.img}
+                  alt={instructor.name}
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
 
