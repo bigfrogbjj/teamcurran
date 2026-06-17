@@ -13,7 +13,7 @@ const affiliates = [
   { slug: "open-guard", name: "Open Guard Gym", location: "Oconomowoc, WI", website: "openguardgym.com", img: "/8U0A2181.jpg" },
   { slug: "chattanooga-grappling", name: "Chattanooga Grappling Club", location: "Chattanooga, TN", website: "", img: "/8U0A2416.jpg" },
   { slug: "dekalb-county", name: "DeKalb County BJJ", location: "Hinckley, IL", website: "dekalbcountybjj.com", img: "/8U0A2337.jpg" },
-  { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "graciedestin.com", img: "/DM1A9471-3.jpg" },
+  { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/DM1A9471-3.jpg" },
   { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/DM1A9501.jpg" },
   { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/8U0A2065.jpg" },
 ];
