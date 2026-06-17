@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const affiliates = [
   { slug: "team-haanpaa-rockford", name: "Team Haanpaa Rockford", location: "Rockford, IL", website: "teamhaanpaa.com", img: "/team-haanpaa-rockford.jpg" },
-  { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/team-haanpaa-beloit.jpg" },
+  { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/team-haanpaa-beloit-new.jpg" },
   { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/team-curran-madison.jpg" },
   { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cv-bjj.com", img: "/cedar-valley.jpg" },
   { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/gracie-commerce.jpg" },
