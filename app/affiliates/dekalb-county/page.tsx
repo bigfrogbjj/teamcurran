@@ -37,10 +37,16 @@ export default function DekalbCountyPage() {
                   <span key={p} className="bg-gray-800 border border-blue-900/50 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded uppercase tracking-wide">{p}</span>
                 ))}
               </div>
-              <a href="mailto:dekalbcountybjj@gmail.com"
-                className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">
-                CONTACT THEM
-              </a>
+              <div className="flex gap-3 flex-wrap">
+                <a href="https://dekalbcountybjj.com" target="_blank" rel="noopener noreferrer"
+                  className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">
+                  VISIT WEBSITE
+                </a>
+                <a href="mailto:dekalbcountybjj@gmail.com"
+                  className="inline-block border-2 border-brand text-brand hover:bg-brand hover:text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">
+                  CONTACT THEM
+                </a>
+              </div>
             </div>
 
             <div className="space-y-5">
