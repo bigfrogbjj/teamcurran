@@ -12,15 +12,15 @@ export default function Hero() {
       <div className="absolute inset-0 bg-black/65" />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <p className="text-white text-sm font-bold tracking-[0.3em] uppercase mb-6">
+      <div className="relative z-10 text-center px-6 sm:px-10 max-w-4xl mx-auto pt-24 pb-16">
+        <p className="text-white text-xs sm:text-sm font-bold tracking-[0.3em] uppercase mb-6">
           Crystal Lake, IL · Est. 1997
         </p>
-        <h1 className="text-5xl sm:text-7xl font-black text-white uppercase leading-none mb-2 tracking-tight">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white uppercase leading-none mb-2 tracking-tight">
           Curran
           <span className="text-brand"> Jiu-Jitsu</span>
         </h1>
-        <p className="text-xl sm:text-2xl font-black text-white uppercase tracking-widest mb-3">
+        <p className="text-lg sm:text-xl lg:text-2xl font-black text-white uppercase tracking-widest mb-3">
           Pedro Sauer Team
         </p>
         <div className="flex justify-center mb-4">
