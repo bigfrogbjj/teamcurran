@@ -37,7 +37,7 @@ export default function CedarValleyPage() {
                   <span key={p} className="bg-gray-800 border border-blue-900/50 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded uppercase tracking-wide">{p}</span>
                 ))}
               </div>
-              <a href="https://www.cedarvalleybjj.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://cv-bjj.com" target="_blank" rel="noopener noreferrer"
                 className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">
                 VISIT WEBSITE
               </a>

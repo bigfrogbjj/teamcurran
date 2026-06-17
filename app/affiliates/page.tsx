@@ -6,7 +6,7 @@ const affiliates = [
   { slug: "team-haanpaa-rockford", name: "Team Haanpaa Rockford", location: "Rockford, IL", website: "teamhaanpaa.com", img: "/8U0A2065.jpg" },
   { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/8U0A2181.jpg" },
   { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/8U0A2416.jpg" },
-  { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cedarvalleybjj.com", img: "/8U0A2337.jpg" },
+  { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cv-bjj.com", img: "/8U0A2337.jpg" },
   { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/DM1A9471-3.jpg" },
   { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinwilliamsburg.com", img: "/DM1A9501.jpg" },
   { slug: "pa-grappling", name: "PA Grappling", location: "Altoona & Bedford, PA", website: "pa-grappling.com", img: "/8U0A2065.jpg" },
