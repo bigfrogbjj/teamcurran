@@ -5,7 +5,7 @@ const instructors = [
     rank: "5th Degree Black Belt",
     specialties: ["Adult Jiu-Jitsu", "Kids Jiu-Jitsu"],
     bio: "Professor Jeff Curran is a 5th Degree Black Belt under Master Pedro Sauer and the founder of Team Curran Jiu-Jitsu. With over 35 years of competitive martial arts experience, Jeff built one of the most recognized BJJ teams in the world — training champions, black belts, and everyday athletes alike.",
-    img: "/DM1A9501.jpg",
+    img: "/DM1A9471-3.jpg",
   },
   {
     name: "Chuck Pilcher",
