@@ -7,16 +7,7 @@ import Image from "next/image";
 const links = [
   { label: "Home", href: "/" },
   { label: "About", href: "#about" },
-  {
-    label: "Programs",
-    href: "#programs",
-    children: [
-      { label: "Adult Jiu-Jitsu", href: "#adult-bjj" },
-      { label: "Adult Muay Thai", href: "#muay-thai" },
-      { label: "Junior Jiu-Jitsu", href: "#junior-bjj" },
-      { label: "2-Week Trial", href: "https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" },
-    ],
-  },
+  { label: "Programs", href: "#programs" },
   { label: "Schedule", href: "#schedule" },
   { label: "Affiliates", href: "/affiliates" },
   { label: "Contact", href: "#contact" },
@@ -30,7 +21,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-1.5">
+        <a href="/" className="flex items-center gap-1.5">
           <Image
             src="/Team Curran Circle Logo.png"
             alt="Team Curran Jiu-Jitsu"
@@ -41,7 +32,7 @@ export default function Navbar() {
           <span className="text-gray-300 text-lg sm:text-2xl tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
             ACADEMY HEADQUARTERS
           </span>
-        </Link>
+        </a>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
