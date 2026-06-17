@@ -8,7 +8,7 @@ export default function Page() {
       <Navbar />
       <main className="bg-black min-h-screen">
         <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden pt-20">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/8U0A2181.jpg')" }} />
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/chattanooga-grappling.jpg')" }} />
           <div className="absolute inset-0 bg-black/70" />
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
             <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-4">TEAM CURRAN AFFILIATE</p>

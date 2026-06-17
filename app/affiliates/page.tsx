@@ -3,19 +3,19 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 
 const affiliates = [
-  { slug: "team-haanpaa-rockford", name: "Team Haanpaa Rockford", location: "Rockford, IL", website: "teamhaanpaa.com", img: "/8U0A2065.jpg" },
-  { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/8U0A2181.jpg" },
-  { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/8U0A2416.jpg" },
-  { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cv-bjj.com", img: "/8U0A2337.jpg" },
-  { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/DM1A9471-3.jpg" },
-  { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinwilliamsburg.com", img: "/DM1A9501.jpg" },
-  { slug: "pa-grappling", name: "PA Grappling", location: "Altoona & Bedford, PA", website: "pa-grappling.com", img: "/8U0A2065.jpg" },
-  { slug: "open-guard", name: "Open Guard Gym", location: "Oconomowoc, WI", website: "openguardgym.com", img: "/8U0A2181.jpg" },
-  { slug: "chattanooga-grappling", name: "Chattanooga Grappling Club", location: "Chattanooga, TN", website: "", img: "/8U0A2416.jpg" },
-  { slug: "dekalb-county", name: "DeKalb County BJJ", location: "Hinckley, IL", website: "dekalbcountybjj.com", img: "/8U0A2337.jpg" },
-  { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/DM1A9471-3.jpg" },
-  { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/DM1A9501.jpg" },
-  { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/8U0A2065.jpg" },
+  { slug: "team-haanpaa-rockford", name: "Team Haanpaa Rockford", location: "Rockford, IL", website: "teamhaanpaa.com", img: "/team-haanpaa-rockford.jpg" },
+  { slug: "team-haanpaa-beloit", name: "Team Haanpaa Beloit", location: "Beloit, WI", website: "teamhaanpaa.com", img: "/team-haanpaa-beloit.jpg" },
+  { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/team-curran-madison.jpg" },
+  { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cv-bjj.com", img: "/cedar-valley.jpg" },
+  { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/gracie-commerce.jpg" },
+  { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinwilliamsburg.com", img: "/bushin-martial-arts.jpg" },
+  { slug: "pa-grappling", name: "PA Grappling", location: "Altoona & Bedford, PA", website: "pa-grappling.com", img: "/pa-grappling.jpg" },
+  { slug: "open-guard", name: "Open Guard Gym", location: "Oconomowoc, WI", website: "openguardgym.com", img: "/open-guard.jpg" },
+  { slug: "chattanooga-grappling", name: "Chattanooga Grappling Club", location: "Chattanooga, TN", website: "", img: "/chattanooga-grappling.jpg" },
+  { slug: "dekalb-county", name: "DeKalb County BJJ", location: "Hinckley, IL", website: "dekalbcountybjj.com", img: "/dekalb-county.jpg" },
+  { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/gracie-destin.jpg" },
+  { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/ga-defense-academy.jpg" },
+  { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/hosford-bjj.jpg" },
 ];
 
 export default function AffiliatesPage() {
