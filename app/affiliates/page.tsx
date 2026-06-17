@@ -8,7 +8,7 @@ const affiliates = [
   { slug: "madison-wi", name: "Team Curran Madison", location: "Madison, WI", website: "wi-mafc.com", img: "/8U0A2416.jpg" },
   { slug: "cedar-valley", name: "Cedar Valley BJJ", location: "Waterloo, IA", website: "cedarvalleybjj.com", img: "/8U0A2337.jpg" },
   { slug: "gracie-commerce", name: "Gracie Commerce", location: "Commerce, GA", website: "graciecommerce.com", img: "/DM1A9471-3.jpg" },
-  { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinmartialarts.com", img: "/DM1A9501.jpg" },
+  { slug: "bushin-martial-arts", name: "Bushin Martial Arts", location: "Richmond, VA", website: "bushinwilliamsburg.com", img: "/DM1A9501.jpg" },
   { slug: "pa-grappling", name: "PA Grappling", location: "Altoona & Bedford, PA", website: "pa-grappling.com", img: "/8U0A2065.jpg" },
   { slug: "open-guard", name: "Open Guard Gym", location: "Oconomowoc, WI", website: "openguardgym.com", img: "/8U0A2181.jpg" },
   { slug: "chattanooga-grappling", name: "Chattanooga Grappling Club", location: "Chattanooga, TN", website: "", img: "/8U0A2416.jpg" },
