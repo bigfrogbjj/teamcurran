@@ -6,6 +6,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Kids Jiu-Jitsu"],
     bio: "Professor Jeff Curran is a 5th Degree Black Belt under Master Pedro Sauer and the founder of Team Curran Jiu-Jitsu. With over 35 years of competitive martial arts experience, Jeff built one of the most recognized BJJ teams in the world — training champions, black belts, and everyday athletes alike.",
     img: "/DM1A9471-3.jpg",
+    imgPosition: "top",
   },
   {
     name: "Chuck Pilcher",
@@ -14,6 +15,7 @@ const instructors = [
     specialties: ["Adult Muay Thai", "Kids Jiu-Jitsu"],
     bio: "Chuck has been a cornerstone of Team Curran since the very first day the gym opened in 1997. Over 20+ years he transitioned from dedicated student to co-owner and instructor, managing both the Adult Thaiboxing and Junior Jiu-Jitsu programs. Chuck is a true embodiment of the Team Curran family.",
     img: "/Chuck Pilcher.jpg",
+    imgPosition: "top",
   },
   {
     name: "Justin Seeberger",
@@ -22,6 +24,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Thaiboxing"],
     bio: "Justin is an undefeated amateur MMA competitor (5-0) and a skilled instructor for both Adult Jiu-Jitsu and Thaiboxing. His competitive background and technical precision make him an exceptional coach for students of all levels.",
     img: "/Justin Seeberger.jpg",
+    imgPosition: "20% top",
   },
   {
     name: "John Hudson",
@@ -30,6 +33,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "John Hudson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
     img: "/John Hudson.jpg",
+    imgPosition: "top",
   },
   {
     name: "AJ Serrato",
@@ -38,6 +42,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "AJ Serrato is a Black Belt under Professor Jeff Curran and an instructor at Team Curran Academy Headquarters. AJ brings energy, technical depth, and a passion for developing students at every level of their Jiu-Jitsu journey.",
     img: "/AJ Serrato.jpg",
+    imgPosition: "top",
   },
 ];
 
@@ -66,7 +71,8 @@ export default function Instructors() {
                 <img
                   src={instructor.img}
                   alt={instructor.name}
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={{ objectPosition: instructor.imgPosition ?? "top" }}
                 />
               </div>
 
