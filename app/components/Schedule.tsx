@@ -13,10 +13,10 @@ const schedule: Record<string, Partial<Record<string, string>>> = {
 const times = Object.keys(schedule);
 
 const hours = [
-  { day: "Monday – Thursday", time: "10:00 AM – 9:00 PM" },
-  { day: "Friday", time: "10:00 AM – 8:00 PM" },
-  { day: "Saturday", time: "9:00 AM – 1:00 PM" },
-  { day: "Sunday", time: "By Appointment Only" },
+  { day: "Monday & Wednesday", time: "10:30 AM – 2:00 PM · 3:45 PM – 9:00 PM" },
+  { day: "Thursday", time: "10:30 AM – 2:00 PM · 4:30 PM – 9:00 PM" },
+  { day: "Friday", time: "11:30 AM – 2:00 PM" },
+  { day: "Saturday", time: "9:30 AM – 2:00 PM" },
 ];
 
 export default function Schedule() {
