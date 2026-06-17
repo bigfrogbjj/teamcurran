@@ -80,10 +80,12 @@ export default function Programs() {
                   ))}
                 </ul>
                 <a
-                  href="#contact"
+                  href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm?display=MBRSHPS&"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block text-center bg-brand hover:bg-blue-800 text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
                 >
-                  Get Started
+                  Register Today
                 </a>
               </div>
             </div>
