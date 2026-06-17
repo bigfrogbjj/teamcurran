@@ -19,23 +19,23 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20 min-h-[80px]">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-1.5">
+        <a href="/" className="flex items-center gap-2 shrink-0 min-w-0">
           <Image
             src="/Team Curran Circle Logo.png"
             alt="Team Curran Jiu-Jitsu"
             width={75}
             height={75}
-            className="h-[50px] sm:h-[75px] w-auto"
+            className="h-[46px] lg:h-[64px] w-auto shrink-0"
           />
-          <span className="text-gray-300 text-lg sm:text-2xl tracking-widest uppercase hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
+          <span className="text-gray-300 text-base lg:text-xl tracking-widest uppercase whitespace-nowrap hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
             ACADEMY HEADQUARTERS
           </span>
         </a>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0">
           {links.map((link) =>
             link.children ? (
               <div key={link.label} className="relative">
@@ -70,7 +70,7 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-gray-300 hover:text-brand text-sm font-semibold tracking-wide uppercase transition-colors"
+                className="text-gray-300 hover:text-brand text-xs lg:text-sm font-semibold tracking-wide uppercase transition-colors whitespace-nowrap"
               >
                 {link.label}
               </a>
@@ -78,7 +78,7 @@ export default function Navbar() {
           )}
           <a
             href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
-            className="ml-2 bg-brand hover:bg-blue-800 text-white text-sm font-bold px-4 py-2 rounded transition-colors uppercase tracking-wide"
+            className="ml-1 bg-brand hover:bg-blue-800 text-white text-xs lg:text-sm font-bold px-3 lg:px-4 py-2 rounded transition-colors uppercase tracking-wide whitespace-nowrap"
           >
             2-Week Trial
           </a>
