@@ -15,7 +15,7 @@ const affiliates = [
   { slug: "dekalb-county", name: "DeKalb County BJJ", location: "Hinckley, IL", website: "dekalbcountybjj.com", img: "/dekalb-county.jpg" },
   { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/gracie-destin.jpg" },
   { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/ga-defense-academy.jpg" },
-  { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/hosford-bjj.jpg" },
+  { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/hosford-bjj-new.jpg" },
 ];
 
 export default function AffiliatesPage() {
