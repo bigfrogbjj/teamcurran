@@ -107,10 +107,12 @@ export default function Programs() {
             long-term commitment required.
           </p>
           <a
-            href="#contact"
+            href="https://teamcurran.zenplanner.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-10 py-4 rounded transition-colors shadow-lg shadow-blue-900/50"
           >
-            Claim Your Trial
+            Sign Up Now
           </a>
         </div>
       </div>

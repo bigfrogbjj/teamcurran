@@ -26,7 +26,7 @@ export default function JoinUs() {
                 and improves every area of your life. Start your journey today.
               </p>
               <a
-                href="#trial"
+                href="https://teamcurran.zenplanner.com" target="_blank" rel="noopener noreferrer"
                 className="inline-block border-2 border-white hover:bg-white hover:text-black text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-all text-sm"
               >
                 Start Your Trial

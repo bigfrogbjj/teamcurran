@@ -42,7 +42,7 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#trial"
+            href="https://teamcurran.zenplanner.com" target="_blank" rel="noopener noreferrer"
             className="bg-brand hover:bg-blue-800 text-white font-black uppercase tracking-widest px-8 py-4 rounded text-sm transition-colors shadow-lg shadow-blue-900/50"
           >
             Start Your 2-Week Trial — $45
