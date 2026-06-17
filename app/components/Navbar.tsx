@@ -14,7 +14,7 @@ const links = [
       { label: "Adult Jiu-Jitsu", href: "#adult-bjj" },
       { label: "Adult Muay Thai", href: "#muay-thai" },
       { label: "Junior Jiu-Jitsu", href: "#junior-bjj" },
-      { label: "2-Week Trial", href: "https://teamcurran.zenplanner.com" },
+      { label: "2-Week Trial", href: "https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" },
     ],
   },
   { label: "Schedule", href: "#schedule" },
@@ -86,7 +86,7 @@ export default function Navbar() {
             )
           )}
           <a
-            href="https://teamcurran.zenplanner.com" target="_blank" rel="noopener noreferrer"
+            href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
             className="ml-2 bg-brand hover:bg-blue-800 text-white text-sm font-bold px-4 py-2 rounded transition-colors uppercase tracking-wide"
           >
             2-Week Trial
@@ -119,7 +119,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="https://teamcurran.zenplanner.com" target="_blank" rel="noopener noreferrer"
+            href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
             className="bg-brand text-white text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
             onClick={() => setOpen(false)}
           >
