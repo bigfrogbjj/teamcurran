@@ -14,7 +14,7 @@ const times = Object.keys(schedule);
 
 const hours = [
   { day: "Monday & Wednesday", time: "10:30 AM – 2:00 PM · 3:45 PM – 9:00 PM" },
-  { day: "Thursday", time: "10:30 AM – 2:00 PM · 4:30 PM – 9:00 PM" },
+  { day: "Tuesday & Thursday", time: "10:30 AM – 2:00 PM · 4:30 PM – 9:00 PM" },
   { day: "Friday", time: "11:30 AM – 2:00 PM" },
   { day: "Saturday", time: "9:30 AM – 2:00 PM" },
 ];
