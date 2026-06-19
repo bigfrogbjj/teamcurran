@@ -17,7 +17,7 @@ const programs = [
       "Develop powerful striking skills and improve your overall fitness with our Muay Thai program. Learn the art of eight limbs — punches, kicks, elbows, and knees — with a focus on practical self-defense applications.",
     highlights: ["Striking Fundamentals", "Fitness & Conditioning", "Self-Defense", "Pad Work"],
     color: "orange",
-    img: "/8U0A2181.jpg",
+    img: "/8U0A1304.jpg",
   },
   {
     id: "junior-bjj",
@@ -27,7 +27,7 @@ const programs = [
       "Build confidence, discipline, and real-world self-defense skills in a safe and encouraging environment. Our junior program helps kids develop strong character as much as physical technique.",
     highlights: ["Anti-Bullying Skills", "Builds Confidence", "Character Development", "Safe Environment"],
     color: "blue",
-    img: "/8U0A2337.jpg",
+    img: "/8U0A9902.jpg",
   },
 ];
 
