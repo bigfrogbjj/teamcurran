@@ -15,7 +15,6 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
@@ -36,46 +35,15 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0">
-          {links.map((link) =>
-            link.children ? (
-              <div key={link.label} className="relative">
-                <a
-                  href={link.href}
-                  onMouseEnter={() => setDropdown(true)}
-                  onMouseLeave={() => setDropdown(false)}
-                  className="text-gray-300 hover:text-brand text-sm font-semibold tracking-wide uppercase transition-colors"
-                >
-                  {link.label}
-                </a>
-                {dropdown && (
-                  <div
-                    onMouseEnter={() => setDropdown(true)}
-                    onMouseLeave={() => setDropdown(false)}
-                    className="absolute top-full left-0 mt-1 w-48 bg-black border border-blue-800 rounded shadow-lg py-1"
-                  >
-                    {link.children.map((c) => (
-                      <a
-                        key={c.label}
-                        href={c.href}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-brand hover:bg-gray-900 transition-colors"
-                        onClick={() => setDropdown(false)}
-                      >
-                        {c.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-gray-300 hover:text-brand text-xs lg:text-sm font-semibold tracking-wide uppercase transition-colors whitespace-nowrap"
-              >
-                {link.label}
-              </a>
-            )
-          )}
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-gray-300 hover:text-brand text-xs lg:text-sm font-semibold tracking-wide uppercase transition-colors whitespace-nowrap"
+            >
+              {link.label}
+            </a>
+          ))}
           <a
             href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
             className="ml-1 bg-brand hover:bg-blue-800 text-white text-xs lg:text-sm font-bold px-3 lg:px-4 py-2 rounded transition-colors uppercase tracking-wide whitespace-nowrap"
