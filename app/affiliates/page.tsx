@@ -82,16 +82,24 @@ export default function AffiliatesPage() {
                 { title: "WORLD-CLASS CURRICULUM", desc: "Access Professor Jeff Curran's proven system — 35+ years of producing champions and black belts.", icon: "🥋" },
                 { title: "GLOBAL RECOGNITION", desc: "The Team Curran name carries weight worldwide. Align your school with a respected brand.", icon: "🌎" },
                 { title: "DEDICATED SUPPORT", desc: "Ongoing support for curriculum, marketing, operations, and student development.", icon: "🤝" },
-                { title: "PEDRO SAUER ASSOCIATION", desc: "Benefit from one of the most respected lineages in the art.", icon: "🏆" },
+                { title: "PEDRO SAUER ASSOCIATION", desc: "Benefit from one of the most respected lineages in the art.", icon: "🏆", href: "https://pedrosauer.com" },
                 { title: "SEMINARS & EVENTS", desc: "Exclusive seminars, camps, and events. Bring Team Curran instructors to your academy.", icon: "📅" },
                 { title: "COMMUNITY", desc: "A tight-knit family of affiliate schools who support, compete, and grow together.", icon: "👥" },
-              ].map((item) => (
-                <div key={item.title} className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-brand transition-colors">
-                  <div className="text-3xl mb-4">{item.icon}</div>
-                  <h3 className="text-white font-black uppercase text-sm tracking-wide mb-2">{item.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
+              ].map((item: { title: string; desc: string; icon: string; href?: string }) => {
+                const cls = "block bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-brand transition-colors"
+                const inner = (
+                  <>
+                    <div className="text-3xl mb-4">{item.icon}</div>
+                    <h3 className="text-white font-black uppercase text-sm tracking-wide mb-2">{item.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                  </>
+                )
+                return item.href ? (
+                  <a key={item.title} href={item.href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+                ) : (
+                  <div key={item.title} className={cls}>{inner}</div>
+                )
+              })}
             </div>
           </div>
         </section>
