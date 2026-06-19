@@ -86,8 +86,23 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-6 text-center">
-          <p className="text-gray-600 text-xs">
+        <div className="border-t border-gray-800 pt-8 flex flex-col items-center gap-4">
+          <a
+            href="https://pedrosauer.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="opacity-80 hover:opacity-100 transition-opacity"
+            aria-label="Pedro Sauer Association"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/Team Curran Circle Logo.png"
+              alt="Team Curran Jiu-Jitsu — Pedro Sauer Association"
+              className="h-20 w-auto"
+            />
+          </a>
+          <p className="text-gray-500 text-xs">Proud Member of the Pedro Sauer Association</p>
+          <p className="text-gray-600 text-xs pb-2">
             © {new Date().getFullYear()} Team Curran Jiu-Jitsu Academy. All rights reserved.
           </p>
         </div>
