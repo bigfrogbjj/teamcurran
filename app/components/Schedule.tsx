@@ -21,7 +21,7 @@ const hours = [
 
 export default function Schedule() {
   return (
-    <section id="schedule" className="bg-black py-24 px-4">
+    <section id="schedule" className="bg-black py-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-blue-400 text-xs font-bold tracking-[0.3em] uppercase mb-3">

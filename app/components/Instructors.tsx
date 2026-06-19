@@ -48,7 +48,7 @@ const instructors = [
 
 export default function Instructors() {
   return (
-    <section id="instructors" className="bg-gray-950 py-24 px-4">
+    <section id="instructors" className="bg-gray-950 py-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-3">

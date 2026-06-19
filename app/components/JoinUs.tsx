@@ -1,6 +1,6 @@
 export default function JoinUs() {
   return (
-    <section className="bg-black py-16 px-4">
+    <section className="bg-black py-16 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-5xl font-black text-white uppercase">

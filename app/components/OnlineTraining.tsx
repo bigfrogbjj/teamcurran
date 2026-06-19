@@ -7,7 +7,7 @@ const features = [
 
 export default function OnlineTraining() {
   return (
-    <section id="online" className="bg-gray-950 py-24 px-4 overflow-hidden">
+    <section id="online" className="bg-gray-950 py-24 px-6 sm:px-10 overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Section label */}
