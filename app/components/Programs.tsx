@@ -28,6 +28,7 @@ const programs = [
     highlights: ["Anti-Bullying Skills", "Builds Confidence", "Character Development", "Safe Environment"],
     color: "blue",
     img: "/8U0A9902.jpg",
+    imgPosition: "center 30%",
   },
 ];
 
@@ -57,6 +58,7 @@ export default function Programs() {
                   src={prog.img}
                   alt={prog.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={{ objectPosition: (prog as typeof programs[0] & { imgPosition?: string }).imgPosition ?? "center" }}
                 />
               </div>
               <div className="p-6">
