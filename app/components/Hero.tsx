@@ -6,7 +6,7 @@ export default function Hero() {
       {/* Hero photo */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/new.jpg')" }}
+        style={{ backgroundImage: "url('/new.jpeg')" }}
       />
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/65" />
