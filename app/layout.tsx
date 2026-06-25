@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   description:
     "Brazilian Jiu-Jitsu, Muay Thai, and Junior BJJ programs in Crystal Lake, IL. Train under 5th Degree Black Belt Professor Jeff Curran. Start with a 2-week trial for $45.",
   icons: {
-    icon: "/Team Curran Circle Logo.png",
-    apple: "/Team Curran Circle Logo.png",
+    icon: "/Team Curran C .png",
+    apple: "/Team Curran C .png",
   },
 };
 
