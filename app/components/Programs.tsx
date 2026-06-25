@@ -27,7 +27,7 @@ const programs = [
       "Build confidence, discipline, and real-world self-defense skills in a safe and encouraging environment. Our junior program helps kids develop strong character as much as physical technique.",
     highlights: ["Anti-Bullying Skills", "Builds Confidence", "Character Development", "Safe Environment"],
     color: "blue",
-    img: "/8U0A9902.jpg",
+    img: "/kids-program.jpg",
     imgPosition: "center 30%",
   },
 ];
