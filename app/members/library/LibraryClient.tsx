@@ -1,31 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseClient } from "../../../lib/supabase";
-import { PROGRAMS, BELTS, formatDuration, type LibraryVideo, type Belt, type Program } from "../../../lib/vimeo";
+import { PROGRAMS, BELTS, formatDuration, type LibraryVideo, type Belt, type Program, BELT_ACCESS } from "../../../lib/vimeo";
 import Image from "next/image";
 
 type Props = {
   videos: LibraryVideo[];
-  belt: Belt;
-  memberName: string;
-  allowedPrograms: Program[];
 };
 
-export default function LibraryClient({ videos, belt, memberName, allowedPrograms }: Props) {
+export default function LibraryClient({ videos }: Props) {
   const router = useRouter();
+  const [belt, setBelt] = useState<Belt>("white");
+  const [memberName, setMemberName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [activeProgram, setActiveProgram] = useState<Program | "all">("all");
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeVideo, setActiveVideo] = useState<LibraryVideo | null>(null);
 
+  useEffect(() => {
+    async function checkAuth() {
+      const supabase = createSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/members");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("members")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile || !profile.active) {
+        router.push("/members");
+        return;
+      }
+
+      setBelt(profile.belt ?? "white");
+      setMemberName(profile.full_name);
+      setLoading(false);
+    }
+    checkAuth();
+  }, [router]);
+
+  const allowedPrograms = BELT_ACCESS[belt];
   const beltInfo = BELTS.find((b) => b.key === belt)!;
+  const visibleVideos = videos.filter((v) => allowedPrograms.includes(v.program));
+  const allTags = Array.from(new Set(visibleVideos.flatMap((v) => v.tags))).sort();
 
-  // Collect all unique tags from visible videos
-  const allTags = Array.from(new Set(videos.flatMap((v) => v.tags))).sort();
-
-  const filtered = videos.filter((v) => {
+  const filtered = visibleVideos.filter((v) => {
     if (activeProgram !== "all" && v.program !== activeProgram) return false;
     if (activeTag && !v.tags.includes(activeTag)) return false;
     if (search && !v.title.toLowerCase().includes(search.toLowerCase())) return false;
@@ -36,6 +63,14 @@ export default function LibraryClient({ videos, belt, memberName, allowedProgram
     const supabase = createSupabaseClient();
     await supabase.auth.signOut();
     router.push("/members");
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <p className="text-white text-sm uppercase tracking-widest">Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -51,8 +86,8 @@ export default function LibraryClient({ videos, belt, memberName, allowedProgram
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className={`text-xs font-black uppercase tracking-wider px-3 py-1 rounded ${beltInfo.color} text-white`}>
-              {beltInfo.label}
+            <span className={`text-xs font-black uppercase tracking-wider px-3 py-1 rounded ${beltInfo?.color ?? "bg-gray-800"} text-white`}>
+              {beltInfo?.label}
             </span>
             <button
               onClick={handleSignOut}
@@ -65,7 +100,6 @@ export default function LibraryClient({ videos, belt, memberName, allowedProgram
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-10">
-
         {/* Program tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
           <button
@@ -144,7 +178,6 @@ export default function LibraryClient({ videos, belt, memberName, allowedProgram
                         </svg>
                       </div>
                     )}
-                    {/* Play overlay */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
                       <div className="bg-brand rounded-full p-3">
                         <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -152,7 +185,6 @@ export default function LibraryClient({ videos, belt, memberName, allowedProgram
                         </svg>
                       </div>
                     </div>
-                    {/* Duration */}
                     <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-0.5 rounded font-mono">
                       {formatDuration(video.duration)}
                     </span>
