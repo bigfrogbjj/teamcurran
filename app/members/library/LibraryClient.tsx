@@ -10,10 +10,18 @@ type Props = { videos: LibraryVideo[] };
 
 const TABS: { key: Category; label: string }[] = [
   { key: "fundamentals", label: "Fundamentals" },
+  { key: "white-to-blue", label: "White → Blue" },
+  { key: "blue-to-purple", label: "Blue → Purple" },
   { key: "advanced", label: "Advanced" },
   { key: "retreats", label: "Retreats" },
   { key: "extras", label: "Extras" },
 ];
+
+function formatDateLabel(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-");
+  const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
 
 export default function LibraryClient({ videos }: Props) {
   const router = useRouter();
@@ -22,23 +30,21 @@ export default function LibraryClient({ videos }: Props) {
   const [activeTab, setActiveTab] = useState<Category>("fundamentals");
   const [activeVideo, setActiveVideo] = useState<LibraryVideo | null>(null);
   const [openYear, setOpenYear] = useState<string | null>(null);
+  const [openDate, setOpenDate] = useState<string | null>(null);
 
   useEffect(() => {
     async function checkAuth() {
       const supabase = createSupabaseClient();
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error || !user) { router.push("/members"); return; }
-
       const res = await fetch("/api/member-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id }),
       });
       if (!res.ok) { router.push("/members"); return; }
-
       const profile = await res.json();
       if (!profile.active) { router.push("/members"); return; }
-
       setMemberName(profile.full_name);
       setLoading(false);
     }
@@ -51,20 +57,18 @@ export default function LibraryClient({ videos }: Props) {
     router.push("/members");
   }
 
-  // --- Fundamentals: Class 1-25 sorted ---
-  const fundamentals = videos
-    .filter((v) => v.category === "fundamentals")
-    .sort((a, b) => (a.classNumber ?? 99) - (b.classNumber ?? 99));
-
-  // --- Advanced ---
+  const fundamentals = videos.filter((v) => v.category === "fundamentals").sort((a, b) => (a.classNumber ?? 99) - (b.classNumber ?? 99));
+  const whiteToBlue = videos.filter((v) => v.category === "white-to-blue");
+  const blueToPurple = videos.filter((v) => v.category === "blue-to-purple");
   const advanced = videos.filter((v) => v.category === "advanced");
 
-  // --- Retreats: grouped by year, sorted desc ---
   const retreatVideos = videos.filter((v) => v.category === "retreats");
   const retreatYears = Array.from(new Set(retreatVideos.map((v) => v.retreatYear ?? "Other"))).sort((a, b) => b.localeCompare(a));
 
-  // --- Extras ---
-  const extras = videos.filter((v) => v.category === "extras");
+  const extrasVideos = videos.filter((v) => v.category === "extras");
+  const datedExtras = extrasVideos.filter((v) => v.extrasDate);
+  const undatedExtras = extrasVideos.filter((v) => !v.extrasDate);
+  const extrasDates = Array.from(new Set(datedExtras.map((v) => v.extrasDate!))).sort((a, b) => b.localeCompare(a));
 
   if (loading) {
     return (
@@ -90,14 +94,13 @@ export default function LibraryClient({ videos }: Props) {
             Sign Out
           </button>
         </div>
-
         {/* Tabs */}
-        <div className="max-w-7xl mx-auto flex gap-1 mt-4">
+        <div className="max-w-7xl mx-auto flex flex-wrap gap-1 mt-4">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-5 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${
                 activeTab === tab.key ? "bg-brand text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white"
               }`}
             >
@@ -109,23 +112,116 @@ export default function LibraryClient({ videos }: Props) {
 
       {/* ── FUNDAMENTALS ── */}
       {activeTab === "fundamentals" && (
-        <div className="w-full">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{fundamentals.length} classes</p>
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          {/* Jeff bio header */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden mb-10">
+            <div className="flex flex-col sm:flex-row gap-0">
+              <div className="sm:w-48 shrink-0">
+                <img src="/DM1A9471-3.jpg" alt="Jeff Curran" className="w-full h-full object-cover object-top" style={{ maxHeight: "280px" }} />
+              </div>
+              <div className="p-6 sm:p-8 flex flex-col justify-center">
+                <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-2">Fundamentals Curriculum</p>
+                <h2 className="text-white font-black text-xl sm:text-2xl uppercase mb-3">
+                  Created by Jeff "Big Frog" Curran
+                </h2>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  This 25-class fundamental curriculum was developed by 5th Degree Pedro Sauer Black Belt Professor Jeff "Big Frog" Curran — one of the most decorated submission grapplers in the history of the sport.
+                </p>
+                <div className="bg-blue-900/30 border border-blue-800 rounded-lg px-4 py-3">
+                  <p className="text-blue-300 text-sm font-semibold">
+                    📋 All eligible white belt students will be tested on the curriculum below to receive their blue belt.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="space-y-0">
+
+          {/* Stacked videos */}
+          <div className="space-y-6">
             {fundamentals.map((video) => (
-              <div key={video.id} className="border-b border-gray-800">
-                <div className="bg-gray-900 px-6 py-3 flex items-center gap-4">
+              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-3 flex items-center gap-3 border-b border-gray-800">
                   <span className="bg-brand text-white text-xs font-black px-3 py-1 rounded uppercase tracking-wider shrink-0">
                     Class {String(video.classNumber).padStart(2, "0")}
                   </span>
                   <h3 className="text-white font-bold text-sm">{video.title}</h3>
                   <span className="ml-auto text-gray-500 text-xs font-mono shrink-0">{formatDuration(video.duration)}</span>
                 </div>
-                <div
-                  className="w-full bg-black"
-                  style={{ aspectRatio: "16/9" }}
+                <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
+                  dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── WHITE TO BLUE ── */}
+      {activeTab === "white-to-blue" && (
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden mb-10">
+            <div className="flex flex-col sm:flex-row gap-0">
+              <div className="sm:w-48 shrink-0">
+                <img src="/DM1A9471-3.jpg" alt="Jeff Curran" className="w-full h-full object-cover object-top" style={{ maxHeight: "280px" }} />
+              </div>
+              <div className="p-6 sm:p-8 flex flex-col justify-center">
+                <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-2">Belt Promotion</p>
+                <h2 className="text-white font-black text-xl sm:text-2xl uppercase mb-3">White Belt → Blue Belt</h2>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  This video outlines the full test material required for white belt students to earn their blue belt under Professor Jeff Curran and the Pedro Sauer Association.
+                </p>
+                <div className="bg-blue-900/30 border border-blue-800 rounded-lg px-4 py-3">
+                  <p className="text-blue-300 text-sm font-semibold">
+                    📋 Mastery of Classes 1–25 in the Fundamentals curriculum is required before testing.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-6">
+            {whiteToBlue.map((video) => (
+              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-gray-800">
+                  <h3 className="text-white font-bold text-sm">{video.title}</h3>
+                </div>
+                <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
+                  dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── BLUE TO PURPLE ── */}
+      {activeTab === "blue-to-purple" && (
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden mb-10">
+            <div className="flex flex-col sm:flex-row gap-0">
+              <div className="sm:w-48 shrink-0">
+                <img src="/DM1A9471-3.jpg" alt="Jeff Curran" className="w-full h-full object-cover object-top" style={{ maxHeight: "280px" }} />
+              </div>
+              <div className="p-6 sm:p-8 flex flex-col justify-center">
+                <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-2">Belt Promotion</p>
+                <h2 className="text-white font-black text-xl sm:text-2xl uppercase mb-3">Blue Belt → Purple Belt</h2>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  This video outlines the full test material required for blue belt students to earn their purple belt under Professor Jeff Curran and the Pedro Sauer Association.
+                </p>
+                <div className="bg-purple-900/30 border border-purple-800 rounded-lg px-4 py-3">
+                  <p className="text-purple-300 text-sm font-semibold">
+                    📋 Consistent mat time, technical proficiency, and instructor approval are required before testing.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-6">
+            {blueToPurple.map((video) => (
+              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-gray-800">
+                  <h3 className="text-white font-bold text-sm">{video.title}</h3>
+                </div>
+                <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
               </div>
@@ -136,11 +232,19 @@ export default function LibraryClient({ videos }: Props) {
 
       {/* ── ADVANCED ── */}
       {activeTab === "advanced" && (
-        <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="max-w-4xl mx-auto px-6 py-10">
           <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{advanced.length} videos</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="space-y-6">
             {advanced.map((video) => (
-              <VideoCard key={video.id} video={video} onClick={() => setActiveVideo(video)} />
+              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-gray-800">
+                  <h3 className="text-white font-bold text-sm">{video.title}</h3>
+                  <span className="text-gray-500 text-xs font-mono">{formatDuration(video.duration)}</span>
+                </div>
+                <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
+                  dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -148,7 +252,7 @@ export default function LibraryClient({ videos }: Props) {
 
       {/* ── RETREATS ── */}
       {activeTab === "retreats" && (
-        <div className="max-w-7xl mx-auto px-6 py-10 space-y-6">
+        <div className="max-w-7xl mx-auto px-6 py-10 space-y-4">
           {retreatYears.map((year) => {
             const yearVideos = retreatVideos.filter((v) => (v.retreatYear ?? "Other") === year);
             const isOpen = openYear === year;
@@ -182,13 +286,47 @@ export default function LibraryClient({ videos }: Props) {
 
       {/* ── EXTRAS ── */}
       {activeTab === "extras" && (
-        <div className="max-w-7xl mx-auto px-6 py-10">
-          <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{extras.length} videos</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {extras.map((video) => (
-              <VideoCard key={video.id} video={video} onClick={() => setActiveVideo(video)} />
-            ))}
-          </div>
+        <div className="max-w-7xl mx-auto px-6 py-10 space-y-4">
+          {/* Date-grouped extras */}
+          {extrasDates.map((date) => {
+            const dateVideos = datedExtras.filter((v) => v.extrasDate === date);
+            const isOpen = openDate === date;
+            return (
+              <div key={date} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setOpenDate(isOpen ? null : date)}
+                  className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-white font-black">{formatDateLabel(date)}</span>
+                    <span className="text-gray-500 text-xs">{dateVideos.length} part{dateVideos.length !== 1 ? "s" : ""}</span>
+                  </div>
+                  <svg className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isOpen && (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 border-t border-gray-800">
+                    {dateVideos.sort((a, b) => a.title.localeCompare(b.title)).map((video) => (
+                      <VideoCard key={video.id} video={video} onClick={() => setActiveVideo(video)} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Undated extras */}
+          {undatedExtras.length > 0 && (
+            <div className="mt-8">
+              <p className="text-gray-500 text-xs uppercase tracking-widest mb-4">Other Videos</p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {undatedExtras.map((video) => (
+                  <VideoCard key={video.id} video={video} onClick={() => setActiveVideo(video)} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -200,10 +338,7 @@ export default function LibraryClient({ videos }: Props) {
               dangerouslySetInnerHTML={{ __html: activeVideo.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
             />
             <div className="p-5 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-white font-black text-lg">{activeVideo.title}</h2>
-                {activeVideo.description && <p className="text-gray-400 text-sm mt-1">{activeVideo.description}</p>}
-              </div>
+              <h2 className="text-white font-black text-lg">{activeVideo.title}</h2>
               <button onClick={() => setActiveVideo(null)} className="text-gray-400 hover:text-white shrink-0">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
