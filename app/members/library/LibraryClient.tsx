@@ -127,7 +127,7 @@ export default function LibraryClient({ videos }: Props) {
                   Created by Jeff "Big Frog" Curran
                 </h2>
                 <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                  This 25-class fundamental curriculum was developed by 5th Degree Pedro Sauer Black Belt Professor Jeff "Big Frog" Curran — one of the most decorated submission grapplers in the history of the sport.
+                  This 25-class fundamental curriculum was developed by 5th Degree Pedro Sauer Black Belt Professor Jeff "Big Frog" Curran.
                 </p>
                 <div className="bg-blue-900/30 border border-blue-800 rounded-lg px-4 py-3">
                   <p className="text-blue-300 text-sm font-semibold">

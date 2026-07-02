@@ -65,8 +65,8 @@ function classifyVideo(title: string): { category: Category; classNumber?: numbe
     return { category: "retreats", retreatYear: "2023" };
   }
 
-  // White to Blue: the blue belt test material
-  if (t.includes("blue belt test") || t.includes("blue belt material") || (t.includes("blue") && t.includes("full list"))) {
+  // White to Blue: blue belt test material + fundamental curriculum full list
+  if (t.includes("blue belt test") || t.includes("blue belt material") || (t.includes("blue") && t.includes("full list")) || t.includes("fundamental curriculum")) {
     return { category: "white-to-blue" };
   }
 
