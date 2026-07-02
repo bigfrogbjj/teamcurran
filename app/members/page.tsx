@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createSupabaseClient } from "../../lib/supabase";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function MembersLogin() {
   const router = useRouter();
+  const params = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const inactive = params.get("inactive") === "1";
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -48,6 +50,14 @@ export default function MembersLogin() {
           <h1 className="text-3xl font-black text-white uppercase">Video Library</h1>
           <p className="text-gray-400 text-sm mt-2">Sign in with your Team Curran account</p>
         </div>
+
+        {inactive && (
+          <div className="bg-red-900/30 border border-red-800 rounded-xl p-4 mb-6 text-center">
+            <p className="text-red-400 text-sm font-bold">Your membership is no longer active.</p>
+            <p className="text-red-500 text-xs mt-1">Please contact Team Curran to renew your membership and restore access.</p>
+            <a href="/#contact" className="text-brand text-xs underline mt-2 inline-block">Contact Us</a>
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="bg-gray-900 border border-gray-800 rounded-xl p-8 space-y-5">
           <div>
@@ -91,12 +101,10 @@ export default function MembersLogin() {
           </button>
         </form>
 
-        <p className="text-center text-gray-600 text-xs mt-6">
-          Not a member?{" "}
-          <a href="/#programs" className="text-brand hover:underline">
-            View our programs
-          </a>
-        </p>
+        <div className="flex justify-between text-xs mt-6">
+          <a href="/members/reset" className="text-gray-500 hover:text-brand transition-colors">Forgot password?</a>
+          <a href="/#programs" className="text-gray-500 hover:text-brand transition-colors">Not a member?</a>
+        </div>
       </div>
     </div>
   );
