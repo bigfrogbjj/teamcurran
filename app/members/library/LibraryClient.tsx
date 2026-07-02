@@ -138,10 +138,26 @@ export default function LibraryClient({ videos }: Props) {
             </div>
           </div>
 
+          {/* Quick jump menu */}
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8">
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">Jump to Class</p>
+            <div className="flex flex-wrap gap-2">
+              {fundamentals.map((video) => (
+                <a
+                  key={video.id}
+                  href={`#class-${video.classNumber}`}
+                  className="bg-gray-800 hover:bg-brand text-gray-300 hover:text-white text-xs font-black px-3 py-1.5 rounded uppercase tracking-wider transition-colors"
+                >
+                  {String(video.classNumber).padStart(2, "0")}
+                </a>
+              ))}
+            </div>
+          </div>
+
           {/* Stacked videos */}
           <div className="space-y-6">
             {fundamentals.map((video) => (
-              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+              <div key={video.id} id={`class-${video.classNumber}`} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden scroll-mt-32">
                 <div className="px-5 py-3 flex items-center gap-3 border-b border-gray-800">
                   <span className="bg-brand text-white text-xs font-black px-3 py-1 rounded uppercase tracking-wider shrink-0">
                     Class {String(video.classNumber).padStart(2, "0")}
