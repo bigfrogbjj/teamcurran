@@ -99,7 +99,6 @@ async function importMembers() {
       id: userData.user.id,
       email,
       full_name,
-      belt,
       active,
     });
 
