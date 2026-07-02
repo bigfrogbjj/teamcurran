@@ -1,8 +1,8 @@
 import LibraryClient from "./LibraryClient";
-import { fetchLibraryVideos } from "../../../lib/vimeo";
+import { fetchLibraryVideos, type LibraryVideo } from "../../../lib/vimeo";
 
 export default async function LibraryPage() {
-  let videos = [];
+  let videos: LibraryVideo[] = [];
   try {
     videos = await fetchLibraryVideos();
   } catch (e) {
