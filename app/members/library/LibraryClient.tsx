@@ -13,6 +13,7 @@ const TABS: { key: Category; label: string }[] = [
   { key: "white-to-blue", label: "White → Blue" },
   { key: "blue-to-purple", label: "Blue → Purple" },
   { key: "advanced", label: "Advanced" },
+  { key: "striking", label: "Striking Basics" },
   { key: "retreats", label: "Retreats" },
   { key: "extras", label: "Extras" },
 ];
@@ -61,6 +62,7 @@ export default function LibraryClient({ videos }: Props) {
   const whiteToBlue = videos.filter((v) => v.category === "white-to-blue");
   const blueToPurple = videos.filter((v) => v.category === "blue-to-purple");
   const advanced = videos.filter((v) => v.category === "advanced");
+  const striking = videos.filter((v) => v.category === "striking");
 
   const retreatVideos = videos.filter((v) => v.category === "retreats");
   const retreatYears = Array.from(new Set(retreatVideos.map((v) => v.retreatYear ?? "Other"))).sort((a, b) => b.localeCompare(a));
@@ -236,6 +238,26 @@ export default function LibraryClient({ videos }: Props) {
           <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{advanced.length} videos</p>
           <div className="space-y-6">
             {advanced.map((video) => (
+              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-gray-800">
+                  <h3 className="text-white font-bold text-sm">{video.title}</h3>
+                  <span className="text-gray-500 text-xs font-mono">{formatDuration(video.duration)}</span>
+                </div>
+                <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
+                  dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── STRIKING BASICS ── */}
+      {activeTab === "striking" && (
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{striking.length} videos</p>
+          <div className="space-y-6">
+            {striking.map((video) => (
               <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
                 <div className="px-5 py-3 border-b border-gray-800">
                   <h3 className="text-white font-bold text-sm">{video.title}</h3>

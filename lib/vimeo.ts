@@ -7,7 +7,7 @@ export type VimeoVideo = {
   embed: { html: string };
 };
 
-export type Category = "fundamentals" | "white-to-blue" | "blue-to-purple" | "advanced" | "retreats" | "extras";
+export type Category = "fundamentals" | "white-to-blue" | "blue-to-purple" | "advanced" | "striking" | "retreats" | "extras";
 
 export type LibraryVideo = {
   id: string;
@@ -75,6 +75,11 @@ function classifyVideo(title: string): { category: Category; classNumber?: numbe
     return { category: "blue-to-purple" };
   }
 
+  // Striking Basics
+  if (t.includes("striking basics") || t.includes("striking")) {
+    return { category: "striking" };
+  }
+
   // Advanced / Curriculum
   if (
     t.includes("curriculum") ||
@@ -84,7 +89,6 @@ function classifyVideo(title: string): { category: Category; classNumber?: numbe
     t.includes("guillotine") ||
     t.includes("connection to back") ||
     t.includes("entering the headlock") ||
-    t.includes("striking basics") ||
     t.includes("headlock series")
   ) {
     return { category: "advanced" };
