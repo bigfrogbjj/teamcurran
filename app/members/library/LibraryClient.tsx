@@ -23,19 +23,25 @@ export default function LibraryClient({ videos }: Props) {
   useEffect(() => {
     async function checkAuth() {
       const supabase = createSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
         router.push("/members");
         return;
       }
 
-      const { data: profile } = await supabase
-        .from("members")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+      const res = await fetch("/api/member-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      });
 
-      if (!profile || !profile.active) {
+      if (!res.ok) {
+        router.push("/members");
+        return;
+      }
+
+      const profile = await res.json();
+      if (!profile.active) {
         router.push("/members");
         return;
       }
