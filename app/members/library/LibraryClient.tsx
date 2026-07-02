@@ -251,10 +251,29 @@ export default function LibraryClient({ videos }: Props) {
       {/* ── ADVANCED ── */}
       {activeTab === "advanced" && (
         <div className="max-w-4xl mx-auto px-6 py-10">
+          {/* Dropdown jump menu */}
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8">
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">Jump to Video</p>
+            <select
+              onChange={(e) => {
+                const el = document.getElementById(e.target.value);
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                e.target.value = "";
+              }}
+              defaultValue=""
+              className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-3 focus:outline-none focus:border-brand cursor-pointer"
+            >
+              <option value="" disabled>Select a video...</option>
+              {advanced.map((video) => (
+                <option key={video.id} value={`advanced-${video.id}`}>{video.title}</option>
+              ))}
+            </select>
+          </div>
+
           <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{advanced.length} videos</p>
           <div className="space-y-6">
             {advanced.map((video) => (
-              <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+              <div key={video.id} id={`advanced-${video.id}`} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden scroll-mt-32">
                 <div className="px-5 py-3 border-b border-gray-800">
                   <h3 className="text-white font-bold text-sm">{video.title}</h3>
                   <span className="text-gray-500 text-xs font-mono">{formatDuration(video.duration)}</span>
