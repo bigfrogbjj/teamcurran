@@ -127,7 +127,7 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
 
     // Fetch videos in this showcase
     let allVids: VimeoVideo[] = [];
-    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed`;
+    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,privacy`;
     while (vUrl) {
       const vRes = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
       const vData = vRes.ok ? await vRes.json() : { data: [] };
@@ -138,13 +138,15 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
 
     const videos: LibraryVideo[] = (vData.data ?? []).map((v: VimeoVideo) => {
       const vthumb = v.pictures?.sizes?.find((s: { width: number; link: string }) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
+      const videoId = v.uri.replace("/videos/", "");
+      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       return {
-        id: v.uri.replace("/videos/", ""),
+        id: videoId,
         title: v.name,
         description: v.description || "",
         duration: v.duration,
         thumbnail: vthumb,
-        embedHtml: v.embed?.html ?? "",
+        embedHtml,
         category: "extras" as Category,
       };
     });
@@ -181,13 +183,15 @@ export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
     .map((v) => {
       const thumb = v.pictures?.sizes?.find((s) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
       const { category, classNumber, retreatYear, extrasDate } = classifyVideo(v.name);
+      const videoId = v.uri.replace("/videos/", "");
+      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       return {
-        id: v.uri.replace("/videos/", ""),
+        id: videoId,
         title: v.name,
         description: v.description || "",
         duration: v.duration,
         thumbnail: thumb,
-        embedHtml: v.embed?.html ?? "",
+        embedHtml,
         category,
         classNumber,
         retreatYear,
