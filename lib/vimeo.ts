@@ -129,7 +129,7 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
     let allVids: VimeoVideo[] = [];
     let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,privacy`;
     while (vUrl) {
-      const vRes = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
+      const vRes: Response = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
       const vData = vRes.ok ? await vRes.json() : { data: [] };
       allVids = allVids.concat(vData.data ?? []);
       vUrl = vData.paging?.next ? `https://api.vimeo.com${vData.paging.next}` : null;
