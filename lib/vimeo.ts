@@ -98,6 +98,59 @@ function classifyVideo(title: string): { category: Category; classNumber?: numbe
   return { category: "extras", extrasDate };
 }
 
+export type VimeoShowcase = {
+  id: string;
+  name: string;
+  description: string | null;
+  thumbnail: string;
+  videoCount: number;
+  videos: LibraryVideo[];
+};
+
+export async function fetchShowcases(): Promise<VimeoShowcase[]> {
+  const token = process.env.VIMEO_ACCESS_TOKEN;
+  if (!token) throw new Error("Missing VIMEO_ACCESS_TOKEN");
+
+  const res = await fetch(
+    `https://api.vimeo.com/me/albums?per_page=50&fields=uri,name,description,pictures,metadata`,
+    { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } }
+  );
+  if (!res.ok) throw new Error(`Vimeo showcases error: ${res.status}`);
+  const data = await res.json();
+
+  const showcases: VimeoShowcase[] = [];
+
+  for (const album of data.data ?? []) {
+    const id = album.uri.replace("/albums/", "");
+    const thumb = album.pictures?.sizes?.find((s: { width: number; link: string }) => s.width >= 640)?.link ?? album.pictures?.sizes?.[0]?.link ?? "";
+    const videoCount = album.metadata?.connections?.videos?.total ?? 0;
+
+    // Fetch videos in this showcase
+    const vRes = await fetch(
+      `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed`,
+      { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } }
+    );
+    const vData = vRes.ok ? await vRes.json() : { data: [] };
+
+    const videos: LibraryVideo[] = (vData.data ?? []).map((v: VimeoVideo) => {
+      const vthumb = v.pictures?.sizes?.find((s) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
+      return {
+        id: v.uri.replace("/videos/", ""),
+        title: v.name,
+        description: v.description ?? "",
+        duration: v.duration,
+        thumbnail: vthumb,
+        embedHtml: v.embed?.html ?? "",
+        category: "extras" as Category,
+      };
+    });
+
+    showcases.push({ id, name: album.name, description: album.description ?? null, thumbnail: thumb, videoCount, videos });
+  }
+
+  return showcases;
+}
+
 export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
   const token = process.env.VIMEO_ACCESS_TOKEN;
   if (!token) throw new Error("Missing VIMEO_ACCESS_TOKEN");

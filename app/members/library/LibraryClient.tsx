@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseClient } from "../../../lib/supabase";
-import { formatDuration, type LibraryVideo, type Category } from "../../../lib/vimeo";
+import { formatDuration, type LibraryVideo, type Category, type VimeoShowcase } from "../../../lib/vimeo";
 import Image from "next/image";
 
 type Props = { videos: LibraryVideo[] };
@@ -178,6 +178,11 @@ export default function LibraryClient({ videos }: Props) {
                 <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
+                {video.description && (
+                  <div className="px-5 py-4 border-t border-gray-800">
+                    <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -215,6 +220,11 @@ export default function LibraryClient({ videos }: Props) {
                 <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
+                {video.description && (
+                  <div className="px-5 py-4 border-t border-gray-800">
+                    <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -252,6 +262,11 @@ export default function LibraryClient({ videos }: Props) {
                 <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
+                {video.description && (
+                  <div className="px-5 py-4 border-t border-gray-800">
+                    <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -291,6 +306,11 @@ export default function LibraryClient({ videos }: Props) {
                 <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
+                {video.description && (
+                  <div className="px-5 py-4 border-t border-gray-800">
+                    <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -311,6 +331,11 @@ export default function LibraryClient({ videos }: Props) {
                 <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
                   dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
                 />
+                {video.description && (
+                  <div className="px-5 py-4 border-t border-gray-800">
+                    <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
