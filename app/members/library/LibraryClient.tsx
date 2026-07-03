@@ -58,7 +58,17 @@ export default function LibraryClient({ videos }: Props) {
     router.push("/members");
   }
 
-  const fundamentals = videos.filter((v) => v.category === "fundamentals").sort((a, b) => (a.classNumber ?? 99) - (b.classNumber ?? 99));
+  const fundamentals = (() => {
+    const seen = new Set<number>();
+    return videos
+      .filter((v) => v.category === "fundamentals")
+      .sort((a, b) => (a.classNumber ?? 99) - (b.classNumber ?? 99))
+      .filter((v) => {
+        if (v.classNumber === undefined || seen.has(v.classNumber)) return false;
+        seen.add(v.classNumber);
+        return true;
+      });
+  })();
   const whiteToBlue = videos.filter((v) => v.category === "white-to-blue");
   const blueToPurple = videos.filter((v) => v.category === "blue-to-purple");
   const advanced = videos.filter((v) => v.category === "advanced");
