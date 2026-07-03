@@ -112,7 +112,7 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
   if (!token) throw new Error("Missing VIMEO_ACCESS_TOKEN");
 
   const res = await fetch(
-    `https://api.vimeo.com/me/albums?per_page=50&fields=uri,name,description,pictures,metadata`,
+    `https://api.vimeo.com/me/albums?per_page=100&fields=uri,name,description,pictures,metadata`,
     { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } }
   );
   if (!res.ok) throw new Error(`Vimeo showcases error: ${res.status}`);
@@ -126,18 +126,22 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
     const videoCount = album.metadata?.connections?.videos?.total ?? 0;
 
     // Fetch videos in this showcase
-    const vRes = await fetch(
-      `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed`,
-      { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } }
-    );
-    const vData = vRes.ok ? await vRes.json() : { data: [] };
+    let allVids: VimeoVideo[] = [];
+    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed`;
+    while (vUrl) {
+      const vRes = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
+      const vData = vRes.ok ? await vRes.json() : { data: [] };
+      allVids = allVids.concat(vData.data ?? []);
+      vUrl = vData.paging?.next ? `https://api.vimeo.com${vData.paging.next}` : null;
+    }
+    const vData = { data: allVids };
 
     const videos: LibraryVideo[] = (vData.data ?? []).map((v: VimeoVideo) => {
-      const vthumb = v.pictures?.sizes?.find((s) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
+      const vthumb = v.pictures?.sizes?.find((s: { width: number; link: string }) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
       return {
         id: v.uri.replace("/videos/", ""),
         title: v.name,
-        description: v.description ?? "",
+        description: v.description || "",
         duration: v.duration,
         thumbnail: vthumb,
         embedHtml: v.embed?.html ?? "",
@@ -156,7 +160,7 @@ export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
   if (!token) throw new Error("Missing VIMEO_ACCESS_TOKEN");
 
   let all: VimeoVideo[] = [];
-  let url = `https://api.vimeo.com/me/videos?per_page=100&fields=uri,name,description,duration,pictures,embed`;
+  let url = `https://api.vimeo.com/me/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,privacy`;
 
   while (url) {
     const res = await fetch(url, {
@@ -180,7 +184,7 @@ export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
       return {
         id: v.uri.replace("/videos/", ""),
         title: v.name,
-        description: v.description ?? "",
+        description: v.description || "",
         duration: v.duration,
         thumbnail: thumb,
         embedHtml: v.embed?.html ?? "",
