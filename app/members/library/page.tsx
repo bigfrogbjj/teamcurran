@@ -1,13 +1,14 @@
 import LibraryClient from "./LibraryClient";
-import { fetchLibraryVideos, type LibraryVideo } from "../../../lib/vimeo";
+import { fetchLibraryVideos, fetchShowcases, type LibraryVideo, type VimeoShowcase } from "../../../lib/vimeo";
 
 export default async function LibraryPage() {
   let videos: LibraryVideo[] = [];
+  let showcases: VimeoShowcase[] = [];
   try {
-    videos = await fetchLibraryVideos();
+    [videos, showcases] = await Promise.all([fetchLibraryVideos(), fetchShowcases()]);
   } catch (e) {
     console.error("Vimeo fetch error:", e);
   }
 
-  return <LibraryClient videos={videos} />;
+  return <LibraryClient videos={videos} showcases={showcases} />;
 }

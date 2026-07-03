@@ -6,9 +6,9 @@ import { createSupabaseClient } from "../../../lib/supabase";
 import { formatDuration, type LibraryVideo, type Category, type VimeoShowcase } from "../../../lib/vimeo";
 import Image from "next/image";
 
-type Props = { videos: LibraryVideo[] };
+type Props = { videos: LibraryVideo[]; showcases: VimeoShowcase[] };
 
-const TABS: { key: Category; label: string }[] = [
+const TABS: { key: Category | "showcases"; label: string }[] = [
   { key: "fundamentals", label: "Fundamentals" },
   { key: "white-to-blue", label: "White → Blue" },
   { key: "blue-to-purple", label: "Blue → Purple" },
@@ -16,6 +16,7 @@ const TABS: { key: Category; label: string }[] = [
   { key: "striking", label: "Striking Basics" },
   { key: "retreats", label: "Retreats" },
   { key: "extras", label: "Extras" },
+  { key: "showcases", label: "Showcases" },
 ];
 
 function formatDateLabel(dateStr: string): string {
@@ -24,11 +25,12 @@ function formatDateLabel(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
-export default function LibraryClient({ videos }: Props) {
+export default function LibraryClient({ videos, showcases }: Props) {
   const router = useRouter();
   const [memberName, setMemberName] = useState("");
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<Category>("fundamentals");
+  const [activeTab, setActiveTab] = useState<Category | "showcases">("fundamentals");
+  const [activeShowcase, setActiveShowcase] = useState<VimeoShowcase | null>(null);
   const [activeVideo, setActiveVideo] = useState<LibraryVideo | null>(null);
   const [openYear, setOpenYear] = useState<string | null>(null);
   const [openDate, setOpenDate] = useState<string | null>(null);
@@ -418,6 +420,63 @@ export default function LibraryClient({ videos }: Props) {
                 ))}
               </div>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* ── SHOWCASES ── */}
+      {activeTab === "showcases" && (
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          {activeShowcase ? (
+            <>
+              <button onClick={() => setActiveShowcase(null)} className="flex items-center gap-2 text-brand text-sm font-bold uppercase tracking-wider mb-6 hover:underline">
+                ← Back to Showcases
+              </button>
+              <h2 className="text-white font-black text-2xl uppercase mb-2">{activeShowcase.name}</h2>
+              {activeShowcase.description && <p className="text-gray-400 text-sm mb-8">{activeShowcase.description}</p>}
+              <div className="space-y-6">
+                {activeShowcase.videos.map((video) => (
+                  <div key={video.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                    <div className="px-5 py-3 border-b border-gray-800 flex items-center justify-between">
+                      <h3 className="text-white font-bold text-sm">{video.title}</h3>
+                      <span className="text-gray-500 text-xs font-mono shrink-0 ml-3">{formatDuration(video.duration)}</span>
+                    </div>
+                    <div className="w-full bg-black" style={{ aspectRatio: "16/9" }}
+                      dangerouslySetInnerHTML={{ __html: video.embedHtml.replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="100%"') }}
+                    />
+                    {video.description && (
+                      <div className="px-5 py-4 border-t border-gray-800">
+                        <p className="text-gray-400 text-sm leading-relaxed">{video.description}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-gray-500 text-xs uppercase tracking-widest mb-6">{showcases.length} showcases</p>
+              <div className="grid sm:grid-cols-2 gap-5">
+                {showcases.map((showcase) => (
+                  <button
+                    key={showcase.id}
+                    onClick={() => setActiveShowcase(showcase)}
+                    className="group bg-gray-900 border border-gray-800 hover:border-brand rounded-xl overflow-hidden text-left transition-all duration-200 hover:-translate-y-0.5"
+                  >
+                    {showcase.thumbnail && (
+                      <div className="aspect-video overflow-hidden">
+                        <img src={showcase.thumbnail} alt={showcase.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <h3 className="text-white font-black text-base uppercase mb-1">{showcase.name}</h3>
+                      {showcase.description && <p className="text-gray-400 text-sm line-clamp-2 mb-2">{showcase.description}</p>}
+                      <p className="text-brand text-xs font-bold uppercase tracking-wider">{showcase.videoCount} videos →</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}
