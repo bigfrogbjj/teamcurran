@@ -122,13 +122,15 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
   const showcases: VimeoShowcase[] = [];
 
   for (const album of data.data ?? []) {
-    const id = album.uri.replace("/albums/", "");
+    // album.uri is like /users/123/albums/456 — extract just the numeric album ID
+    const albumIdMatch = album.uri.match(/\/albums\/(\d+)/);
+    const id = albumIdMatch ? albumIdMatch[1] : album.uri;
     const thumb = album.pictures?.sizes?.find((s: { width: number; link: string }) => s.width >= 640)?.link ?? album.pictures?.sizes?.[0]?.link ?? "";
     const videoCount = album.metadata?.connections?.videos?.total ?? 0;
 
-    // Fetch videos in this showcase
+    // Fetch videos in this showcase using the full URI path
     let allVids: VimeoVideo[] = [];
-    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,link`;
+    let vUrl: string | null = `https://api.vimeo.com${album.uri}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,link`;
     while (vUrl) {
       const vRes: Response = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
       const vData = vRes.ok ? await vRes.json() : { data: [] };
