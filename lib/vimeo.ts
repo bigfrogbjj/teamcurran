@@ -4,7 +4,8 @@ export type VimeoVideo = {
   description: string | null;
   duration: number;
   pictures: { sizes: { width: number; link: string }[] };
-  embed: { html: string };
+  embed: { html: string } | null;
+  link?: string;
 };
 
 export type Category = "fundamentals" | "white-to-blue" | "blue-to-purple" | "advanced" | "striking" | "retreats" | "extras";
@@ -127,7 +128,7 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
 
     // Fetch videos in this showcase
     let allVids: VimeoVideo[] = [];
-    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,privacy`;
+    let vUrl: string | null = `https://api.vimeo.com/albums/${id}/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,link`;
     while (vUrl) {
       const vRes: Response = await fetch(vUrl, { headers: { Authorization: `bearer ${token}` }, next: { revalidate: 300 } });
       const vData = vRes.ok ? await vRes.json() : { data: [] };
@@ -139,7 +140,10 @@ export async function fetchShowcases(): Promise<VimeoShowcase[]> {
     const videos: LibraryVideo[] = (vData.data ?? []).map((v: VimeoVideo) => {
       const vthumb = v.pictures?.sizes?.find((s: { width: number; link: string }) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
       const videoId = v.uri.replace("/videos/", "");
-      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      // Extract the hash from the Vimeo link for private/unlisted videos (e.g. vimeo.com/123/abc123)
+      const hashMatch = v.link?.match(/vimeo\.com\/\d+\/([a-f0-9]+)/);
+      const hashParam = hashMatch ? `?h=${hashMatch[1]}&` : "?";
+      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}${hashParam}badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       return {
         id: videoId,
         title: v.name,
@@ -162,7 +166,7 @@ export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
   if (!token) throw new Error("Missing VIMEO_ACCESS_TOKEN");
 
   let all: VimeoVideo[] = [];
-  let url = `https://api.vimeo.com/me/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,privacy`;
+  let url = `https://api.vimeo.com/me/videos?per_page=100&fields=uri,name,description,duration,pictures,embed,link`;
 
   while (url) {
     const res = await fetch(url, {
@@ -184,7 +188,9 @@ export async function fetchLibraryVideos(): Promise<LibraryVideo[]> {
       const thumb = v.pictures?.sizes?.find((s) => s.width >= 640)?.link ?? v.pictures?.sizes?.[0]?.link ?? "";
       const { category, classNumber, retreatYear, extrasDate } = classifyVideo(v.name);
       const videoId = v.uri.replace("/videos/", "");
-      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      const hashMatch = v.link?.match(/vimeo\.com\/\d+\/([a-f0-9]+)/);
+      const hashParam = hashMatch ? `?h=${hashMatch[1]}&` : "?";
+      const embedHtml = v.embed?.html || `<iframe src="https://player.vimeo.com/video/${videoId}${hashParam}badge=0&autopause=0&player_id=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       return {
         id: videoId,
         title: v.name,
