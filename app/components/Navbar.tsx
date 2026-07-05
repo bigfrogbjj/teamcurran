@@ -11,7 +11,6 @@ const links = [
   { label: "Schedule", href: "#schedule" },
   { label: "Affiliates", href: "/affiliates" },
   { label: "Contact", href: "#contact" },
-  { label: "Members", href: "/members" },
 ];
 
 export default function Navbar() {
