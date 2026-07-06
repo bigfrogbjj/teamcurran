@@ -17,6 +17,7 @@ export default function Hero() {
           Crystal Lake, IL · Est. 1997
         </p>
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white uppercase leading-none mb-2 tracking-tight">
+          <span className="sr-only">Brazilian Jiu-Jitsu in Crystal Lake, IL — </span>
           Curran
           <span className="text-brand"> Jiu-Jitsu</span>
         </h1>
@@ -26,7 +27,7 @@ export default function Hero() {
         <div className="flex justify-center mb-4">
           <Image
             src="/Team Curran C .png"
-            alt="Curran Jiu-Jitsu"
+            alt="Team Curran Jiu-Jitsu Academy logo — Crystal Lake, IL"
             width={280}
             height={70}
             className="h-12 w-auto"

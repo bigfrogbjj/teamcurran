@@ -8,14 +8,14 @@ export default function About() {
             <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40 col-span-1">
               <img
                 src="/DM1A9471-3.jpg"
-                alt="Professor Jeff Curran"
+                alt="Professor Jeff Curran, 5th Degree Black Belt under Pedro Sauer, head instructor at Team Curran BJJ in Crystal Lake IL"
                 className="w-full h-full object-cover object-top"
               />
             </div>
             <div className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-blue-900/40 col-span-1 mt-8">
               <img
                 src="/gi-bjj-instruction.jpg"
-                alt="Professor Jeff Curran teaching"
+                alt="Professor Jeff Curran teaching Brazilian Jiu-Jitsu gi class in Crystal Lake Illinois"
                 className="w-full h-full object-cover object-top"
               />
             </div>

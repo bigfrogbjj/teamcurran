@@ -27,10 +27,11 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { label: "About Professor Curran", href: "#about" },
-                { label: "Adult Jiu-Jitsu", href: "#adult-bjj" },
-                { label: "Muay Thai", href: "#muay-thai" },
-                { label: "Junior BJJ", href: "#junior-bjj" },
-                { label: "2-Week Trial", href: "#trial" },
+                { label: "Adult Brazilian Jiu-Jitsu", href: "/adult-bjj" },
+                { label: "Kids Jiu-Jitsu", href: "/kids-jiu-jitsu" },
+                { label: "Muay Thai", href: "/muay-thai" },
+                { label: "Gracie Jiu-Jitsu Lineage", href: "/gracie-jiu-jitsu" },
+                { label: "2-Week Free Trial", href: "/free-trial" },
                 { label: "Contact Us", href: "#contact" },
               ].map((l) => (
                 <li key={l.label}>

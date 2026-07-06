@@ -6,6 +6,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Kids Jiu-Jitsu"],
     bio: "Professor Jeff Curran is a 5th Degree Black Belt under Master Pedro Sauer and the founder of Team Curran Jiu-Jitsu. With over 35 years of competitive martial arts experience, Jeff built one of the most recognized BJJ teams in the world — training champions, black belts, and everyday athletes alike.",
     img: "/DM1A9471-3.jpg",
+    imgAlt: "Professor Jeff Curran, 5th Degree BJJ Black Belt under Pedro Sauer, Crystal Lake IL",
     imgPosition: "top",
   },
   {
@@ -15,6 +16,7 @@ const instructors = [
     specialties: ["Adult Muay Thai", "Kids Jiu-Jitsu"],
     bio: "Chuck has been a cornerstone of Team Curran since the very first day the gym opened in 1997. Over 20+ years he transitioned from dedicated student to co-owner and instructor, managing both the Adult Thaiboxing and Junior Jiu-Jitsu programs. Chuck is a true embodiment of the Team Curran family.",
     img: "/Chuck Pilcher.jpg",
+    imgAlt: "Chuck Pilcher, Muay Thai and Kids BJJ instructor at Team Curran Crystal Lake IL",
     imgPosition: "top",
   },
   {
@@ -24,6 +26,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Thaiboxing"],
     bio: "Justin is an undefeated amateur MMA competitor (5-0) and a skilled instructor for both Adult Jiu-Jitsu and Thaiboxing. His competitive background and technical precision make him an exceptional coach for students of all levels.",
     img: "/Justin Seeberger.jpg",
+    imgAlt: "Justin Seeberger, undefeated MMA competitor and BJJ Thaiboxing instructor at Team Curran",
     imgPosition: "20% top",
   },
   {
@@ -33,6 +36,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "John Hudson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
     img: "/John Hudson.jpg",
+    imgAlt: "John Hudson, Brazilian Jiu-Jitsu Black Belt instructor at Team Curran Crystal Lake",
     imgPosition: "top",
   },
   {
@@ -42,6 +46,7 @@ const instructors = [
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
     bio: "AJ Serrato is a Black Belt under Professor Jeff Curran and an instructor at Team Curran Academy Headquarters. AJ brings energy, technical depth, and a passion for developing students at every level of their Jiu-Jitsu journey.",
     img: "/AJ Serrato.jpg",
+    imgAlt: "AJ Serrato, Brazilian Jiu-Jitsu Black Belt instructor at Team Curran Crystal Lake IL",
     imgPosition: "top",
   },
 ];
@@ -70,7 +75,7 @@ export default function Instructors() {
               <div className="aspect-[3/4] overflow-hidden">
                 <img
                   src={instructor.img}
-                  alt={instructor.name}
+                  alt={instructor.imgAlt ?? instructor.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   style={{ objectPosition: instructor.imgPosition ?? "top" }}
                 />

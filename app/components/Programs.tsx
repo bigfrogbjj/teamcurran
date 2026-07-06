@@ -8,6 +8,8 @@ const programs = [
     highlights: ["Gi & No-Gi Training", "Submission Grappling", "Self-Defense", "All Skill Levels"],
     color: "red",
     img: "/homepage.jpg",
+    imgAlt: "Adult Brazilian Jiu-Jitsu gi class at Team Curran Academy in Crystal Lake, IL",
+    href: "/adult-bjj",
   },
   {
     id: "muay-thai",
@@ -18,6 +20,8 @@ const programs = [
     highlights: ["Striking Fundamentals", "Fitness & Conditioning", "Self-Defense", "Pad Work"],
     color: "orange",
     img: "/8U0A1304.jpg",
+    imgAlt: "Adult Muay Thai striking class at Team Curran Crystal Lake IL",
+    href: "/muay-thai",
   },
   {
     id: "junior-bjj",
@@ -28,7 +32,9 @@ const programs = [
     highlights: ["Anti-Bullying Skills", "Builds Confidence", "Character Development", "Safe Environment"],
     color: "blue",
     img: "/kids-program.jpg",
+    imgAlt: "Kids Brazilian Jiu-Jitsu class for children in Crystal Lake IL at Team Curran",
     imgPosition: "center 30%",
+    href: "/kids-jiu-jitsu",
   },
 ];
 
@@ -56,7 +62,7 @@ export default function Programs() {
               <div className="aspect-video overflow-hidden">
                 <img
                   src={prog.img}
-                  alt={prog.title}
+                  alt={(prog as typeof programs[0] & { imgAlt?: string }).imgAlt ?? prog.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   style={{ objectPosition: (prog as typeof programs[0] & { imgPosition?: string }).imgPosition ?? "center" }}
                 />
@@ -81,14 +87,22 @@ export default function Programs() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm?display=MBRSHPS&"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center bg-brand hover:bg-blue-800 text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
-                >
-                  Register Today
-                </a>
+                <div className="flex gap-2">
+                  <a
+                    href={(prog as typeof programs[0] & { href?: string }).href ?? "#programs"}
+                    className="flex-1 text-center border border-brand text-brand hover:bg-brand hover:text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
+                  >
+                    Learn More
+                  </a>
+                  <a
+                    href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm?display=MBRSHPS&"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center bg-brand hover:bg-blue-800 text-white font-bold text-sm uppercase tracking-widest py-2.5 rounded transition-colors"
+                  >
+                    Register
+                  </a>
+                </div>
               </div>
             </div>
           ))}
