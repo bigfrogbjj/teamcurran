@@ -10,6 +10,7 @@ const links = [
   { label: "Programs", href: "#programs" },
   { label: "Schedule", href: "#schedule" },
   { label: "Affiliates", href: "/affiliates" },
+  { label: "Videos", href: "https://teamcurrantv.com", external: true },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -39,6 +40,7 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
+              {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="text-gray-300 hover:text-brand text-xs lg:text-sm font-semibold tracking-wide uppercase transition-colors whitespace-nowrap"
             >
               {link.label}
@@ -71,6 +73,7 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
+              {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="text-gray-300 hover:text-brand font-semibold uppercase tracking-wide text-sm"
               onClick={() => setOpen(false)}
             >
