@@ -14,7 +14,7 @@ export default function Page() {
             <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-4">TEAM CURRAN AFFILIATE</p>
             <h1 className="text-4xl sm:text-6xl font-black text-white uppercase leading-none mb-4">Bushin <span className="text-brand">Martial Arts</span></h1>
             <div className="w-24 h-1 bg-brand mx-auto mb-6" />
-            <p className="text-gray-300 text-lg">Richmond, VA</p>
+            <p className="text-gray-300 text-lg">Williamsburg, VA</p>
           </div>
         </section>
         <section className="py-20 px-4">
@@ -23,10 +23,10 @@ export default function Page() {
               <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-3">ABOUT THE ACADEMY</p>
               <h2 className="text-3xl font-black text-white uppercase mb-6">BUSHIN <span className="text-brand">MARTIAL ARTS</span></h2>
               <div className="w-16 h-1 bg-brand mb-8" />
-              <p className="text-gray-300 leading-relaxed mb-4">Bushin Martial Arts & Jiu-Jitsu RVA is Richmond, Virginia's premier Jiu-Jitsu and martial arts academy, and a proud Team Curran certified affiliate. Instructed by Mike Nguyen, Suzanne Nguyen, and staff, the academy provides a clean, safe, family-friendly environment for students of all ages.</p>
-              <p className="text-gray-300 leading-relaxed mb-8">Following Gracie Jiu-Jitsu principles, Bushin offers a full range of programs from kids Bullyproof BJJ to advanced adult grappling and women's self-defense — all with no prior experience required.</p>
+              <p className="text-gray-300 leading-relaxed mb-4">Bushin Martial Arts Academy is a family-owned school in Williamsburg, Virginia established in 2008. A proud Pedro Sauer BJJ Association and Team Curran affiliate, Bushin teaches authentic, self-defense-based Gracie Jiu-Jitsu rooted in traditional martial arts principles.</p>
+              <p className="text-gray-300 leading-relaxed mb-8">Head Instructor John Nguyen holds a 1st Degree Black Belt under Professor Jeff Curran and Master Pedro Sauer, and brings over 45 years of martial arts experience to every class. No prior experience is required — all ages and skill levels are welcome.</p>
               <div className="flex flex-wrap gap-3 mb-8">
-                {["Jiu-Jitsu", "Kids BJJ", "Women's Self-Defense", "Karate", "Beginner Friendly"].map(p => (
+                {["Gracie Jiu-Jitsu", "Adult BJJ", "Children's Classes", "Women's Self-Defense", "Beginner Friendly"].map(p => (
                   <span key={p} className="bg-gray-800 border border-blue-900/50 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded uppercase tracking-wide">{p}</span>
                 ))}
               </div>
@@ -34,17 +34,17 @@ export default function Page() {
             </div>
             <div className="space-y-5">
               {[
-                { label: "ADDRESS", value: "6024 Brook Road\nRichmond, VA 23227", icon: "📍" },
-                { label: "PHONE", value: "(804) 822-1451", icon: "📞" },
-                { label: "EMAIL", value: "BushinRVA@gmail.com", icon: "✉️" },
-                { label: "INSTRUCTORS", value: "Mike Nguyen\nSuzanne Nguyen", icon: "🥋" },
+                { label: "LOCATION", value: "Williamsburg, VA", icon: "📍" },
+                { label: "PHONE", value: "(757) 253-2622", icon: "📞" },
+                { label: "WEBSITE", value: "bushinwilliamsburg.com", icon: "🌐" },
+                { label: "INSTRUCTORS", value: "John Nguyen (Head Instructor)\nIon Nichifor\nCraig Rubenstein\nRyan Mutter", icon: "🥋" },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                   <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{item.icon} {item.label}</p>
                   <p className="text-gray-300 text-sm whitespace-pre-line">{item.value}</p>
                 </div>
               ))}
-              <a href="https://maps.google.com/?q=6024+Brook+Road+Richmond+VA+23227" target="_blank" rel="noopener noreferrer" className="block text-center border-2 border-brand text-brand hover:bg-brand hover:text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">GET DIRECTIONS</a>
+              <a href="https://bushinwilliamsburg.com" target="_blank" rel="noopener noreferrer" className="block text-center border-2 border-brand text-brand hover:bg-brand hover:text-white font-black uppercase tracking-widest px-8 py-3 rounded transition-colors">VISIT WEBSITE</a>
             </div>
           </div>
         </section>
