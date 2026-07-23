@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /members/
+Disallow: /api/
+
+User-agent: *
+Crawl-delay: 10
+
+Sitemap: https://teamcurran.com/sitemap.xml
