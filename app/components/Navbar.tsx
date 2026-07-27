@@ -6,12 +6,12 @@ import Image from "next/image";
 
 const links = [
   { label: "Home", href: "/" },
-  { label: "About", href: "#about" },
-  { label: "Programs", href: "#programs" },
-  { label: "Schedule", href: "#schedule" },
+  { label: "About", href: "/#about" },
+  { label: "Programs", href: "/#programs" },
+  { label: "Schedule", href: "/#schedule" },
   { label: "Affiliates", href: "/affiliates" },
   { label: "Videos", href: "https://teamcurrantv.com", external: true },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
