@@ -1,3 +1,4 @@
+import { createBrowserClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 export type MemberProfile = {
@@ -9,8 +10,9 @@ export type MemberProfile = {
   created_at: string;
 };
 
+// Use SSR browser client so auth cookies are set and readable by middleware/server components
 export function createSupabaseClient() {
-  return createClient(
+  return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
