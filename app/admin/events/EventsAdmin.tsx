@@ -13,7 +13,14 @@ type TCEvent = {
   visibility: "team_curran" | "public";
 };
 
-type EventForm = Omit<TCEvent, "id">;
+type EventForm = {
+  title: string;
+  description: string;
+  event_date: string;
+  event_time: string;
+  location: string;
+  visibility: "team_curran" | "public";
+};
 
 const empty: EventForm = {
   title: "",
@@ -115,7 +122,7 @@ export default function EventsAdmin({ initialEvents }: { initialEvents: TCEvent[
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Time (optional)</label>
               <input
-                value={form.event_time ?? ''}
+                value={form.event_time}
                 onChange={(e) => setForm({ ...form, event_time: e.target.value })}
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand"
                 placeholder="e.g. 6:00 PM"
