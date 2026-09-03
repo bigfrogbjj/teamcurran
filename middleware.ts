@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
   const response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -24,13 +25,31 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.redirect(new URL("/members", request.url));
+  const publicMemberRoutes = ["/members/login", "/members/reset", "/members/set-password"];
+  const isMembersRoute = pathname.startsWith("/members");
+  const isPublicMemberRoute = publicMemberRoutes.some((r) => pathname.startsWith(r));
+
+  if (isMembersRoute && !isPublicMemberRoute && !user) {
+    return NextResponse.redirect(new URL("/members/login", request.url));
+  }
+
+  if (pathname.startsWith("/admin")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/members/login", request.url));
+    }
+    const { data: member } = await supabase
+      .from("members")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
+    if (!member?.is_admin) {
+      return NextResponse.redirect(new URL("/members", request.url));
+    }
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/members/library/:path*", "/members/set-password"],
+  matcher: ["/members/:path*", "/admin/:path*"],
 };
