@@ -9,21 +9,45 @@ export async function POST(request: NextRequest) {
   const secret = process.env.ZP_REMOTE_LOGIN_SECRET;
   if (!secret) return NextResponse.json({ error: "Misconfigured" }, { status: 500 });
 
-  const formData = await request.formData();
-  const email = formData.get("email") as string | null;
-  const signature = formData.get("signature") as string | null;
-  const timestamp = formData.get("timestamp") as string | null;
+  // Log raw body for debugging ZP's signing format
+  const rawBody = await request.text();
+  console.log("[ZP Remote Login] raw body:", rawBody);
+  console.log("[ZP Remote Login] content-type:", request.headers.get("content-type"));
+
+  // Parse form data from raw body
+  const params = new URLSearchParams(rawBody);
+  const email = params.get("email");
+  const signature = params.get("signature");
+  const timestamp = params.get("timestamp");
+
+  console.log("[ZP Remote Login] email:", email, "timestamp:", timestamp, "signature:", signature);
 
   if (!email || !signature || !timestamp) {
+    console.log("[ZP Remote Login] missing fields");
     return NextResponse.redirect(new URL("/members/login?error=missing", request.url));
   }
 
-  // ZP signs: HMAC-SHA256(email + timestamp, shared_secret)
-  // Adjust the signed string format to match ZP's actual spec
-  const signedString = `${email}${timestamp}`;
-  const expected = crypto.createHmac("sha256", secret).update(signedString).digest("hex");
+  // Try multiple signing formats ZP might use
+  const candidates = [
+    `${email}${timestamp}`,
+    `${timestamp}${email}`,
+    email,
+    timestamp,
+  ];
+  const expectedHex = candidates.map((s) => ({
+    input: s,
+    hex: crypto.createHmac("sha256", secret).update(s).digest("hex"),
+    b64: crypto.createHmac("sha256", secret).update(s).digest("base64"),
+  }));
+  console.log("[ZP Remote Login] signature candidates:", JSON.stringify(expectedHex));
 
-  if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature))) {
+  // Use the first format (email+timestamp) as primary — adjust based on logs
+  const expected = expectedHex[0].hex;
+  const sigBuf = Buffer.from(signature, "hex");
+  const expBuf = Buffer.from(expected, "hex");
+
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(expBuf, sigBuf)) {
+    console.log("[ZP Remote Login] signature mismatch. received:", signature, "expected candidates above");
     return NextResponse.redirect(new URL("/members/login?error=invalid", request.url));
   }
 
