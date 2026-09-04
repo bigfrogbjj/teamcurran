@@ -27,7 +27,7 @@ function LoginForm() {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: "https://teamcurran.com/auth/callback?next=/members",
+        emailRedirectTo: "https://teamcurran.com/auth/callback",
       },
     });
 
