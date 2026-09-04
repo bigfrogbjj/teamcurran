@@ -5,6 +5,11 @@ import crypto from "crypto";
 // Zen Planner Remote Login SSO
 // ZP POSTs member info + HMAC signature → validate → log member into TC → redirect to dashboard
 
+// ZP's "Test" button does a GET to verify the URL is reachable
+export async function GET() {
+  return new Response("OK", { status: 200 });
+}
+
 export async function POST(request: NextRequest) {
   const secret = process.env.ZP_REMOTE_LOGIN_SECRET;
   if (!secret) return NextResponse.json({ error: "Misconfigured" }, { status: 500 });
