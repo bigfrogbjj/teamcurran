@@ -33,7 +33,7 @@ export async function GET() {
     type: "magiclink",
     email: user.email,
     options: {
-      redirectTo: "https://bigfrogbjj.com/watch/library",
+      redirectTo: "https://bigfrogbjj.com/auth/callback?next=/watch/library",
     },
   });
 
