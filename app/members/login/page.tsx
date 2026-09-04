@@ -7,7 +7,7 @@ import { createSupabaseClient } from "../../../lib/supabase";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
-const ZP_SIGNUP_URL = "https://teamcurran.sites.zenplanner.com/membership-options.cfm";
+const ZP_SIGNUP_URL = "https://teamcurran.sites.zenplanner.com/sign-up-now.cfm";
 
 function LoginForm() {
   const params = useSearchParams();
