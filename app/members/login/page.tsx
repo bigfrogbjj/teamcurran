@@ -25,11 +25,11 @@ function LoginForm() {
     const supabase = createSupabaseClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { shouldCreateUser: false },
+      options: { shouldCreateUser: true },
     });
 
     if (error) {
-      setError("We couldn't find an active account for that email. Make sure you're using your Zen Planner email.");
+      setError("Something went wrong. Please try again.");
       setLoading(false);
       return;
     }
