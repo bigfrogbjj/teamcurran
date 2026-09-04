@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
 // Zen Planner Remote Login SSO
-// ZP POSTs member info + HMAC signature → validate → log member into TC → redirect to dashboard
+// ZP POSTs: username (email), firstName, lastName, timestamp, signature (HMAC-SHA512)
+// Signature is HMAC-SHA512(username + timestamp, shared_secret)
 
-// ZP's "Test" button does a GET to verify the URL is reachable
 export async function GET() {
   return new Response("OK", { status: 200 });
 }
@@ -14,45 +14,27 @@ export async function POST(request: NextRequest) {
   const secret = process.env.ZP_REMOTE_LOGIN_SECRET;
   if (!secret) return NextResponse.json({ error: "Misconfigured" }, { status: 500 });
 
-  // Log raw body for debugging ZP's signing format
   const rawBody = await request.text();
-  console.log("[ZP Remote Login] raw body:", rawBody);
-  console.log("[ZP Remote Login] content-type:", request.headers.get("content-type"));
-
-  // Parse form data from raw body
   const params = new URLSearchParams(rawBody);
-  const email = params.get("email");
+
+  // ZP sends email as "username", not "email"
+  const email = params.get("username");
   const signature = params.get("signature");
   const timestamp = params.get("timestamp");
-
-  console.log("[ZP Remote Login] email:", email, "timestamp:", timestamp, "signature:", signature);
+  const firstName = params.get("firstName") ?? "";
+  const lastName = params.get("lastName") ?? "";
 
   if (!email || !signature || !timestamp) {
-    console.log("[ZP Remote Login] missing fields");
+    console.log("[ZP Remote Login] missing fields. params:", rawBody);
     return NextResponse.redirect(new URL("/members/login?error=missing", request.url));
   }
 
-  // Try multiple signing formats ZP might use
-  const candidates = [
-    `${email}${timestamp}`,
-    `${timestamp}${email}`,
-    email,
-    timestamp,
-  ];
-  const expectedHex = candidates.map((s) => ({
-    input: s,
-    hex: crypto.createHmac("sha256", secret).update(s).digest("hex"),
-    b64: crypto.createHmac("sha256", secret).update(s).digest("base64"),
-  }));
-  console.log("[ZP Remote Login] signature candidates:", JSON.stringify(expectedHex));
+  // ZP signs username+timestamp with HMAC-SHA512
+  const signedString = `${email}${timestamp}`;
+  const expected = crypto.createHmac("sha512", secret).update(signedString).digest("hex");
 
-  // Use the first format (email+timestamp) as primary — adjust based on logs
-  const expected = expectedHex[0].hex;
-  const sigBuf = Buffer.from(signature, "hex");
-  const expBuf = Buffer.from(expected, "hex");
-
-  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(expBuf, sigBuf)) {
-    console.log("[ZP Remote Login] signature mismatch. received:", signature, "expected candidates above");
+  if (expected.length !== signature.length || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature))) {
+    console.log("[ZP Remote Login] signature mismatch for:", email);
     return NextResponse.redirect(new URL("/members/login?error=invalid", request.url));
   }
 
@@ -62,12 +44,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(new URL("/members/login?error=expired", request.url));
   }
 
+  const fullName = `${firstName} ${lastName}`.trim();
   const tcAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Generate a magic link for this email so they're logged into TC
+  // Generate a magic link so they're logged into TC portal
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://teamcurran.com";
   const { data, error } = await tcAdmin.auth.admin.generateLink({
     type: "magiclink",
@@ -76,9 +59,10 @@ export async function POST(request: NextRequest) {
   });
 
   if (error || !data?.properties?.action_link) {
-    console.error("ZP remote login error:", error);
+    console.error("[ZP Remote Login] magic link error:", error, "email:", email);
     return NextResponse.redirect(new URL("/members/login", request.url));
   }
 
+  console.log("[ZP Remote Login] success for:", email, fullName);
   return NextResponse.redirect(data.properties.action_link);
 }
