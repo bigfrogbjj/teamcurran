@@ -25,7 +25,10 @@ function LoginForm() {
     const supabase = createSupabaseClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { shouldCreateUser: true },
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: "https://teamcurran.com/members",
+      },
     });
 
     if (error) {
