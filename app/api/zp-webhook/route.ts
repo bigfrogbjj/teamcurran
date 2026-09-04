@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
   const firstName = (payload.firstName ?? payload.first_name ?? "") as string;
   const lastName = (payload.lastName ?? payload.last_name ?? "") as string;
   const fullName = `${firstName} ${lastName}`.trim();
-  const isActive = (payload.membershipStatus ?? payload.membership_status ?? payload.status) === "Active";
+  const status = (payload.membershipStatus ?? payload.membership_status ?? payload.status ?? "") as string;
+  const isActive = ["Active", "Current"].includes(status);
 
   if (!email) {
     return NextResponse.json({ error: "No email in payload" }, { status: 400 });
