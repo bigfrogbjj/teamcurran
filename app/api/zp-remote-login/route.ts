@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   const { data, error } = await tcAdmin.auth.admin.generateLink({
     type: "magiclink",
     email,
-    options: { redirectTo: `${siteUrl}/members` },
+    options: { redirectTo: `${siteUrl}/auth/callback?next=/members` },
   });
 
   if (error || !data?.properties?.action_link) {
