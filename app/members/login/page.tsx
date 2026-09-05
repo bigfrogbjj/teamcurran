@@ -91,9 +91,10 @@ function LoginForm() {
           </button>
         </form>
 
-        <a href="/members/reset" className="block text-center text-gray-500 hover:text-brand text-xs mt-4 transition-colors">
-          Forgot password?
-        </a>
+        <div className="flex justify-between text-xs mt-4">
+          <a href="/members/reset" className="text-gray-500 hover:text-brand transition-colors">Forgot password?</a>
+          <a href="/members/reset" className="text-brand hover:text-blue-400 font-bold transition-colors">First time? Set your password →</a>
+        </div>
       </div>
 
       {/* ── Not a member yet ── */}
