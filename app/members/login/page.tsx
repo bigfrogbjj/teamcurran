@@ -3,7 +3,6 @@
 export const dynamic = "force-dynamic";
 
 import { Suspense, useState } from "react";
-import { createSupabaseClient } from "../../../lib/supabase";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
@@ -22,10 +21,14 @@ function LoginForm() {
     setLoading(true);
     setError("");
 
-    const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      redirect: "follow",
+    });
 
-    if (error) {
+    if (!res.ok) {
       setError("Invalid email or password. Please try again.");
       setLoading(false);
       return;
