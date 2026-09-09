@@ -43,7 +43,7 @@ export default function SetPasswordPage() {
       return;
     }
 
-    router.push("/members/library");
+    window.location.href = "/members";
   }
 
   return (
