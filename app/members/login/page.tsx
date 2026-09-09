@@ -5,12 +5,11 @@ export const dynamic = "force-dynamic";
 import { Suspense, useState } from "react";
 import { createSupabaseClient } from "../../../lib/supabase";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const ZP_SIGNUP_URL = "https://teamcurran.sites.zenplanner.com/sign-up-now.cfm";
 
 function LoginForm() {
-  const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +31,7 @@ function LoginForm() {
       return;
     }
 
-    router.push("/members");
+    window.location.href = "/members";
   }
 
   return (
