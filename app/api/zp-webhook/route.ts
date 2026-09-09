@@ -7,7 +7,17 @@ import crypto from "crypto";
 
 function verifySignature(payload: string, signature: string, secret: string): boolean {
   const expected = crypto.createHmac("sha256", secret).update(payload).digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+  // crypto.timingSafeEqual throws a RangeError ("Input buffers must have the
+  // same byte length") when the two buffers differ in length — it does NOT
+  // return false. A missing, short, or differently-formatted x-zp-signature
+  // therefore crashed the route with an uncaught 500 on every request. Gate on
+  // equal length (and catch defensively) so a bad signature fails closed → 401.
+  if (signature.length !== expected.length) return false;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(expected, "utf8"), Buffer.from(signature, "utf8"));
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(request: NextRequest) {
