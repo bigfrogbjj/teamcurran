@@ -50,6 +50,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(new URL("/members/login", request.url));
   }
 
+  // Provision member record — ZP only calls this for active members
+  const userId = data.user?.id;
+  if (userId) {
+    await tcAdmin.from("members").upsert(
+      { id: userId, email, full_name: fullName || email, active: true, is_tc_member: true, belt: "white" },
+      { onConflict: "id" }
+    );
+  }
+
   console.log("[ZP Remote Login] success for:", email, fullName);
   return NextResponse.redirect(data.properties.action_link);
 }
