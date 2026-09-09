@@ -131,6 +131,11 @@ export default async function MembersDashboard() {
                       {event.event_time && ` · ${event.event_time}`}
                     </p>
                     {event.location && <p className="text-gray-500 text-xs">{event.location}</p>}
+                    {event.link_url && (
+                      <a href={event.link_url} target="_blank" rel="noopener noreferrer" className="inline-block mt-1 text-brand text-xs font-bold hover:underline">
+                        {event.link_label || "Get Tickets"} →
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -80,6 +80,16 @@ export default async function EventsPage() {
                     </p>
                     {event.location && <p className="text-gray-400 text-xs mt-0.5">{event.location}</p>}
                     {event.description && <p className="text-gray-300 text-sm mt-2">{event.description}</p>}
+                    {event.link_url && (
+                      <a
+                        href={event.link_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-3 bg-brand hover:bg-blue-800 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-colors"
+                      >
+                        {event.link_label || "Get Tickets"} →
+                      </a>
+                    )}
                   </div>
                   <span className={`shrink-0 text-xs font-bold uppercase px-2 py-1 rounded-full tracking-wide ${event.visibility === "public" ? "bg-green-900 text-green-300" : "bg-blue-900 text-blue-300"}`}>
                     {event.visibility === "public" ? "Open" : "Members"}
