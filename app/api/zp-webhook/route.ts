@@ -107,8 +107,9 @@ export async function POST(request: NextRequest) {
     }
 
     // BFN_TC_GYM_ID = UUID of Team Curran's row in the nation_gyms table
+    // status: 'active' is required for gymMember check to grant watch library access
     await bfnAdmin.from("members").upsert(
-      { id: bfnUserId, email, full_name: fullName || email, gym_id: process.env.BFN_TC_GYM_ID, tier: "nation" },
+      { id: bfnUserId, email, full_name: fullName || email, gym_id: process.env.BFN_TC_GYM_ID, tier: "nation", status: "active" },
       { onConflict: "id" }
     );
 

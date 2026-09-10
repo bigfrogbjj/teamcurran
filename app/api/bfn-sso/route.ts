@@ -39,8 +39,28 @@ export async function GET() {
 
   if (error || !data?.properties?.action_link) {
     console.error("BFN SSO error:", error);
-    // Fallback: send them to BFN login page directly
     return NextResponse.redirect("https://bigfrogbjj.com/sign-in?redirect=/watch/library");
+  }
+
+  // Ensure BFN members row exists with gym access so library is unlocked
+  const bfnUserId = data.user?.id;
+  if (bfnUserId) {
+    const { data: tcMember } = await createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    ).from("members").select("full_name").eq("id", user.id).maybeSingle();
+
+    await bfnAdmin.from("members").upsert(
+      {
+        id: bfnUserId,
+        email: user.email,
+        full_name: tcMember?.full_name || user.email,
+        gym_id: process.env.BFN_TC_GYM_ID,
+        tier: "nation",
+        status: "active",
+      },
+      { onConflict: "id" }
+    );
   }
 
   return NextResponse.redirect(data.properties.action_link);
