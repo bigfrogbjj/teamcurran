@@ -7,7 +7,8 @@ const schedule: Record<string, Partial<Record<string, string>>> = {
   "4:15pm": { Monday: "Gi – Little Frogs**", Wednesday: "Gi – Little Frogs**" },
   "5pm":    { Monday: "Gi – Kids Advanced*", Tuesday: "Gi – Kids All Ages", Wednesday: "NoGi – Kids Advanced*", Thursday: "Gi – Kids All Ages" },
   "6pm":    { Monday: "Muay Thai", Tuesday: "Gi – Fundamentals", Wednesday: "Muay Thai", Thursday: "Gi – Fundamentals" },
-  "7pm":    { Monday: "NoGi – Mixed Level", Tuesday: "Gi – Advanced*", Wednesday: "NoGi – Mixed Level", Thursday: "Gi – Advanced*" },
+  "7pm":    { Monday: "NoGi – Fundamentals", Tuesday: "Gi – Advanced*", Wednesday: "NoGi – Fundamentals", Thursday: "Gi – Advanced*" },
+  "8pm":    { Monday: "NoGi – Advanced*", Wednesday: "NoGi – Advanced*" },
 };
 
 const times = Object.keys(schedule);
