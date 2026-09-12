@@ -185,19 +185,35 @@ export default async function MembersDashboard() {
             </Link>
           </div>
 
-          {/* Big Frog Nation */}
-          <div className="bg-gradient-to-br from-gray-900 to-blue-950 border border-blue-900 rounded-2xl p-6 flex flex-col">
-            <span className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">Big Frog Nation</span>
-            <h2 className="text-xl font-black uppercase mb-2">Unlock All Access</h2>
-            <p className="text-gray-300 text-sm mb-4 flex-1">
-              Get the full Big Frog Nation experience — expanded curriculum, exclusive seminars, bonus instructor content, and member events beyond Team Curran.
-            </p>
+          {/* Big Frog Nation upsell — styled to match bigfrogbjj.com */}
+          <div className="rounded-2xl p-6 flex flex-col" style={{ background: '#1a3a2a', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+              <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.5)' }}>Big Frog Nation</span>
+              <span className="text-xs font-semibold uppercase tracking-wide px-2.5 py-0.5 rounded-full" style={{ background: 'rgba(224,121,48,0.15)', color: '#e07930' }}>All Access</span>
+            </div>
+            <h2 className="text-xl font-black uppercase tracking-wide mb-3 text-white">Unlock All Access</h2>
+            <ul className="space-y-2 mb-4 flex-1">
+              {[
+                'Expanded technique curriculum',
+                'Exclusive seminars & instructor content',
+                'Partner gym access nationwide',
+                'BFN member events & retreats',
+              ].map((b) => (
+                <li key={b} className="flex gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                  <svg className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#e07930' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {b}
+                </li>
+              ))}
+            </ul>
             <div className="space-y-2">
               <a
-                href="https://bigfrogbjj.com/membership"
+                href="https://bigfrogbjj.com/join"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-blue-700 hover:bg-blue-600 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+                className="block text-white text-sm font-bold uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+                style={{ background: '#e07930' }}
               >
                 Upgrade to All Access
               </a>
@@ -205,7 +221,8 @@ export default async function MembersDashboard() {
                 href="https://bigfrogbjj.com/events"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block border border-blue-800 hover:border-blue-500 text-blue-300 hover:text-blue-100 text-sm font-bold uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+                className="block text-sm font-bold uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+                style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}
               >
                 View BFN Events
               </a>
