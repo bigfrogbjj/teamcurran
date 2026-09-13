@@ -3,8 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// ZP CSV columns: "Name","Email","Phone","Status","Signed Documents"
-// Status is always "Student" for active members in this export.
+// Supports two ZP CSV export formats:
+//   Format A: "First Name","Last Name","Email","Phone","Status"
+//   Format B: "Name","Email","Phone","Status","Signed Documents"
+// HTML entities in phone numbers (e.g. &#x28; = '(') are decoded.
 
 interface ZpRow {
   name: string;
@@ -13,37 +15,52 @@ interface ZpRow {
   status: string;
 }
 
-function parseCSV(text: string): ZpRow[] {
-  const lines = text.split(/\r?\n/).filter(Boolean);
-  if (lines.length < 2) return [];
-  // Skip header row
-  return lines.slice(1).map((line) => {
-    // Simple CSV parse — handles quoted fields
-    const cols: string[] = [];
-    let cur = "";
-    let inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') { inQuote = !inQuote; continue; }
-      if (ch === "," && !inQuote) { cols.push(cur); cur = ""; continue; }
-      cur += ch;
-    }
-    cols.push(cur);
-    return {
-      name: cols[0]?.trim() ?? "",
-      email: (cols[1]?.trim() ?? "").toLowerCase(),
-      phone: cols[2]?.trim() ?? "",
-      status: cols[3]?.trim() ?? "",
-    };
-  }).filter((r) => r.email.includes("@"));
+function decodeHtmlEntities(s: string): string {
+  return s.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
 }
 
-function splitName(full: string): { firstName: string; lastName: string } {
-  const parts = full.trim().split(/\s+/);
-  return {
-    firstName: parts[0] ?? "",
-    lastName: parts.slice(1).join(" ") ?? "",
-  };
+function parseCols(line: string): string[] {
+  const cols: string[] = [];
+  let cur = "";
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuote = !inQuote; continue; }
+    if (ch === "," && !inQuote) { cols.push(cur); cur = ""; continue; }
+    cur += ch;
+  }
+  cols.push(cur);
+  return cols.map((c) => decodeHtmlEntities(c.trim()));
+}
+
+function parseCSV(text: string): ZpRow[] {
+  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+  if (lines.length < 2) return [];
+  const header = parseCols(lines[0]).map((h) => h.toLowerCase());
+  const hasFirstLast = header.includes("first name") || header.includes("last name");
+
+  return lines.slice(1).map((line) => {
+    const cols = parseCols(line);
+    if (hasFirstLast) {
+      // Format A: First Name, Last Name, Email, Phone, Status
+      const firstName = cols[0] ?? "";
+      const lastName = cols[1] ?? "";
+      return {
+        name: `${firstName} ${lastName}`.trim(),
+        email: (cols[2] ?? "").toLowerCase(),
+        phone: cols[3] ?? "",
+        status: cols[4] ?? "",
+      };
+    } else {
+      // Format B: Name, Email, Phone, Status, Signed Documents
+      return {
+        name: cols[0] ?? "",
+        email: (cols[1] ?? "").toLowerCase(),
+        phone: cols[2] ?? "",
+        status: cols[3] ?? "",
+      };
+    }
+  }).filter((r) => r.email.includes("@"));
 }
 
 async function tagInBrevo(email: string, name: string, phone?: string) {
