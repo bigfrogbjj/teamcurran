@@ -197,7 +197,7 @@ export default async function MembersDashboard() {
                 'Cross training at partner gyms',
                 'Registration to BJJ retreats & seminars',
                 'Exclusive perks & discounts',
-                'And more',
+                'Early access to all news and events',
               ].map((b) => (
                 <li key={b} className="flex gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
                   <svg className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#e07930' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
