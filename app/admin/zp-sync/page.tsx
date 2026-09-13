@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 interface SyncResult {
@@ -17,7 +17,6 @@ export default function ZpSyncPage() {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<SyncResult | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,16 +53,13 @@ export default function ZpSyncPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-          <label className="block mb-4">
+          <div className="mb-4">
             <span className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 block">Zen Planner CSV Export</span>
-            <div
-              className="border-2 border-dashed border-gray-700 hover:border-brand rounded-lg p-8 text-center cursor-pointer transition-colors"
-              onClick={() => inputRef.current?.click()}
-            >
+            <label className="border-2 border-dashed border-gray-700 hover:border-brand rounded-lg p-8 text-center cursor-pointer transition-colors block">
               {file ? (
                 <div>
                   <p className="text-white font-bold">{file.name}</p>
-                  <p className="text-gray-400 text-sm">{(file.size / 1024).toFixed(1)} KB</p>
+                  <p className="text-gray-400 text-sm">{(file.size / 1024).toFixed(1)} KB — click to change</p>
                 </div>
               ) : (
                 <div>
@@ -71,15 +67,14 @@ export default function ZpSyncPage() {
                   <p className="text-gray-600 text-xs">Export from ZP: People → Export → CSV</p>
                 </div>
               )}
-            </div>
-            <input
-              ref={inputRef}
-              type="file"
-              accept=".csv"
-              className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
+              <input
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+          </div>
 
           <button
             type="submit"
