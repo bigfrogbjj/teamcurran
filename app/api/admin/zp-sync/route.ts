@@ -2,7 +2,6 @@ import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { upsertContact } from "@/lib/brevo";
 
 // ZP CSV columns: "Name","Email","Phone","Status","Signed Documents"
 // Status is always "Student" for active members in this export.
@@ -47,11 +46,15 @@ function splitName(full: string): { firstName: string; lastName: string } {
   };
 }
 
-// Brevo list IDs for Team Curran — numeric IDs from the Brevo account.
-// BREVO_TC_ACTIVE_LIST_ID  = list of current active TC students
-// BREVO_TC_MASTER_LIST_ID  = master/all-time TC contacts
-const TC_ACTIVE_LIST_ID = parseInt(process.env.BREVO_TC_ACTIVE_LIST_ID ?? "0", 10);
-const TC_MASTER_LIST_ID = parseInt(process.env.BREVO_TC_MASTER_LIST_ID ?? "0", 10);
+async function tagInBrevo(email: string, name: string, phone?: string) {
+  const secret = process.env.INTERNAL_API_SECRET;
+  if (!secret) return;
+  await fetch("https://bigfrogbjj.com/api/internal/tag-tc-member", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-internal-secret": secret },
+    body: JSON.stringify({ email, name, phone }),
+  }).catch(() => {});
+}
 
 export async function POST(request: NextRequest) {
   // Auth: must be an is_admin member
@@ -102,7 +105,6 @@ export async function POST(request: NextRequest) {
   const errors: string[] = [];
 
   for (const row of rows) {
-    const { firstName, lastName } = splitName(row.name);
     const isActive = row.status === "Student";
 
     try {
@@ -168,11 +170,8 @@ export async function POST(request: NextRequest) {
           bfnProvisioned++;
         }
 
-        // --- Brevo ---
-        const listIds: number[] = [];
-        if (TC_ACTIVE_LIST_ID) listIds.push(TC_ACTIVE_LIST_ID);
-        if (TC_MASTER_LIST_ID) listIds.push(TC_MASTER_LIST_ID);
-        await upsertContact({ email: row.email, firstName, lastName, phone: row.phone, listIds });
+        // --- Brevo via BFN ---
+        await tagInBrevo(row.email, row.name, row.phone);
         brevoSynced++;
       } else {
         // Inactive: deactivate in TC, revoke BFN gym access

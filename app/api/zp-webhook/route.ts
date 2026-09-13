@@ -113,6 +113,16 @@ export async function POST(request: NextRequest) {
       { onConflict: "id" }
     );
 
+    // Tag in Brevo via BFN (best-effort)
+    const secret = process.env.INTERNAL_API_SECRET;
+    if (secret) {
+      fetch("https://bigfrogbjj.com/api/internal/tag-tc-member", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-internal-secret": secret },
+        body: JSON.stringify({ email, name: fullName }),
+      }).catch(() => {});
+    }
+
     console.log(`Provisioned active member: ${email}`);
   } else {
     // Member went inactive

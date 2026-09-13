@@ -63,5 +63,22 @@ export async function GET() {
     );
   }
 
+  // Tag member as active Team Curran in Brevo (best-effort, non-blocking)
+  if (bfnUserId) {
+    const { data: tcMemberName } = await createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    ).from("members").select("full_name").eq("id", user.id).maybeSingle();
+
+    const secret = process.env.INTERNAL_API_SECRET;
+    if (secret) {
+      fetch("https://bigfrogbjj.com/api/internal/tag-tc-member", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-internal-secret": secret },
+        body: JSON.stringify({ email: user.email, name: tcMemberName?.full_name }),
+      }).catch(() => {});
+    }
+  }
+
   return NextResponse.redirect(data.properties.action_link);
 }
