@@ -63,13 +63,20 @@ function parseCSV(text: string): ZpRow[] {
   }).filter((r) => r.email.includes("@"));
 }
 
-async function tagInBrevo(email: string, name: string, phone?: string) {
+function generateTempPassword(): string {
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let result = "TC-";
+  for (let i = 0; i < 8; i++) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+
+async function callBfnInternal(path: string, body: Record<string, unknown>) {
   const secret = process.env.INTERNAL_API_SECRET;
   if (!secret) return;
-  await fetch("https://bigfrogbjj.com/api/internal/tag-tc-member", {
+  await fetch(`https://bigfrogbjj.com/api/internal/${path}`, {
     method: "POST",
     headers: { "content-type": "application/json", "x-internal-secret": secret },
-    body: JSON.stringify({ email, name, phone }),
+    body: JSON.stringify(body),
   }).catch(() => {});
 }
 
@@ -130,13 +137,17 @@ export async function POST(request: NextRequest) {
       const tcUser = tcUsers.find((u) => u.email === row.email);
 
       if (isActive) {
+        const isNewMember = !tcUser;
+        const tempPassword = isNewMember ? generateTempPassword() : null;
         let tcUserId: string;
+
         if (tcUser) {
           tcUserId = tcUser.id;
         } else {
           const { data: newUser, error } = await tcAdmin.auth.admin.createUser({
             email: row.email,
             email_confirm: true,
+            password: tempPassword!,
             user_metadata: { full_name: row.name },
           });
           if (error || !newUser.user) {
@@ -156,7 +167,7 @@ export async function POST(request: NextRequest) {
         const { data: { users: bfnUsers } } = await bfnAdmin.auth.admin.listUsers();
         const bfnUser = bfnUsers.find((u) => u.email === row.email);
 
-        let bfnUserId: string;
+        let bfnUserId: string | undefined;
         if (bfnUser) {
           bfnUserId = bfnUser.id;
         } else {
@@ -172,10 +183,10 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        if (bfnUser?.id || bfnUserId!) {
+        if (bfnUserId) {
           await bfnAdmin.from("members").upsert(
             {
-              id: bfnUser?.id ?? bfnUserId!,
+              id: bfnUserId,
               email: row.email,
               full_name: row.name || row.email,
               gym_id: process.env.BFN_TC_GYM_ID,
@@ -187,11 +198,17 @@ export async function POST(request: NextRequest) {
           bfnProvisioned++;
         }
 
-        // --- Brevo via BFN ---
-        await tagInBrevo(row.email, row.name, row.phone);
+        // --- Brevo via BFN (tag + welcome email for new members) ---
+        await callBfnInternal("tag-tc-member", {
+          email: row.email,
+          name: row.name,
+          phone: row.phone,
+          isNew: isNewMember,
+          tempPassword,
+        });
         brevoSynced++;
       } else {
-        // Inactive: deactivate in TC, revoke BFN gym access
+        // Inactive: deactivate in TC, revoke BFN gym access, remove from Brevo TC list
         if (tcUser) {
           await tcAdmin.from("members").update({ active: false, is_tc_member: false }).eq("id", tcUser.id);
         }
@@ -200,6 +217,7 @@ export async function POST(request: NextRequest) {
         if (bfnUser) {
           await bfnAdmin.from("members").update({ gym_id: null, status: "inactive" }).eq("id", bfnUser.id);
         }
+        await callBfnInternal("untag-tc-member", { email: row.email });
       }
     } catch (err) {
       errors.push(`Error processing ${row.email}: ${String(err)}`);
