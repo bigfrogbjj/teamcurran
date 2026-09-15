@@ -112,6 +112,24 @@ export default async function MembersDashboard() {
             </a>
           </div>
 
+          {/* JCI 4 Promo Banner — auto-hides after Sep 19 2026 */}
+          {new Date() < new Date('2026-09-20T00:00:00-05:00') && (
+            <div className="rounded-xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap col-span-full" style={{ background: 'linear-gradient(90deg, #023eb2 0%, #0a2d80 100%)', border: '1px solid #1a54cc' }}>
+              <p className="text-white font-black uppercase tracking-wide text-sm leading-snug">
+                Let&apos;s support the team <span className="text-yellow-300">this Saturday!</span> Get 15% off any JCI 4 tickets with code:&nbsp;
+                <span className="font-black text-yellow-300 tracking-widest">TC15OFF</span>
+              </p>
+              <a
+                href="https://jcinvitational.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 bg-yellow-300 hover:bg-yellow-200 text-black text-xs font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+              >
+                Get Tickets →
+              </a>
+            </div>
+          )}
+
           {/* Upcoming Events */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
             <div className="flex items-center justify-between mb-1">
