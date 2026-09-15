@@ -84,11 +84,6 @@ export default async function MembersDashboard() {
           <p className="text-gray-400 text-sm uppercase tracking-widest mb-1">Welcome back</p>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-black uppercase">{profile?.full_name || user.email}</h1>
-            {profile?.belt && (
-              <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${BELT_COLORS[profile.belt]}`}>
-                {profile.belt} Belt
-              </span>
-            )}
           </div>
         </div>
 
