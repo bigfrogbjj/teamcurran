@@ -112,10 +112,11 @@ export default async function MembersDashboard() {
             </a>
           </div>
 
-          {/* JCI 4 Promo Banner — auto-hides after Sep 19 2026 */}
+          {/* Upcoming Events + JCI promo stacked in one column */}
+          <div className="flex flex-col gap-3">
           {new Date() < new Date('2026-09-20T00:00:00-05:00') && (
-            <div className="rounded-xl px-5 py-4 flex items-center gap-4 flex-wrap col-span-full" style={{ background: '#111111', borderLeft: '4px solid #cc0000', borderTop: '1px solid #333', borderRight: '1px solid #333', borderBottom: '1px solid #333' }}>
-              <p className="text-white font-black uppercase tracking-wide text-sm leading-snug">
+            <div className="rounded-xl px-5 py-4 flex items-center gap-4 flex-wrap" style={{ background: '#111111', borderLeft: '4px solid #cc0000', borderTop: '1px solid #333', borderRight: '1px solid #333', borderBottom: '1px solid #333' }}>
+              <p className="text-white font-black uppercase tracking-wide text-sm leading-snug flex-1">
                 Let&apos;s support the team <span style={{ color: '#cc0000' }}>this Saturday!</span> Get 15% off any JCI 4 tickets with code:&nbsp;
                 <span className="font-black tracking-widest" style={{ color: '#cc0000' }}>TC15OFF</span>
               </p>
@@ -130,9 +131,7 @@ export default async function MembersDashboard() {
               </a>
             </div>
           )}
-
-          {/* Upcoming Events */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col flex-1">
             <div className="flex items-center justify-between mb-1">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Events</span>
               <Link href="/members/events" className="text-xs text-gray-500 hover:text-brand transition-colors">
@@ -168,6 +167,7 @@ export default async function MembersDashboard() {
               All Events
             </Link>
           </div>
+          </div>{/* end events column wrapper */}
 
           {/* Latest News */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
