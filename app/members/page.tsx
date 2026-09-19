@@ -69,6 +69,9 @@ export default async function MembersDashboard() {
                 Admin
               </Link>
             )}
+            <Link href="/members/account" className="text-xs text-gray-400 hover:text-brand transition-colors uppercase tracking-wide">
+              Account
+            </Link>
             <form action="/api/auth/logout" method="POST">
               <button type="submit" className="text-xs text-gray-400 hover:text-brand transition-colors uppercase tracking-wide">
                 Sign Out
