@@ -80,33 +80,42 @@ async function callBfnInternal(path: string, body: Record<string, unknown>) {
   }).catch(() => {});
 }
 
-export async function POST(request: NextRequest) {
-  // Auth: must be an is_admin member
-  const cookieStore = await cookies();
-  const tcSupabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll(); },
-        setAll() {},
-      },
-    }
-  );
-  const { data: { user } } = await tcSupabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const maxDuration = 300;
 
+export async function POST(request: NextRequest) {
   const tcAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
-  const { data: adminMember } = await tcAdmin
-    .from("members")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-  if (!adminMember?.is_admin) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  // Auth: internal secret OR logged-in admin
+  const internalSecret = process.env.INTERNAL_API_SECRET;
+  const headerSecret = request.headers.get("x-internal-secret");
+  const isInternalCall = internalSecret && headerSecret === internalSecret;
+
+  if (!isInternalCall) {
+    const cookieStore = await cookies();
+    const tcSupabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {},
+        },
+      }
+    );
+    const { data: { user } } = await tcSupabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { data: adminMember } = await tcAdmin
+      .from("members")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
+    if (!adminMember?.is_admin) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   // Parse CSV from form body
@@ -128,13 +137,18 @@ export async function POST(request: NextRequest) {
   let brevoSynced = 0;
   const errors: string[] = [];
 
+  // Fetch all existing users once to avoid N+1 queries
+  const { data: { users: allTcUsers } } = await tcAdmin.auth.admin.listUsers({ perPage: 10000 });
+  const { data: { users: allBfnUsers } } = await bfnAdmin.auth.admin.listUsers({ perPage: 10000 });
+  const tcUserMap = new Map(allTcUsers.map((u) => [u.email?.toLowerCase(), u]));
+  const bfnUserMap = new Map(allBfnUsers.map((u) => [u.email?.toLowerCase(), u]));
+
   for (const row of rows) {
     const isActive = row.status === "Student";
 
     try {
       // --- TC Supabase ---
-      const { data: { users: tcUsers } } = await tcAdmin.auth.admin.listUsers();
-      const tcUser = tcUsers.find((u) => u.email === row.email);
+      const tcUser = tcUserMap.get(row.email.toLowerCase());
 
       if (isActive) {
         const isNewMember = !tcUser;
@@ -155,6 +169,7 @@ export async function POST(request: NextRequest) {
             continue;
           }
           tcUserId = newUser.user.id;
+          tcUserMap.set(row.email.toLowerCase(), newUser.user);
         }
 
         await tcAdmin.from("members").upsert(
@@ -164,8 +179,7 @@ export async function POST(request: NextRequest) {
         tcProvisioned++;
 
         // --- BFN Supabase ---
-        const { data: { users: bfnUsers } } = await bfnAdmin.auth.admin.listUsers();
-        const bfnUser = bfnUsers.find((u) => u.email === row.email);
+        const bfnUser = bfnUserMap.get(row.email.toLowerCase());
 
         let bfnUserId: string | undefined;
         if (bfnUser) {
@@ -180,6 +194,7 @@ export async function POST(request: NextRequest) {
             errors.push(`BFN create failed for ${row.email}: ${error?.message}`);
           } else {
             bfnUserId = newBfnUser.user.id;
+            bfnUserMap.set(row.email.toLowerCase(), newBfnUser.user);
           }
         }
 
@@ -212,8 +227,7 @@ export async function POST(request: NextRequest) {
         if (tcUser) {
           await tcAdmin.from("members").update({ active: false, is_tc_member: false }).eq("id", tcUser.id);
         }
-        const { data: { users: bfnUsers } } = await bfnAdmin.auth.admin.listUsers();
-        const bfnUser = bfnUsers.find((u) => u.email === row.email);
+        const bfnUser = bfnUserMap.get(row.email.toLowerCase());
         if (bfnUser) {
           await bfnAdmin.from("members").update({ gym_id: null, status: "inactive" }).eq("id", bfnUser.id);
         }
