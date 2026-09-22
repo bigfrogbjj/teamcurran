@@ -137,11 +137,17 @@ export async function POST(request: NextRequest) {
   let brevoSynced = 0;
   const errors: string[] = [];
 
-  // Fetch all existing users once to avoid N+1 queries
+  // Fetch all existing users + members rows once
   const { data: { users: allTcUsers } } = await tcAdmin.auth.admin.listUsers({ perPage: 10000 });
   const { data: { users: allBfnUsers } } = await bfnAdmin.auth.admin.listUsers({ perPage: 10000 });
   const tcUserMap = new Map(allTcUsers.map((u) => [u.email?.toLowerCase(), u]));
   const bfnUserMap = new Map(allBfnUsers.map((u) => [u.email?.toLowerCase(), u]));
+
+  // Track which emails have already had a welcome email sent
+  const { data: existingMembers } = await tcAdmin.from("members").select("email, welcome_sent");
+  const welcomeSentSet = new Set(
+    (existingMembers ?? []).filter((m) => m.welcome_sent).map((m) => m.email?.toLowerCase())
+  );
 
   for (const row of rows) {
     const isActive = row.status === "Student";
@@ -152,7 +158,9 @@ export async function POST(request: NextRequest) {
 
       if (isActive) {
         const isNewMember = !tcUser;
-        const tempPassword = isNewMember ? generateTempPassword() : null;
+        const alreadyWelcomed = welcomeSentSet.has(row.email.toLowerCase());
+        const sendWelcome = isNewMember && !alreadyWelcomed;
+        const tempPassword = sendWelcome ? generateTempPassword() : null;
         let tcUserId: string;
 
         if (tcUser) {
@@ -173,9 +181,17 @@ export async function POST(request: NextRequest) {
         }
 
         await tcAdmin.from("members").upsert(
-          { id: tcUserId, email: row.email, full_name: row.name || row.email, active: true, is_tc_member: true },
+          {
+            id: tcUserId,
+            email: row.email,
+            full_name: row.name || row.email,
+            active: true,
+            is_tc_member: true,
+            ...(sendWelcome ? { welcome_sent: true } : {}),
+          },
           { onConflict: "id" }
         );
+        if (sendWelcome) welcomeSentSet.add(row.email.toLowerCase());
         tcProvisioned++;
 
         // --- BFN Supabase ---
@@ -213,12 +229,12 @@ export async function POST(request: NextRequest) {
           bfnProvisioned++;
         }
 
-        // --- Brevo via BFN (tag + welcome email for new members) ---
+        // --- Brevo via BFN (tag + welcome email for brand-new members only) ---
         await callBfnInternal("tag-tc-member", {
           email: row.email,
           name: row.name,
           phone: row.phone,
-          isNew: isNewMember,
+          isNew: sendWelcome,
           tempPassword,
         });
         brevoSynced++;
