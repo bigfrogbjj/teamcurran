@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
         }
 
         await tcAdmin.from("members").upsert(
-          { id: tcUserId, email: row.email, full_name: row.name || row.email, active: true, is_tc_member: true, belt: "white" },
+          { id: tcUserId, email: row.email, full_name: row.name || row.email, active: true, is_tc_member: true },
           { onConflict: "id" }
         );
         tcProvisioned++;

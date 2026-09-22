@@ -5,13 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MemberProfile } from "../../lib/supabase";
 
-const BELT_COLORS: Record<string, string> = {
-  white: "bg-white text-black",
-  blue: "bg-blue-600 text-white",
-  purple: "bg-purple-600 text-white",
-  brown: "bg-amber-800 text-white",
-  black: "bg-gray-900 text-white border border-gray-600",
-};
 
 export default async function MembersDashboard() {
   const cookieStore = await cookies();
