@@ -39,6 +39,15 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-black uppercase group-hover:text-brand transition-colors">ZP Sync</h2>
             <p className="text-gray-400 text-sm mt-2">Upload weekly Zen Planner CSV to sync accounts and Brevo lists.</p>
           </Link>
+
+          <Link
+            href="/admin/members"
+            className="bg-gray-900 border border-gray-800 hover:border-brand rounded-xl p-6 transition-colors group"
+          >
+            <p className="text-brand text-xs font-bold uppercase tracking-widest mb-2">Members</p>
+            <h2 className="text-xl font-black uppercase group-hover:text-brand transition-colors">Member List</h2>
+            <p className="text-gray-400 text-sm mt-2">View all members and send login links via email.</p>
+          </Link>
         </div>
       </div>
     </div>
