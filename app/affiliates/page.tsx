@@ -16,6 +16,7 @@ const affiliates = [
   { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/gracie-destin.jpg" },
   { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/ga-defense-academy.jpg" },
   { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/hosford-bjj-new.jpg" },
+  { slug: "motion-works", name: "Motion Works Martial Arts", location: "Archdale, NC", website: "", img: "" },
 ];
 
 export default function AffiliatesPage() {
