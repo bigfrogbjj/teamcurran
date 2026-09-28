@@ -40,6 +40,7 @@ export default function Page() {
                 { label: "PHONE", value: "(814) 312-3845", icon: "📞" },
                 { label: "EMAIL", value: "info@pa-grappling.com", icon: "✉️" },
                 { label: "HEAD INSTRUCTOR", value: "Allen Coble — Black Belt", icon: "🥋" },
+                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu\nPedro Sauer Association", icon: "🏆" },
                 { label: "ALTOONA SCHEDULE", value: "Mon/Wed/Fri: 9:00 AM\nTue/Thu: 6:00 PM Kids · 7:00 PM Adults", icon: "🕐" },
                 { label: "BEDFORD SCHEDULE", value: "Mon & Thu: 7:00–8:00 PM\n(Fundamentals)", icon: "🕐" },
               ].map(item => (

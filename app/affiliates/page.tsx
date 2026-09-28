@@ -16,7 +16,7 @@ const affiliates = [
   { slug: "gracie-destin", name: "Gracie Destin", location: "Destin, FL", website: "destinmma.com", img: "/gracie-destin.jpg" },
   { slug: "ga-defense-academy", name: "GA Defense Academy", location: "Locust Grove, GA", website: "gadacad.com", img: "/ga-defense-academy.jpg" },
   { slug: "hosford-bjj", name: "Hosford BJJ", location: "Knoxville, TN", website: "hosfordbjj.com", img: "/hosford-bjj-new.jpg" },
-  { slug: "motion-works", name: "Motion Works Martial Arts", location: "Archdale, NC", website: "", img: "" },
+  { slug: "motion-works", name: "Motion Works Martial Arts", location: "Archdale, NC", website: "", img: "/motion-works.jpg" },
 ];
 
 export default function AffiliatesPage() {
@@ -61,7 +61,9 @@ export default function AffiliatesPage() {
                   </div>
                   <div className="p-5">
                     <h3 className="text-base font-black text-white uppercase mb-1 leading-tight">{a.name}</h3>
-                    <p className="text-brand text-xs font-bold tracking-wider uppercase mb-3">{a.location}</p>
+                    <p className="text-brand text-xs font-bold tracking-wider uppercase mb-2">{a.location}</p>
+                    <span className="inline-block bg-blue-950 border border-blue-800 text-blue-300 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded mb-3">Pedro Sauer Team</span>
+                    <br />
                     <span className="text-brand text-xs font-bold uppercase tracking-widest group-hover:underline">VIEW ACADEMY →</span>
                   </div>
                 </Link>

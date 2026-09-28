@@ -54,7 +54,7 @@ export default function DekalbCountyPage() {
                 { label: "ADDRESS", value: "210 West Lincoln Avenue\nHinckley, IL 60520", icon: "📍" },
                 { label: "EMAIL", value: "dekalbcountybjj@gmail.com", icon: "✉️" },
                 { label: "CLASS SCHEDULE", value: "Mon/Thu: 6:15–8:45pm\nTue: 7:00–8:30pm\nWed: 5:45–8:30pm\nFri: 6:00–7:30pm", icon: "🕐" },
-                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu", icon: "🥋" },
+                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu\nPedro Sauer Association", icon: "🥋" },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                   <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{item.icon} {item.label}</p>

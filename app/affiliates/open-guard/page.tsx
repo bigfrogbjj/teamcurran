@@ -48,7 +48,7 @@ export default function OpenGuardPage() {
                 { label: "ADDRESS", value: "132 S Concord Rd\nOconomowoc, WI 53066", icon: "📍" },
                 { label: "PHONE", value: "(262) 354-8400", icon: "📞" },
                 { label: "PROGRAMS", value: "Brazilian Jiu Jitsu\nKickboxing\nHapkido / Self-Defense", icon: "🥋" },
-                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu", icon: "🏆" },
+                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu\nPedro Sauer Association", icon: "🏆" },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                   <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{item.icon} {item.label}</p>

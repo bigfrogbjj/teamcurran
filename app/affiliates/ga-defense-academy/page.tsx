@@ -38,6 +38,7 @@ export default function Page() {
                 { label: "PHONE", value: "(678) 561-4099", icon: "📞" },
                 { label: "EMAIL", value: "contact@gadacad.com", icon: "✉️" },
                 { label: "SCHEDULE", value: "Mon & Thu\nKarate: 6:15 PM\nJiu-Jitsu: 7:30 PM", icon: "🕐" },
+                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu\nPedro Sauer Association", icon: "🏆" },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                   <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{item.icon} {item.label}</p>

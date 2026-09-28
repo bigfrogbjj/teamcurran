@@ -18,7 +18,15 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur border-b border-blue-700">
+    <nav className="fixed top-0 left-0 right-0 z-50">
+      {/* Top member bar */}
+      <div className="bg-blue-700 text-white text-center text-xs font-bold py-1.5 tracking-wide">
+        Member?{" "}
+        <a href="/members/login" className="underline hover:text-blue-200 transition-colors">
+          Login Here
+        </a>
+      </div>
+    <div className="bg-black/90 backdrop-blur border-b border-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20 min-h-[80px]">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 shrink-0 min-w-0">
@@ -89,6 +97,7 @@ export default function Navbar() {
           </a>
         </div>
       )}
+    </div>
     </nav>
   );
 }

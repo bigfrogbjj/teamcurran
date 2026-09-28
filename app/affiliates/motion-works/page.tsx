@@ -8,7 +8,7 @@ export default function Page() {
       <Navbar />
       <main className="bg-black min-h-screen">
         <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden pt-20">
-          <div className="absolute inset-0 bg-cover bg-center bg-gray-900" />
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/motion-works.jpg')" }} />
           <div className="absolute inset-0 bg-black/70" />
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
             <p className="text-brand text-xs font-bold tracking-[0.3em] uppercase mb-4">TEAM CURRAN AFFILIATE</p>
@@ -34,7 +34,7 @@ export default function Page() {
             <div className="space-y-5">
               {[
                 { label: "LOCATION", value: "Archdale, NC", icon: "📍" },
-                { label: "AFFILIATION", value: "Team Curran", icon: "🥋" },
+                { label: "AFFILIATION", value: "Team Curran Jiu-Jitsu\nPedro Sauer Association", icon: "🥋" },
                 { label: "HEAD INSTRUCTOR", value: "Daniel Boyd\nBlack Belt", icon: "🎖️" },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
