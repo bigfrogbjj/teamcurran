@@ -19,13 +19,6 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
-      {/* Top member bar */}
-      <div className="bg-blue-700 text-white text-center text-xs font-bold py-1.5 tracking-wide">
-        Member?{" "}
-        <a href="/members/login" className="underline hover:text-blue-200 transition-colors">
-          Login Here
-        </a>
-      </div>
     <div className="bg-black/90 backdrop-blur border-b border-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20 min-h-[80px]">
         {/* Logo */}
@@ -55,8 +48,14 @@ export default function Navbar() {
             </a>
           ))}
           <a
+            href="/members/login"
+            className="ml-1 bg-white hover:bg-gray-100 text-black text-xs lg:text-sm font-bold px-3 lg:px-4 py-2 rounded transition-colors uppercase tracking-wide whitespace-nowrap"
+          >
+            Member Login
+          </a>
+          <a
             href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
-            className="ml-1 bg-brand hover:bg-blue-800 text-white text-xs lg:text-sm font-bold px-3 lg:px-4 py-2 rounded transition-colors uppercase tracking-wide whitespace-nowrap"
+            className="bg-brand hover:bg-blue-800 text-white text-xs lg:text-sm font-bold px-3 lg:px-4 py-2 rounded transition-colors uppercase tracking-wide whitespace-nowrap"
           >
             2-Week Trial
           </a>
@@ -88,6 +87,13 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <a
+            href="/members/login"
+            className="bg-white text-black text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
+            onClick={() => setOpen(false)}
+          >
+            Member Login
+          </a>
           <a
             href="https://teamcurran.sites.zenplanner.com/sign-up-now.cfm" target="_blank" rel="noopener noreferrer"
             className="bg-brand text-white text-center font-bold py-2 rounded uppercase tracking-wide text-sm"
