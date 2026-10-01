@@ -6,7 +6,7 @@ import { TC_PRODUCTS, discounted } from '@/lib/tc-products'
 import { createHostedCheckout } from '@/lib/clover'
 
 export async function POST(req: NextRequest) {
-  const { slug, sku, qty = 1, fullName, email, customName, customRank } = await req.json()
+  const { slug, sku, qty = 1, fullName, email, customName, customRank, colorLabel } = await req.json()
 
   if (!slug || !sku || !fullName || !email) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
     {
       name: [
         product.name,
+        colorLabel ? `Color: ${colorLabel}` : null,
         `Size: ${variant.label}`,
         customName ? `Name: ${customName}` : null,
         customRank ? `Rank: ${customRank}` : null,

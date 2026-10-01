@@ -3,6 +3,13 @@ export interface TCVariant {
   label: string
 }
 
+export interface TCColorVariant {
+  key: string
+  label: string
+  imageUrl: string
+  swatch: string
+}
+
 export interface TCCustomization {
   enabled: boolean
   feeMinor: number
@@ -19,6 +26,7 @@ export interface TCProduct {
   shippingMinor: number
   imageUrl: string | null
   variants: TCVariant[]
+  colorVariants?: TCColorVariant[]
   customization?: TCCustomization
   category: 'training' | 'apparel'
 }
@@ -35,14 +43,22 @@ export const TC_PRODUCTS: TCProduct[] = [
   {
     slug: 'adult-rashguard',
     name: 'Adult Rashguard',
-    tagline: 'Competition-cut compression rashguard. Add your name and rank for a custom build.',
+    tagline: 'Competition-cut compression rashguard. Choose your rank color, add your name for a custom build.',
     description: [
       'Competition-cut compression rashguard in the 2026 Team Curran design.',
-      'Add your name and belt rank for a custom build, or take it plain.',
+      'Select the color that matches your belt rank. Add your name for a custom build.',
     ],
     priceMinor: 4995,
     shippingMinor: 1000,
-    imageUrl: null,
+    imageUrl: '/rashguards/rashguard-white.webp',
+    colorVariants: [
+      { key: 'white', label: 'White', imageUrl: '/rashguards/rashguard-white.webp', swatch: '#ffffff' },
+      { key: 'blue', label: 'Blue', imageUrl: '/rashguards/rashguard-blue.webp', swatch: '#2563eb' },
+      { key: 'purple', label: 'Purple', imageUrl: '/rashguards/rashguard-purple.webp', swatch: '#7c3aed' },
+      { key: 'brown', label: 'Brown', imageUrl: '/rashguards/rashguard-brown.webp', swatch: '#78350f' },
+      { key: 'black', label: 'Black', imageUrl: '/rashguards/rashguard-black.webp', swatch: '#111111' },
+      { key: 'red', label: 'Red', imageUrl: '/rashguards/rashguard-red.webp', swatch: '#dc2626' },
+    ],
     variants: ADULT_SIZES,
     customization: {
       enabled: true,
@@ -55,14 +71,19 @@ export const TC_PRODUCTS: TCProduct[] = [
   {
     slug: 'kids-rashguard',
     name: 'Kids Rashguard',
-    tagline: 'Youth compression rashguard. Add a name and belt rank for a custom build.',
+    tagline: 'Youth compression rashguard. Choose your rank color, add a name for a custom build.',
     description: [
       'Youth compression rashguard in the 2026 Team Curran design.',
-      'Add a name and belt rank for a custom build, or take it plain.',
+      'Select the color that matches your belt rank. Add a name for a custom build.',
     ],
     priceMinor: 4495,
     shippingMinor: 1000,
-    imageUrl: null,
+    imageUrl: '/rashguards/rashguard-white.webp',
+    colorVariants: [
+      { key: 'white', label: 'White', imageUrl: '/rashguards/rashguard-white.webp', swatch: '#ffffff' },
+      { key: 'blue', label: 'Blue', imageUrl: '/rashguards/rashguard-blue2.webp', swatch: '#2563eb' },
+      { key: 'black', label: 'Black', imageUrl: '/rashguards/rashguard-black.webp', swatch: '#111111' },
+    ],
     variants: KIDS_SIZES,
     customization: {
       enabled: true,

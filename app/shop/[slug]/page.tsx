@@ -4,18 +4,20 @@ import { notFound } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { TC_PRODUCTS, money, discounted, type TCProduct } from '@/lib/tc-products'
+import { TC_PRODUCTS, money, discounted, type TCProduct, type TCColorVariant } from '@/lib/tc-products'
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const product = TC_PRODUCTS.find((p) => p.slug === slug)
   if (!product) notFound()
-
   return <ProductDetail product={product} />
 }
 
 function ProductDetail({ product }: { product: TCProduct }) {
   const [selectedSize, setSelectedSize] = useState('')
+  const [selectedColor, setSelectedColor] = useState<TCColorVariant | null>(
+    product.colorVariants?.[0] ?? null
+  )
   const [customName, setCustomName] = useState('')
   const [customRank, setCustomRank] = useState('')
   const [fullName, setFullName] = useState('')
@@ -26,13 +28,14 @@ function ProductDetail({ product }: { product: TCProduct }) {
   const [discountPct, setDiscountPct] = useState(0)
   const [showForm, setShowForm] = useState(false)
 
-  // Check member status client-side for price display
   useEffect(() => {
     fetch('/api/shop/member-status')
       .then((r) => r.json())
       .then((d) => { if (d.discount) setDiscountPct(d.discount) })
       .catch(() => {})
   }, [])
+
+  const activeImageUrl = selectedColor?.imageUrl ?? product.imageUrl
 
   const hasCustom = Boolean(product.customization?.enabled && (customName || customRank))
   const customFee = hasCustom ? (product.customization?.feeMinor ?? 0) : 0
@@ -59,6 +62,7 @@ function ProductDetail({ product }: { product: TCProduct }) {
           email: email.trim(),
           customName: customName.trim() || undefined,
           customRank: customRank || undefined,
+          colorLabel: selectedColor?.label || undefined,
         }),
       })
       const data = await res.json()
@@ -76,7 +80,6 @@ function ProductDetail({ product }: { product: TCProduct }) {
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
-      {/* Back nav */}
       <div className="border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link
@@ -92,10 +95,10 @@ function ProductDetail({ product }: { product: TCProduct }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Image */}
           <div className="aspect-square bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center">
-            {product.imageUrl ? (
+            {activeImageUrl ? (
               <Image
-                src={product.imageUrl}
-                alt={product.name}
+                src={activeImageUrl}
+                alt={`${product.name}${selectedColor ? ` – ${selectedColor.label}` : ''}`}
                 width={600}
                 height={600}
                 className="w-full h-full object-cover"
@@ -103,13 +106,7 @@ function ProductDetail({ product }: { product: TCProduct }) {
               />
             ) : (
               <div className="flex flex-col items-center gap-4">
-                <Image
-                  src="/Team Curran Circle Logo.png"
-                  alt="Team Curran"
-                  width={120}
-                  height={120}
-                  className="opacity-20"
-                />
+                <Image src="/Team Curran Circle Logo.png" alt="Team Curran" width={120} height={120} className="opacity-20" />
                 <span className="text-gray-600 text-sm uppercase tracking-wide">Photo coming soon</span>
               </div>
             )}
@@ -132,7 +129,7 @@ function ProductDetail({ product }: { product: TCProduct }) {
               {discountPct > 0 && (
                 <>
                   <span className="text-gray-600 text-lg line-through">{money(listUnit)}</span>
-                  <span className="text-blue-400 text-sm font-bold uppercase tracking-wide">{discountPct}% member discount</span>
+                  <span className="text-blue-400 text-sm font-bold uppercase tracking-wide">{discountPct}% member</span>
                 </>
               )}
             </div>
@@ -140,18 +137,45 @@ function ProductDetail({ product }: { product: TCProduct }) {
               <p className="text-gray-500 text-xs mt-1">+ {money(product.shippingMinor)} shipping</p>
             )}
 
-            {/* Description */}
-            <div className="mt-6 space-y-2">
+            <div className="mt-5 space-y-2">
               {product.description.map((line, i) => (
                 <p key={i} className="text-gray-300 text-sm leading-relaxed">{line}</p>
               ))}
             </div>
 
-            {/* Order form */}
             {!showForm ? (
-              <div className="mt-8">
+              <div className="mt-8 space-y-6">
+                {/* Color selector */}
+                {product.colorVariants && product.colorVariants.length > 0 && (
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+                      Color{selectedColor ? <span className="text-white ml-2 normal-case font-normal">— {selectedColor.label}</span> : ''}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {product.colorVariants.map((cv) => (
+                        <button
+                          key={cv.key}
+                          onClick={() => setSelectedColor(cv)}
+                          title={cv.label}
+                          className={`w-9 h-9 rounded-full border-2 transition-all ${
+                            selectedColor?.key === cv.key
+                              ? 'border-blue-500 scale-110'
+                              : 'border-gray-700 hover:border-gray-400'
+                          }`}
+                          style={{
+                            backgroundColor: cv.swatch,
+                            boxShadow: cv.swatch === '#ffffff' || cv.swatch === '#111111'
+                              ? 'inset 0 0 0 1px rgba(255,255,255,0.15)'
+                              : undefined,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Size selector */}
-                <div className="mb-6">
+                <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Select Size</p>
                   <div className="flex flex-wrap gap-2">
                     {product.variants.map((v) => (
@@ -172,7 +196,7 @@ function ProductDetail({ product }: { product: TCProduct }) {
 
                 {/* Customization */}
                 {product.customization?.enabled && (
-                  <div className="mb-6 bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
                       Personalization{' '}
                       <span className="text-gray-600 normal-case font-normal">
@@ -221,22 +245,22 @@ function ProductDetail({ product }: { product: TCProduct }) {
                 >
                   Continue to Checkout
                 </button>
-                {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
+                {error && <p className="text-red-400 text-sm">{error}</p>}
               </div>
             ) : (
               <form onSubmit={handleCheckout} className="mt-8 space-y-4">
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm">
-                  <span className="text-gray-400">Size: </span>
-                  <span className="text-white font-bold">{selectedSize}</span>
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm flex flex-wrap gap-x-3 gap-y-1 items-center">
+                  {selectedColor && <span className="text-white font-bold">{selectedColor.label}</span>}
+                  <span className="text-gray-400">Size: <span className="text-white font-bold">{selectedSize}</span></span>
                   {hasCustom && (
-                    <span className="text-gray-400 ml-3">
+                    <span className="text-gray-400">
                       · {customName} {customRank && `(${customRank})`}
                     </span>
                   )}
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="ml-3 text-blue-500 hover:text-blue-400 text-xs underline"
+                    className="ml-auto text-blue-500 hover:text-blue-400 text-xs underline"
                   >
                     Change
                   </button>
@@ -275,7 +299,6 @@ function ProductDetail({ product }: { product: TCProduct }) {
                   </select>
                 </div>
 
-                {/* Order summary */}
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Subtotal ({qty}×)</span>
