@@ -119,8 +119,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     description: ['Fleece crew-neck sweatshirt.'],
     priceMinor: 4500,
     shippingMinor: 1000,
-    imageUrl:
-      'https://cxdbvexbceeszmjnrojb.supabase.co/storage/v1/object/public/shop-images/products/0b34e7c3-dc36-4628-be04-d0a49f6e13bf/1790695785216-pvvfi7.png',
+    imageUrl: '/hoodie.webp',
     variants: APPAREL_SIZES,
     category: 'apparel',
   },
