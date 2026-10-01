@@ -1,10 +1,11 @@
 'use client'
 
-import { notFound } from 'next/navigation'
-import { use, useEffect, useState } from 'react'
+import { use, useState } from 'react'
+import { notFound, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { TC_PRODUCTS, money, discounted, type TCProduct, type TCColorVariant } from '@/lib/tc-products'
+import { TC_PRODUCTS, money, type TCProduct, type TCColorVariant } from '@/lib/tc-products'
+import { useCart } from '../CartContext'
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
@@ -14,79 +15,58 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 }
 
 function ProductDetail({ product }: { product: TCProduct }) {
-  const [selectedSize, setSelectedSize] = useState('')
+  const router = useRouter()
+  const { addItem, totalItems } = useCart()
+
   const [selectedColor, setSelectedColor] = useState<TCColorVariant | null>(
     product.colorVariants?.[0] ?? null
   )
-  const [customName, setCustomName] = useState('')
-  const [customRank, setCustomRank] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
+  const [selectedSize, setSelectedSize] = useState('')
   const [qty, setQty] = useState(1)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [discountPct, setDiscountPct] = useState(0)
-  const [showForm, setShowForm] = useState(false)
+  const [added, setAdded] = useState(false)
 
-  useEffect(() => {
-    fetch('/api/shop/member-status')
-      .then((r) => r.json())
-      .then((d) => { if (d.discount) setDiscountPct(d.discount) })
-      .catch(() => {})
-  }, [])
+  const activeImage = selectedColor?.imageUrl ?? product.imageUrl
 
-  const activeImageUrl = selectedColor?.imageUrl ?? product.imageUrl
-
-  const hasCustom = Boolean(product.customization?.enabled && (customName || customRank))
-  const customFee = hasCustom ? (product.customization?.feeMinor ?? 0) : 0
-  const listUnit = product.priceMinor + customFee
-  const unitPrice = discounted(listUnit, discountPct)
-
-  async function handleCheckout(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
+  function handleAdd() {
     if (!selectedSize) { setError('Please select a size.'); return }
-    if (!fullName.trim()) { setError('Please enter your name.'); return }
-    if (!email.trim()) { setError('Please enter your email.'); return }
+    setError('')
 
-    setLoading(true)
-    try {
-      const res = await fetch('/api/shop/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          slug: product.slug,
-          sku: selectedSize,
-          qty,
-          fullName: fullName.trim(),
-          email: email.trim(),
-          customName: customName.trim() || undefined,
-          customRank: customRank || undefined,
-          colorLabel: selectedColor?.label || undefined,
-        }),
-      })
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setError(data.error || 'Something went wrong. Please try again.')
-        setLoading(false)
-      }
-    } catch {
-      setError('Network error. Please try again.')
-      setLoading(false)
-    }
+    addItem(
+      {
+        slug: product.slug,
+        name: product.name,
+        colorKey: selectedColor?.key ?? null,
+        colorLabel: selectedColor?.label ?? null,
+        imageUrl: activeImage,
+        sizeLabel: selectedSize,
+        priceMinor: product.priceMinor,
+        shippingMinor: product.shippingMinor,
+      },
+      qty
+    )
+
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
   }
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
+      {/* Top bar */}
       <div className="border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link
-            href="/shop"
-            className="text-gray-500 hover:text-blue-400 text-sm uppercase tracking-wide font-semibold transition-colors"
-          >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <Link href="/shop" className="text-gray-500 hover:text-blue-400 text-sm uppercase tracking-wide font-semibold transition-colors">
             ← Back to Shop
+          </Link>
+          <Link href="/shop/cart" className="relative text-gray-300 hover:text-white transition-colors">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {totalItems > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </Link>
         </div>
       </div>
@@ -95,13 +75,13 @@ function ProductDetail({ product }: { product: TCProduct }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Image */}
           <div className="aspect-square bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center">
-            {activeImageUrl ? (
+            {activeImage ? (
               <Image
-                src={activeImageUrl}
+                src={activeImage}
                 alt={`${product.name}${selectedColor ? ` – ${selectedColor.label}` : ''}`}
                 width={600}
                 height={600}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-opacity duration-200"
                 unoptimized
               />
             ) : (
@@ -112,7 +92,7 @@ function ProductDetail({ product }: { product: TCProduct }) {
             )}
           </div>
 
-          {/* Details */}
+          {/* Details + form */}
           <div className="flex flex-col">
             <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-2">Team Curran</p>
             <h1
@@ -121,216 +101,106 @@ function ProductDetail({ product }: { product: TCProduct }) {
             >
               {product.name}
             </h1>
-            <p className="text-gray-400 mt-2 text-base">{product.tagline}</p>
+            <p className="text-gray-400 mt-2">{product.tagline}</p>
 
-            {/* Price */}
-            <div className="flex items-baseline gap-3 mt-5">
-              <span className="text-3xl font-black text-white">{money(unitPrice)}</span>
-              {discountPct > 0 && (
-                <>
-                  <span className="text-gray-600 text-lg line-through">{money(listUnit)}</span>
-                  <span className="text-blue-400 text-sm font-bold uppercase tracking-wide">{discountPct}% member</span>
-                </>
-              )}
+            <div className="flex items-baseline gap-2 mt-4">
+              <span className="text-3xl font-black">{money(product.priceMinor)}</span>
             </div>
-            {product.shippingMinor > 0 && (
-              <p className="text-gray-500 text-xs mt-1">+ {money(product.shippingMinor)} shipping</p>
-            )}
+            <p className="text-gray-500 text-xs mt-1">+ {money(product.shippingMinor)} shipping</p>
 
-            <div className="mt-5 space-y-2">
+            <div className="mt-4 space-y-1">
               {product.description.map((line, i) => (
                 <p key={i} className="text-gray-300 text-sm leading-relaxed">{line}</p>
               ))}
             </div>
 
-            {!showForm ? (
-              <div className="mt-8 space-y-6">
-                {/* Color selector */}
-                {product.colorVariants && product.colorVariants.length > 0 && (
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                      Color{selectedColor ? <span className="text-white ml-2 normal-case font-normal">— {selectedColor.label}</span> : ''}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {product.colorVariants.map((cv) => (
-                        <button
-                          key={cv.key}
-                          onClick={() => setSelectedColor(cv)}
-                          title={cv.label}
-                          className={`w-9 h-9 rounded-full border-2 transition-all ${
-                            selectedColor?.key === cv.key
-                              ? 'border-blue-500 scale-110'
-                              : 'border-gray-700 hover:border-gray-400'
-                          }`}
-                          style={{
-                            backgroundColor: cv.swatch,
-                            boxShadow: cv.swatch === '#ffffff' || cv.swatch === '#111111'
-                              ? 'inset 0 0 0 1px rgba(255,255,255,0.15)'
-                              : undefined,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Size selector */}
+            <div className="mt-8 space-y-6">
+              {/* Color */}
+              {product.colorVariants && product.colorVariants.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Select Size</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+                    Color{selectedColor && <span className="text-white ml-2 normal-case font-normal">— {selectedColor.label}</span>}
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {product.variants.map((v) => (
+                    {product.colorVariants.map((cv) => (
                       <button
-                        key={v.sku}
-                        onClick={() => setSelectedSize(v.sku)}
-                        className={`px-4 py-2 rounded border text-sm font-bold uppercase tracking-wide transition-colors ${
-                          selectedSize === v.sku
-                            ? 'bg-blue-700 border-blue-600 text-white'
-                            : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-blue-700 hover:text-white'
+                        key={cv.key}
+                        onClick={() => setSelectedColor(cv)}
+                        title={cv.label}
+                        className={`w-9 h-9 rounded-full border-2 transition-all ${
+                          selectedColor?.key === cv.key ? 'border-blue-500 scale-110' : 'border-gray-700 hover:border-gray-400'
                         }`}
-                      >
-                        {v.label}
-                      </button>
+                        style={{ backgroundColor: cv.swatch }}
+                      />
                     ))}
                   </div>
                 </div>
+              )}
 
-                {/* Customization */}
-                {product.customization?.enabled && (
-                  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
-                      Personalization{' '}
-                      <span className="text-gray-600 normal-case font-normal">
-                        (optional · +{money(product.customization.feeMinor)})
-                      </span>
-                    </p>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs text-gray-500 uppercase tracking-wide block mb-1">
-                          {product.customization.namePlaceholder}
-                        </label>
-                        <input
-                          type="text"
-                          value={customName}
-                          onChange={(e) => setCustomName(e.target.value)}
-                          placeholder="e.g. Jeff Curran"
-                          maxLength={40}
-                          className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-blue-600 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-500 uppercase tracking-wide block mb-1">Belt rank</label>
-                        <select
-                          value={customRank}
-                          onChange={(e) => setCustomRank(e.target.value)}
-                          className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-blue-600 focus:outline-none"
-                        >
-                          <option value="">— None —</option>
-                          {product.customization.rankOptions.map((r) => (
-                            <option key={r} value={r}>{r}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={() => {
-                    if (!selectedSize) { setError('Please select a size first.'); return }
-                    setError('')
-                    setShowForm(true)
-                  }}
-                  className="w-full bg-blue-700 hover:bg-blue-600 text-white font-black uppercase tracking-widest py-4 rounded-xl text-base transition-colors"
-                  style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}
-                >
-                  Continue to Checkout
-                </button>
-                {error && <p className="text-red-400 text-sm">{error}</p>}
+              {/* Size */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Size</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.variants.map((v) => (
+                    <button
+                      key={v.sku}
+                      onClick={() => setSelectedSize(v.sku)}
+                      className={`px-4 py-2 rounded border text-sm font-bold uppercase tracking-wide transition-colors ${
+                        selectedSize === v.sku
+                          ? 'bg-blue-700 border-blue-600 text-white'
+                          : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-blue-700 hover:text-white'
+                      }`}
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <form onSubmit={handleCheckout} className="mt-8 space-y-4">
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm flex flex-wrap gap-x-3 gap-y-1 items-center">
-                  {selectedColor && <span className="text-white font-bold">{selectedColor.label}</span>}
-                  <span className="text-gray-400">Size: <span className="text-white font-bold">{selectedSize}</span></span>
-                  {hasCustom && (
-                    <span className="text-gray-400">
-                      · {customName} {customRank && `(${customRank})`}
-                    </span>
-                  )}
+
+              {/* Qty */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Quantity</p>
+                <div className="flex items-center gap-3">
                   <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="ml-auto text-blue-500 hover:text-blue-400 text-xs underline"
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="w-9 h-9 rounded border border-gray-700 text-white text-lg font-bold hover:border-blue-700 transition-colors flex items-center justify-center"
                   >
-                    Change
+                    −
+                  </button>
+                  <span className="text-white font-bold text-lg w-6 text-center">{qty}</span>
+                  <button
+                    onClick={() => setQty((q) => Math.min(10, q + 1))}
+                    className="w-9 h-9 rounded border border-gray-700 text-white text-lg font-bold hover:border-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    +
                   </button>
                 </div>
+              </div>
 
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
-                  />
-                </div>
+              {error && <p className="text-red-400 text-sm">{error}</p>}
 
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Quantity</label>
-                  <select
-                    value={qty}
-                    onChange={(e) => setQty(Number(e.target.value))}
-                    className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
-                  >
-                    {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
-                  </select>
-                </div>
-
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Subtotal ({qty}×)</span>
-                    <span className="text-white font-bold">{money(unitPrice * qty)}</span>
-                  </div>
-                  {product.shippingMinor > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Shipping</span>
-                      <span className="text-white">{money(product.shippingMinor)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between border-t border-gray-800 pt-2">
-                    <span className="font-bold uppercase tracking-wide">Total</span>
-                    <span className="text-white font-black text-base">{money(unitPrice * qty + product.shippingMinor)}</span>
-                  </div>
-                </div>
-
-                {error && <p className="text-red-400 text-sm">{error}</p>}
-
+              <div className="flex gap-3">
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-blue-700 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest py-4 rounded-xl text-base transition-colors"
+                  onClick={handleAdd}
+                  className={`flex-1 font-black uppercase tracking-widest py-4 rounded-xl text-base transition-colors ${
+                    added
+                      ? 'bg-green-700 text-white'
+                      : 'bg-blue-700 hover:bg-blue-600 text-white'
+                  }`}
                   style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}
                 >
-                  {loading ? 'Processing...' : 'Pay with Card →'}
+                  {added ? '✓ Added to Cart' : 'Add to Cart'}
                 </button>
-                <p className="text-gray-600 text-xs text-center">
-                  You'll be redirected to our secure payment page.
-                </p>
-              </form>
-            )}
+                {totalItems > 0 && (
+                  <button
+                    onClick={() => router.push('/shop/cart')}
+                    className="px-5 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl border border-gray-700 transition-colors text-sm uppercase tracking-wide"
+                  >
+                    View Cart ({totalItems})
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

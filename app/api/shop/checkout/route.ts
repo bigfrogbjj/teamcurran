@@ -2,23 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
-import { TC_PRODUCTS, discounted } from '@/lib/tc-products'
+import { discounted } from '@/lib/tc-products'
 import { createHostedCheckout } from '@/lib/clover'
+import type { CartLine } from '@/app/shop/CartContext'
 
 export async function POST(req: NextRequest) {
-  const { slug, sku, qty = 1, fullName, email, customName, customRank, colorLabel } = await req.json()
+  const { lines, fullName, email, shippingMinor } = await req.json() as {
+    lines: CartLine[]
+    fullName: string
+    email: string
+    shippingMinor: number
+  }
 
-  if (!slug || !sku || !fullName || !email) {
+  if (!lines?.length || !fullName || !email) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
   }
 
-  const product = TC_PRODUCTS.find((p) => p.slug === slug)
-  if (!product) return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
-
-  const variant = product.variants.find((v) => v.sku === sku)
-  if (!variant) return NextResponse.json({ error: 'Size not available.' }, { status: 404 })
-
-  // Resolve member discount server-side — never trust client-sent prices.
+  // Resolve member discount server-side
   let discountPct = 0
   try {
     const cookieStore = await cookies()
@@ -41,33 +41,19 @@ export async function POST(req: NextRequest) {
         .maybeSingle()
       if (member?.status === 'active') discountPct = 5
     }
-  } catch {
-    // Non-fatal; proceed at list price.
-  }
+  } catch {}
 
-  const hasCustom = Boolean(product.customization?.enabled && (customName || customRank))
-  const customFee = hasCustom ? (product.customization?.feeMinor ?? 0) : 0
-  const listUnit = product.priceMinor + customFee
-  const unit = discounted(listUnit, discountPct)
-  const safeQty = Math.max(1, Math.min(10, Number(qty)))
-
-  const lineItems = [
-    {
-      name: [
-        product.name,
-        colorLabel ? `Color: ${colorLabel}` : null,
-        `Size: ${variant.label}`,
-        customName ? `Name: ${customName}` : null,
-        customRank ? `Rank: ${customRank}` : null,
-      ]
-        .filter(Boolean)
-        .join(' · '),
+  const cloverLineItems = lines.map((line) => {
+    const unit = discounted(line.priceMinor, discountPct)
+    return {
+      name: [line.name, line.colorLabel, `Size ${line.sizeLabel}`].filter(Boolean).join(' · '),
       price: unit,
-      unitQty: safeQty,
-    },
-  ]
-  if (product.shippingMinor > 0) {
-    lineItems.push({ name: 'Shipping', price: product.shippingMinor, unitQty: 1 })
+      unitQty: line.qty,
+    }
+  })
+
+  if (shippingMinor > 0) {
+    cloverLineItems.push({ name: 'Shipping', price: shippingMinor, unitQty: 1 })
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
@@ -75,11 +61,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const session = await createHostedCheckout({
-      lineItems,
+      lineItems: cloverLineItems,
       customer: { email: email.toLowerCase(), firstName, lastName: rest.join(' ') || undefined },
-      externalReferenceId: `tc-shop-${slug}-${Date.now()}`,
-      successUrl: `${siteUrl}/shop/success?product=${encodeURIComponent(product.name)}&size=${encodeURIComponent(variant.label)}`,
-      cancelUrl: `${siteUrl}/shop/${slug}`,
+      externalReferenceId: `tc-shop-${Date.now()}`,
+      successUrl: `${siteUrl}/shop/success`,
+      cancelUrl: `${siteUrl}/shop/checkout`,
     })
     return NextResponse.json({ url: session.href })
   } catch (err) {
