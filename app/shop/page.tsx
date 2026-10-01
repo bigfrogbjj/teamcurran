@@ -66,8 +66,8 @@ export default async function ShopPage() {
       )}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Section title="Training Gear" products={training} cols={4} />
-        <Section title="Apparel" products={apparel} cols={3} />
+        <Section title="Training Gear" products={training} />
+        <Section title="Apparel" products={apparel} />
       </div>
 
       <footer className="border-t border-gray-800 py-8 mt-4">
@@ -82,14 +82,14 @@ export default async function ShopPage() {
   )
 }
 
-function Section({ title, products, cols }: { title: string; products: typeof TC_PRODUCTS; cols: number }) {
+function Section({ title, products }: { title: string; products: typeof TC_PRODUCTS }) {
   if (!products.length) return null
   return (
     <div className="mb-12">
       <h2 className="text-xl font-black uppercase tracking-widest text-gray-400 mb-6 border-b border-gray-800 pb-3" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
         {title}
       </h2>
-      <div className={`grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-${cols} gap-4`}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((p) => (
           <Link
             key={p.slug}
