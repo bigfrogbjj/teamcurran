@@ -107,8 +107,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     description: ['Everyday cotton tee in the Team Curran design.'],
     priceMinor: 2500,
     shippingMinor: 1000,
-    imageUrl:
-      'https://cxdbvexbceeszmjnrojb.supabase.co/storage/v1/object/public/shop-images/products/309324c4-ebee-4644-ba47-e0a1f43898d5/1790694819397-p2cfho.png',
+    imageUrl: '/tshirt.webp',
     variants: APPAREL_SIZES,
     category: 'apparel',
   },
