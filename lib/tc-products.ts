@@ -39,6 +39,21 @@ const ADULT_SIZES = sizes(['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'])
 const KIDS_SIZES = sizes(['XS', 'S', 'M', 'L', 'XL'])
 const APPAREL_SIZES = sizes(['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'])
 
+// Gi sizes — Standard, Husky, Tall, Female (no Fitted), Kids
+const GI_ADULT_SIZES = sizes([
+  'A00','A0','A1','A2','A3','A4','A5',
+  'A0H','A1H','A2H','A3H','A4H',
+  'A1T','A2T','A3T',
+  'F1','F2','F3',
+])
+const GI_KIDS_SIZES = sizes(['M000','M00','M0','M1','M2','M3','M4'])
+
+const GI_COLORS: TCColorVariant[] = [
+  { key: 'white', label: 'White', imageUrl: '/gi-white.jpg', swatch: '#f5f5f0' },
+  { key: 'blue',  label: 'Royal Blue', imageUrl: '/gi-blue.jpg',  swatch: '#1f3a93' },
+  { key: 'black', label: 'Black', imageUrl: '/gi-black.jpg', swatch: '#1a1a1a' },
+]
+
 export const TC_PRODUCTS: TCProduct[] = [
   {
     slug: 'adult-rashguard',
@@ -98,6 +113,37 @@ export const TC_PRODUCTS: TCProduct[] = [
     shippingMinor: 1000,
     imageUrl: null,
     variants: KIDS_SIZES,
+    category: 'training',
+  },
+  {
+    slug: 'tc-gi-adult',
+    name: 'Competition Gi — Adult',
+    tagline: 'Pearl-weave jacket, ripstop pant. IBJJF competition-legal cut.',
+    description: [
+      '450gsm pearl-weave jacket with reinforced seams and a ripstop pant.',
+      'IBJJF competition-legal cut, pre-shrunk, with embroidered Team Curran detailing.',
+      'Available in Standard, Husky, Tall, and Female fits.',
+    ],
+    priceMinor: 15900,
+    shippingMinor: 1500,
+    imageUrl: '/gi-white.jpg',
+    colorVariants: GI_COLORS,
+    variants: GI_ADULT_SIZES,
+    category: 'training',
+  },
+  {
+    slug: 'tc-gi-kids',
+    name: 'Competition Gi — Kids',
+    tagline: 'Pearl-weave jacket, ripstop pant. Built for young competitors.',
+    description: [
+      '450gsm pearl-weave jacket with reinforced seams and a ripstop pant.',
+      'IBJJF competition-legal cut with embroidered Team Curran detailing.',
+    ],
+    priceMinor: 12900,
+    shippingMinor: 1500,
+    imageUrl: '/gi-white.jpg',
+    colorVariants: GI_COLORS,
+    variants: GI_KIDS_SIZES,
     category: 'training',
   },
   {
