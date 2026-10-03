@@ -13,7 +13,6 @@ async function requireAdmin() {
   )
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
-
   const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -34,11 +33,14 @@ export async function GET() {
     const ov = overrides.get(p.slug) as Record<string, unknown> | undefined
     return {
       slug: p.slug,
-      name: ov?.name ?? p.name,
-      price_minor: ov?.price_minor ?? p.priceMinor,
-      shipping_minor: ov?.shipping_minor ?? p.shippingMinor,
-      preorder_closes_at: ov?.preorder_closes_at ?? null,
-      active: ov?.active !== undefined ? ov.active : true,
+      name: (ov?.name as string) ?? p.name,
+      price_minor: (ov?.price_minor as number) ?? p.priceMinor,
+      regular_price_minor: (ov?.regular_price_minor as number) ?? p.regularPriceMinor ?? null,
+      shipping_minor: (ov?.shipping_minor as number) ?? p.shippingMinor,
+      preorder_closes_at: (ov?.preorder_closes_at as string) ?? null,
+      active: ov?.active !== undefined ? (ov.active as boolean) : true,
+      image_url: (ov?.image_url as string) ?? null,
+      inventory: (ov?.inventory as number) ?? null,
     }
   })
 
@@ -49,7 +51,8 @@ export async function PATCH(req: NextRequest) {
   const db = await requireAdmin()
   if (!db) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { slug, name, price_minor, shipping_minor, preorder_closes_at, active } = await req.json()
+  const body = await req.json()
+  const { slug, name, price_minor, regular_price_minor, shipping_minor, preorder_closes_at, active, inventory } = body
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
 
   const known = TC_PRODUCTS.find((p) => p.slug === slug)
@@ -60,9 +63,11 @@ export async function PATCH(req: NextRequest) {
       slug,
       name: name ?? known.name,
       price_minor: price_minor ?? known.priceMinor,
+      regular_price_minor: regular_price_minor ?? null,
       shipping_minor: shipping_minor ?? known.shippingMinor,
       preorder_closes_at: preorder_closes_at ?? null,
       active: active !== undefined ? active : true,
+      inventory: inventory ?? null,
       updated_at: new Date().toISOString(),
     },
     { onConflict: 'slug' }

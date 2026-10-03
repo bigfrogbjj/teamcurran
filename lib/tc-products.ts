@@ -23,6 +23,7 @@ export interface TCProduct {
   tagline: string
   description: string[]
   priceMinor: number
+  regularPriceMinor?: number
   shippingMinor: number
   imageUrl: string | null
   variants: TCVariant[]
