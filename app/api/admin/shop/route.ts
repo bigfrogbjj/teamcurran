@@ -12,17 +12,17 @@ async function requireAdmin() {
     { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
   )
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email) return null
+  if (!user) return null
+
   const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { persistSession: false, autoRefreshToken: false } }
   )
-  const { data } = await admin.from('admin_users').select('id').eq('supabase_user_id', user.id).maybeSingle()
-  return data ? admin : null
+  const { data } = await admin.from('members').select('is_admin').eq('id', user.id).single()
+  return data?.is_admin ? admin : null
 }
 
-// GET: return product list merged with DB overrides
 export async function GET() {
   const db = await requireAdmin()
   if (!db) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -45,7 +45,6 @@ export async function GET() {
   return NextResponse.json({ products })
 }
 
-// PATCH: upsert a product override
 export async function PATCH(req: NextRequest) {
   const db = await requireAdmin()
   if (!db) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

@@ -23,12 +23,17 @@ export default function AdminShopPage() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
     fetch('/api/admin/shop')
       .then((r) => r.json())
-      .then((d) => { setProducts(d.products ?? []); setLoading(false) })
-      .catch(() => setLoading(false))
+      .then((d) => {
+        if (d.error) { setLoadError(d.error); setLoading(false); return }
+        setProducts(d.products ?? [])
+        setLoading(false)
+      })
+      .catch((e) => { setLoadError(String(e)); setLoading(false) })
   }, [])
 
   function startEdit(p: ShopProduct) {
@@ -89,6 +94,8 @@ export default function AdminShopPage() {
 
         {loading ? (
           <p className="text-gray-500">Loading…</p>
+        ) : loadError ? (
+          <p className="text-red-400">Error: {loadError}</p>
         ) : (
           <div className="space-y-3">
             {products.map((p) => (
