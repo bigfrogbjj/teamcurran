@@ -9,11 +9,28 @@ export default function CheckoutPage() {
   const { lines, subtotalMinor, clear } = useCart()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [promoCode, setPromoCode] = useState('')
+  const [promoApplied, setPromoApplied] = useState(false)
+  const [promoDiscountPct, setPromoDiscountPct] = useState(0)
+  const [promoError, setPromoError] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const shippingMinor = lines.length > 0 ? Math.max(...lines.map((l) => l.shippingMinor)) : 0
-  const totalMinor = subtotalMinor + shippingMinor
+  const promoSavings = promoApplied ? Math.round(subtotalMinor * promoDiscountPct / 100) : 0
+  const totalMinor = subtotalMinor - promoSavings + shippingMinor
+
+  function applyPromo() {
+    setPromoError('')
+    if (promoCode.trim().toUpperCase() === 'BFN20') {
+      setPromoApplied(true)
+      setPromoDiscountPct(20)
+    } else {
+      setPromoApplied(false)
+      setPromoDiscountPct(0)
+      setPromoError('Invalid promo code.')
+    }
+  }
 
   if (lines.length === 0) {
     return (
@@ -34,7 +51,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/shop/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lines, fullName: fullName.trim(), email: email.trim(), shippingMinor }),
+        body: JSON.stringify({ lines, fullName: fullName.trim(), email: email.trim(), shippingMinor, promoCode: promoCode.trim().toUpperCase() }),
       })
       const data = await res.json()
       if (data.url) {
@@ -82,10 +99,39 @@ export default function CheckoutPage() {
             <span className="text-gray-400">Shipping</span>
             <span className="text-white">{money(shippingMinor)}</span>
           </div>
+          {promoApplied && (
+            <div className="flex justify-between text-sm text-green-400">
+              <span>Promo (BFN20 — 20% off)</span>
+              <span>−{money(promoSavings)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-black text-base border-t border-gray-700 pt-3">
             <span>Total</span>
             <span>{money(totalMinor)}</span>
           </div>
+        </div>
+
+        {/* Promo code */}
+        <div className="mb-6">
+          <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Promo Code</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => { setPromoCode(e.target.value); setPromoApplied(false); setPromoError('') }}
+              placeholder="Enter code"
+              className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white uppercase focus:border-blue-600 focus:outline-none text-sm"
+            />
+            <button
+              type="button"
+              onClick={applyPromo}
+              className="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase tracking-wide text-sm px-5 py-3 rounded-lg border border-gray-700 transition-colors"
+            >
+              Apply
+            </button>
+          </div>
+          {promoApplied && <p className="text-green-400 text-xs mt-1">✓ 20% discount applied</p>}
+          {promoError && <p className="text-red-400 text-xs mt-1">{promoError}</p>}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

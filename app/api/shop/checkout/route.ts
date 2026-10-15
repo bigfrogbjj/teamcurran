@@ -7,11 +7,12 @@ import { createHostedCheckout } from '@/lib/clover'
 import type { CartLine } from '@/app/shop/CartContext'
 
 export async function POST(req: NextRequest) {
-  const { lines, fullName, email, shippingMinor } = await req.json() as {
+  const { lines, fullName, email, shippingMinor, promoCode } = await req.json() as {
     lines: CartLine[]
     fullName: string
     email: string
     shippingMinor: number
+    promoCode?: string
   }
 
   if (!lines?.length || !fullName || !email) {
@@ -42,6 +43,11 @@ export async function POST(req: NextRequest) {
       if (member?.status === 'active') discountPct = 5
     }
   } catch {}
+
+  // Promo code — server-side validation (overrides member discount if higher)
+  if (promoCode?.toUpperCase() === 'BFN20') {
+    discountPct = Math.max(discountPct, 20)
+  }
 
   const cloverLineItems = lines.map((line) => {
     const unit = discounted(line.priceMinor, discountPct)
