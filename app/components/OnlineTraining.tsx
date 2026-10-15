@@ -26,7 +26,7 @@ export default function OnlineTraining() {
             <div className="rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://teamcurrantv.com/wp-content/uploads/group.png"
+                src="/team-curran-tv-main-pic.jpg"
                 alt="Team Curran TV"
                 className="w-full h-full object-cover"
               />
@@ -35,7 +35,7 @@ export default function OnlineTraining() {
             <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black border border-gray-700 rounded-xl px-6 py-3 shadow-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://teamcurrantv.com/wp-content/uploads/teamcurrantvlogo.png"
+                src="/Team Curran Circle Logo.png"
                 alt="Team Curran TV Logo"
                 className="h-10 w-auto"
               />
