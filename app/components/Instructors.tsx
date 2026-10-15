@@ -30,13 +30,13 @@ const instructors = [
     imgPosition: "20% top",
   },
   {
-    name: "John Hudson",
+    name: "John Hutson",
     title: "Instructor",
     rank: "Black Belt under Professor Jeff Curran",
     specialties: ["Adult Jiu-Jitsu", "Gi & No-Gi"],
-    bio: "John Hudson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
+    bio: "John Hutson is a Black Belt under Professor Jeff Curran and a dedicated instructor at Team Curran Academy Headquarters. His deep understanding of the art and commitment to his students make him a valued part of the Team Curran coaching staff.",
     img: "/John Hudson.jpg",
-    imgAlt: "John Hudson, Brazilian Jiu-Jitsu Black Belt instructor at Team Curran Crystal Lake",
+    imgAlt: "John Hutson, Brazilian Jiu-Jitsu Black Belt instructor at Team Curran Crystal Lake",
     imgPosition: "top",
   },
   {

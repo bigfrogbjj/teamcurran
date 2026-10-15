@@ -14,7 +14,7 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "Team Curran Jiu-Jitsu Academy | Brazilian Jiu-Jitsu Crystal Lake, IL",
+  title: "Team Curran Academy Headquarters | Brazilian Jiu-Jitsu Crystal Lake, IL",
   description:
     "Brazilian Jiu-Jitsu, Muay Thai, and Kids BJJ in Crystal Lake, IL. Train under 5th Degree Pedro Sauer Black Belt Professor Jeff Curran. Serving Crystal Lake, Algonquin, Lake in the Hills, McHenry & Cary. 2-week trial $45.",
   keywords: "brazilian jiu jitsu crystal lake, BJJ crystal lake IL, jiu jitsu crystal lake, martial arts crystal lake IL, kids jiu jitsu crystal lake, muay thai crystal lake, Pedro Sauer, gracie jiu jitsu illinois",
@@ -23,10 +23,10 @@ export const metadata: Metadata = {
     apple: "/Team Curran C .png",
   },
   openGraph: {
-    title: "Team Curran Jiu-Jitsu Academy | Crystal Lake, IL",
+    title: "Team Curran Academy Headquarters | Crystal Lake, IL",
     description: "Brazilian Jiu-Jitsu, Muay Thai & Kids BJJ in Crystal Lake, IL. Pedro Sauer lineage. 2-week trial $45.",
     url: "https://teamcurran.com",
-    siteName: "Team Curran Jiu-Jitsu Academy",
+    siteName: "Team Curran Academy Headquarters",
     locale: "en_US",
     type: "website",
   },
@@ -45,7 +45,7 @@ export default function RootLayout({
   const schema = {
     "@context": "https://schema.org",
     "@type": "SportsActivityLocation",
-    "name": "Team Curran Jiu-Jitsu Academy",
+    "name": "Team Curran Academy Headquarters",
     "description": "Brazilian Jiu-Jitsu, Muay Thai, and Kids BJJ in Crystal Lake, IL. Pedro Sauer Association member.",
     "url": "https://teamcurran.com",
     "telephone": "+18153560454",

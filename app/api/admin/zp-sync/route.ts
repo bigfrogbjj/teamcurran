@@ -215,6 +215,8 @@ export async function POST(request: NextRequest) {
         }
 
         if (bfnUserId) {
+          const accessUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            .toISOString().slice(0, 10);
           await bfnAdmin.from("members").upsert(
             {
               id: bfnUserId,
@@ -223,6 +225,7 @@ export async function POST(request: NextRequest) {
               gym_id: process.env.BFN_TC_GYM_ID,
               tier: "nation",
               status: "active",
+              gym_tchq_access_until: accessUntil,
             },
             { onConflict: "id" }
           );

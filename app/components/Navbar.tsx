@@ -30,8 +30,8 @@ export default function Navbar() {
             height={75}
             className="h-[46px] lg:h-[64px] w-auto shrink-0"
           />
-          <span className="text-gray-300 text-base lg:text-xl tracking-widest uppercase whitespace-nowrap hidden sm:block" style={{ fontFamily: 'var(--font-anton)' }}>
-            ACADEMY HEADQUARTERS
+          <span className="text-gray-300 text-base lg:text-xl tracking-widest uppercase whitespace-nowrap" style={{ fontFamily: 'var(--font-anton)' }}>
+            TEAM CURRAN HQ
           </span>
         </a>
 
