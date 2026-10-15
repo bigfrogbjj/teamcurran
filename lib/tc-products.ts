@@ -125,7 +125,7 @@ export const TC_PRODUCTS: TCProduct[] = [
       'IBJJF competition-legal cut, pre-shrunk, with embroidered Team Curran detailing.',
       'Available in Standard, Husky, Tall, and Female fits.',
     ],
-    priceMinor: 15900,
+    priceMinor: 16900,
     shippingMinor: 1500,
     imageUrl: '/gi-white.jpg',
     colorVariants: GI_COLORS,
@@ -174,7 +174,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     name: 'Team Curran Sweatpants',
     tagline: 'Fleece jogger with the Team Curran mark.',
     description: ['Fleece jogger with the Team Curran mark.'],
-    priceMinor: 6500,
+    priceMinor: 4995,
     shippingMinor: 1000,
     imageUrl:
       'https://cxdbvexbceeszmjnrojb.supabase.co/storage/v1/object/public/shop-images/products/b700972e-ea0d-4f75-95b5-956ffcc919b7/1790696061748-jknppf.png',
