@@ -135,6 +135,9 @@ export async function POST(request: NextRequest) {
   let tcProvisioned = 0;
   let bfnProvisioned = 0;
   let brevoSynced = 0;
+  let newAccounts = 0;
+  let welcomeEmailsSent = 0;
+  let deactivated = 0;
   const errors: string[] = [];
 
   // Fetch all existing users + members rows once
@@ -178,7 +181,9 @@ export async function POST(request: NextRequest) {
           }
           tcUserId = newUser.user.id;
           tcUserMap.set(row.email.toLowerCase(), newUser.user);
+          newAccounts++;
         }
+        if (sendWelcome) welcomeEmailsSent++;
 
         await tcAdmin.from("members").upsert(
           {
@@ -245,6 +250,7 @@ export async function POST(request: NextRequest) {
         // Inactive: deactivate in TC, revoke BFN gym access, remove from Brevo TC list
         if (tcUser) {
           await tcAdmin.from("members").update({ active: false, is_tc_member: false }).eq("id", tcUser.id);
+          deactivated++;
         }
         const bfnUser = bfnUserMap.get(row.email.toLowerCase());
         if (bfnUser) {
@@ -263,6 +269,9 @@ export async function POST(request: NextRequest) {
     tcProvisioned,
     bfnProvisioned,
     brevoSynced,
+    newAccounts,
+    welcomeEmailsSent,
+    deactivated,
     errors: errors.slice(0, 20),
   });
 }

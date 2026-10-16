@@ -9,6 +9,9 @@ interface SyncResult {
   tcProvisioned: number
   bfnProvisioned: number
   brevoSynced: number
+  newAccounts: number
+  welcomeEmailsSent: number
+  deactivated: number
   errors: string[]
   error?: string
 }
@@ -30,7 +33,7 @@ export default function ZpSyncPage() {
       const data = await res.json()
       setResult(data)
     } catch {
-      setResult({ ok: false, total: 0, tcProvisioned: 0, bfnProvisioned: 0, brevoSynced: 0, errors: [], error: 'Network error' })
+      setResult({ ok: false, total: 0, tcProvisioned: 0, bfnProvisioned: 0, brevoSynced: 0, newAccounts: 0, welcomeEmailsSent: 0, deactivated: 0, errors: [], error: 'Network error' })
     } finally {
       setLoading(false)
     }
@@ -97,6 +100,9 @@ export default function ZpSyncPage() {
                   <Stat label="TC accounts" value={result.tcProvisioned} />
                   <Stat label="BFN watch access" value={result.bfnProvisioned} />
                   <Stat label="Brevo contacts" value={result.brevoSynced} />
+                  <Stat label="New accounts" value={result.newAccounts ?? 0} highlight={result.newAccounts > 0} />
+                  <Stat label="Welcome emails sent" value={result.welcomeEmailsSent ?? 0} highlight={result.welcomeEmailsSent > 0} />
+                  <Stat label="Deactivated" value={result.deactivated ?? 0} />
                 </div>
                 {result.errors.length > 0 && (
                   <div className="mt-4 border-t border-gray-700 pt-4">
@@ -119,11 +125,11 @@ export default function ZpSyncPage() {
   )
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value, highlight }: { label: string; value: number; highlight?: boolean }) {
   return (
-    <div className="bg-black/40 rounded-lg p-4">
+    <div className={`rounded-lg p-4 ${highlight ? 'bg-brand/20 border border-brand/40' : 'bg-black/40'}`}>
       <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-2xl font-black text-white">{value}</p>
+      <p className={`text-2xl font-black ${highlight ? 'text-brand' : 'text-white'}`}>{value}</p>
     </div>
   )
 }
