@@ -18,6 +18,7 @@ export default function AdminMembersPage() {
   const [search, setSearch] = useState("");
   const [sending, setSending] = useState<string | null>(null);
   const [sent, setSent] = useState<Record<string, boolean>>({});
+  const [tempSent, setTempSent] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -42,6 +43,23 @@ export default function AdminMembersPage() {
     });
     if (res.ok) {
       setSent((s) => ({ ...s, [email]: true }));
+    } else {
+      const d = await res.json();
+      setError((e) => ({ ...e, [email]: d.error || "Failed" }));
+    }
+    setSending(null);
+  }
+
+  async function sendTempPassword(email: string) {
+    setSending(email + "_temp");
+    setError((e) => ({ ...e, [email]: "" }));
+    const res = await fetch("/api/admin/set-temp-password", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password: "UseTHISpasswordDaMNit!" }),
+    });
+    if (res.ok) {
+      setTempSent((s) => ({ ...s, [email]: true }));
     } else {
       const d = await res.json();
       setError((e) => ({ ...e, [email]: d.error || "Failed" }));
@@ -104,19 +122,33 @@ export default function AdminMembersPage() {
                       </span>
                     </td>
                     <td className="px-5 py-3 text-right">
-                      {sent[m.email] ? (
-                        <span className="text-green-400 text-xs font-bold">✓ Sent</span>
-                      ) : error[m.email] ? (
-                        <span className="text-red-400 text-xs">{error[m.email]}</span>
-                      ) : (
-                        <button
-                          onClick={() => sendLoginLink(m.email)}
-                          disabled={sending === m.email}
-                          className="text-xs font-bold uppercase tracking-wide text-brand hover:text-white border border-brand hover:bg-brand px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
-                        >
-                          {sending === m.email ? "Sending..." : "Send Login Link"}
-                        </button>
-                      )}
+                      <div className="flex gap-2 justify-end flex-wrap">
+                        {error[m.email] && (
+                          <span className="text-red-400 text-xs self-center">{error[m.email]}</span>
+                        )}
+                        {sent[m.email] ? (
+                          <span className="text-green-400 text-xs font-bold self-center">✓ Link Sent</span>
+                        ) : (
+                          <button
+                            onClick={() => sendLoginLink(m.email)}
+                            disabled={!!sending}
+                            className="text-xs font-bold uppercase tracking-wide text-brand hover:text-white border border-brand hover:bg-brand px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
+                          >
+                            {sending === m.email ? "Sending..." : "Send Login Link"}
+                          </button>
+                        )}
+                        {tempSent[m.email] ? (
+                          <span className="text-yellow-400 text-xs font-bold self-center">✓ Temp PW Sent</span>
+                        ) : (
+                          <button
+                            onClick={() => sendTempPassword(m.email)}
+                            disabled={!!sending}
+                            className="text-xs font-bold uppercase tracking-wide text-yellow-500 hover:text-black border border-yellow-600 hover:bg-yellow-500 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
+                          >
+                            {sending === m.email + "_temp" ? "Sending..." : "Send Temp PW"}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
