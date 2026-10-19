@@ -6,6 +6,14 @@ import { discounted } from '@/lib/tc-products'
 import { createHostedCheckout } from '@/lib/clover'
 import type { CartLine } from '@/app/shop/CartContext'
 
+function adminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  )
+}
+
 export async function POST(req: NextRequest) {
   const { lines, fullName, email, shippingMinor, promoCode } = await req.json() as {
     lines: CartLine[]
@@ -30,11 +38,7 @@ export async function POST(req: NextRequest) {
     )
     const { data: { user } } = await supabase.auth.getUser()
     if (user?.email) {
-      const admin = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        { auth: { persistSession: false, autoRefreshToken: false } }
-      )
+      const admin = adminClient()
       const { data: member } = await admin
         .from('members')
         .select('status')
@@ -64,15 +68,42 @@ export async function POST(req: NextRequest) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
   const [firstName, ...rest] = fullName.trim().split(' ')
+  const externalRef = `tc-shop-${Date.now()}`
+  const subtotalMinor = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
+  const totalMinor = subtotalMinor + (shippingMinor ?? 0)
 
   try {
+    // Clover appends ?checkoutSessionId=xxx to the success URL automatically
     const session = await createHostedCheckout({
       lineItems: cloverLineItems,
       customer: { email: email.toLowerCase(), firstName, lastName: rest.join(' ') || undefined },
-      externalReferenceId: `tc-shop-${Date.now()}`,
+      externalReferenceId: externalRef,
       successUrl: `${siteUrl}/shop/success`,
       cancelUrl: `${siteUrl}/shop/checkout`,
     })
+
+    // Save pending order — success page will mark it paid and send notifications
+    try {
+      await adminClient().from('tc_shop_orders').insert({
+        clover_session_id: session.checkoutSessionId,
+        external_ref: externalRef,
+        status: 'pending',
+        customer_name: fullName,
+        customer_email: email.toLowerCase(),
+        lines: lines.map((l) => ({
+          name: [l.name, l.colorLabel, `Size ${l.sizeLabel}`].filter(Boolean).join(' · '),
+          price_minor: discounted(l.priceMinor, discountPct),
+          qty: l.qty,
+        })),
+        subtotal_minor: subtotalMinor,
+        shipping_minor: shippingMinor ?? 0,
+        total_minor: totalMinor,
+        discount_pct: discountPct,
+      })
+    } catch (dbErr) {
+      console.error('TC shop: failed to save pending order', dbErr)
+    }
+
     return NextResponse.json({ url: session.href })
   } catch (err) {
     console.error('TC shop Clover checkout error:', err)

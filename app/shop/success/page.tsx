@@ -3,22 +3,26 @@ import Link from 'next/link'
 
 export const metadata = { title: 'Order Received — Team Curran', robots: 'noindex,nofollow' }
 
-export default function ShopSuccessPage({
+export default async function ShopSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ product?: string; size?: string }>
+  searchParams: Promise<{ checkoutSessionId?: string; product?: string; size?: string }>
 }) {
-  return <SuccessContent searchParamsPromise={searchParams} />
-}
+  const sp = await searchParams
+  const checkoutSessionId = sp.checkoutSessionId
 
-async function SuccessContent({
-  searchParamsPromise,
-}: {
-  searchParamsPromise: Promise<{ product?: string; size?: string }>
-}) {
-  const sp = await searchParamsPromise
-  const product = sp.product ? decodeURIComponent(sp.product) : null
-  const size = sp.size ? decodeURIComponent(sp.size) : null
+  // Mark order paid and send notifications (best-effort, idempotent)
+  if (checkoutSessionId) {
+    try {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
+      await fetch(`${siteUrl}/api/shop/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkoutSessionId }),
+        cache: 'no-store',
+      })
+    } catch {}
+  }
 
   return (
     <div
@@ -48,15 +52,8 @@ async function SuccessContent({
         </h1>
 
         <p className="text-gray-300 text-base leading-relaxed mb-2">
-          Thanks for your order! You'll receive a confirmation email from Clover shortly.
+          Thanks for your order! You&apos;ll receive a confirmation email from Clover shortly.
         </p>
-
-        {product && (
-          <p className="text-gray-500 text-sm mb-6">
-            {product}
-            {size && ` · Size ${size}`}
-          </p>
-        )}
 
         <p className="text-gray-500 text-sm mb-8">
           Questions? Email{' '}
