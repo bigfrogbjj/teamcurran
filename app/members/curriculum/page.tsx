@@ -75,7 +75,7 @@ export default async function CurriculumPage() {
                   <p className="text-gray-400 text-xs uppercase tracking-widest mb-2">Class {String(vid.num).padStart(2,'0')} of 25</p>
                   <h2 className="text-2xl font-black uppercase mb-4">{vid.title}</h2>
                   <a
-                    href={`/api/bfn-sso?class=${vid.num}`}
+                    target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${vid.num}`}
                     className="inline-block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
                   >
                     Watch Now →
@@ -121,7 +121,7 @@ export default async function CurriculumPage() {
                 >
                   <span className={`text-xs font-bold mb-1 ${isToday ? 'text-brand' : 'text-gray-400'}`}>{dayNum}</span>
                   {day?.video && (
-                    <a href={`/api/bfn-sso?class=${day.video.num}`} className="flex-1 block">
+                    <a target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${day.video.num}`} className="flex-1 block">
                       <div className="relative w-full aspect-video rounded overflow-hidden mb-1">
                         <Image src={day.video.thumb} alt={day.video.title} fill className="object-cover" unoptimized />
                       </div>
@@ -145,7 +145,7 @@ export default async function CurriculumPage() {
           <h2 className="text-2xl font-black uppercase mb-6">All 25 Classes</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {FUNDAMENTALS.map(vid => (
-              <a key={vid.num} href={`/api/bfn-sso?class=${vid.num}`} className="group bg-gray-900 border border-gray-800 hover:border-brand rounded-xl overflow-hidden transition-colors">
+              <a key={vid.num} target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${vid.num}`} className="group bg-gray-900 border border-gray-800 hover:border-brand rounded-xl overflow-hidden transition-colors">
                 <div className="relative aspect-video">
                   <Image src={vid.thumb} alt={vid.title} fill className="object-cover group-hover:scale-105 transition-transform duration-200" unoptimized />
                   <div className="absolute top-2 left-2 bg-brand text-white text-xs font-black px-2 py-0.5 rounded">

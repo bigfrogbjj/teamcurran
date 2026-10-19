@@ -103,7 +103,7 @@ export default async function MembersDashboard() {
 
             {todaySchedule?.video ? (
               <>
-                <a href={`/api/bfn-sso?class=${todaySchedule.video.num}`} className="relative mx-6 rounded-xl overflow-hidden aspect-video mb-4 block">
+                <a target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${todaySchedule.video.num}`} className="relative mx-6 rounded-xl overflow-hidden aspect-video mb-4 block">
                   <Image src={todaySchedule.video.thumb} alt={todaySchedule.video.title} fill className="object-cover" unoptimized />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
@@ -131,12 +131,12 @@ export default async function MembersDashboard() {
             {(yesterdaySchedule?.video || tomorrowSchedule?.video) && (
               <div className="flex gap-4 px-6 mb-4">
                 {yesterdaySchedule?.video && (
-                  <a href={`/api/bfn-sso?class=${yesterdaySchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors">
+                  <a target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${yesterdaySchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors">
                     ← Yesterday: #{yesterdaySchedule.video.num} {yesterdaySchedule.video.title}
                   </a>
                 )}
                 {tomorrowSchedule?.video && (
-                  <a href={`/api/bfn-sso?class=${tomorrowSchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors ml-auto text-right">
+                  <a target="_blank" rel="noopener noreferrer" href={`/api/bfn-sso?class=${tomorrowSchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors ml-auto text-right">
                     Tomorrow: #{tomorrowSchedule.video.num} {tomorrowSchedule.video.title} →
                   </a>
                 )}
@@ -144,7 +144,7 @@ export default async function MembersDashboard() {
             )}
 
             <div className="px-6 pb-6">
-              <a href="/api/bfn-sso" className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
+              <a target="_blank" rel="noopener noreferrer" href="/api/bfn-sso" className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
                 Open Watch Library
               </a>
             </div>
