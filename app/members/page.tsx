@@ -45,6 +45,10 @@ export default async function MembersDashboard() {
 
   const profile = member as MemberProfile & { is_admin?: boolean; is_tc_member?: boolean };
   const todaySchedule = getScheduleForDate(new Date());
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  const yesterdaySchedule = getScheduleForDate(yesterday);
+  const tomorrowSchedule = getScheduleForDate(tomorrow);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -121,6 +125,21 @@ export default async function MembersDashboard() {
               <p className="text-gray-400 text-sm px-6 mb-4 flex-1">
                 Access the full Team Curran technique library — hundreds of BJJ and Muay Thai videos, organized by instructor and category.
               </p>
+            )}
+
+            {(yesterdaySchedule?.video || tomorrowSchedule?.video) && (
+              <div className="flex gap-4 px-6 mb-4">
+                {yesterdaySchedule?.video && (
+                  <a href="/api/bfn-sso" className="text-xs text-gray-500 hover:text-brand transition-colors">
+                    ← Yesterday: #{yesterdaySchedule.video.num} {yesterdaySchedule.video.title}
+                  </a>
+                )}
+                {tomorrowSchedule?.video && (
+                  <a href="/api/bfn-sso" className="text-xs text-gray-500 hover:text-brand transition-colors ml-auto text-right">
+                    Tomorrow: #{tomorrowSchedule.video.num} {tomorrowSchedule.video.title} →
+                  </a>
+                )}
+              </div>
             )}
 
             <div className="px-6 pb-6">
