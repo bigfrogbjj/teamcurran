@@ -61,6 +61,6 @@ export const TAG_COLORS: Record<string, string> = {
   'gi':        'bg-black text-white border-gray-700',
   'nogi':      'bg-brand text-white border-brand',
   'kids':      'bg-sky-500/20 text-sky-300 border-sky-500/40',
-  'muay-thai': 'bg-black text-white border-gray-700',
+  'muay-thai': 'bg-gray-300 text-black border-gray-400',
   'open-mat':  'bg-gray-800 text-white border-gray-600',
 }
