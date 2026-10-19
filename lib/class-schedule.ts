@@ -58,9 +58,9 @@ export function getTodaySchedule(): ClassEntry[] {
 }
 
 export const TAG_COLORS: Record<string, string> = {
-  'gi':        'bg-brand/20 text-brand border-brand/30',
-  'nogi':      'bg-purple-900/40 text-purple-300 border-purple-700/40',
-  'kids':      'bg-yellow-900/30 text-yellow-300 border-yellow-700/30',
-  'muay-thai': 'bg-red-900/30 text-red-300 border-red-700/30',
-  'open-mat':  'bg-green-900/30 text-green-300 border-green-700/30',
+  'gi':        'bg-black text-white border-gray-700',
+  'nogi':      'bg-brand text-white border-brand',
+  'kids':      'bg-sky-500/20 text-sky-300 border-sky-500/40',
+  'muay-thai': 'bg-black text-white border-gray-700',
+  'open-mat':  'bg-gray-800 text-white border-gray-600',
 }
