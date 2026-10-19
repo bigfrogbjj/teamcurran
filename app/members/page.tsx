@@ -1,3 +1,4 @@
+import React from "react";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -5,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MemberProfile } from "../../lib/supabase";
 import { getScheduleForDate } from "../../lib/curriculum-schedule";
+import { getTodaySchedule, TAG_COLORS } from "../../lib/class-schedule";
 
 
 export default async function MembersDashboard() {
@@ -46,6 +48,8 @@ export default async function MembersDashboard() {
 
   const profile = member as MemberProfile & { is_admin?: boolean; is_tc_member?: boolean };
   const todaySchedule = getScheduleForDate(new Date());
+  const todayClasses = getTodaySchedule();
+  const dayName = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
   const yesterdaySchedule = getScheduleForDate(yesterday);
@@ -115,7 +119,7 @@ export default async function MembersDashboard() {
                   </div>
                 </a>
                 <p className="text-white font-black uppercase px-6 mb-1">{todaySchedule.video.title}</p>
-                <p className="text-gray-400 text-xs px-6 mb-4 flex-1">Today&apos;s fundamental curriculum class. Access the full technique library below.</p>
+                <p className="text-gray-400 text-xs px-6 mb-4 flex-1">Daily Fundamentals Video. Access the full technique library below.</p>
               </>
             ) : todaySchedule?.special ? (
               <div className="mx-6 mb-4 bg-brand/10 border border-brand/30 rounded-xl p-4 flex-1">
@@ -150,8 +154,60 @@ export default async function MembersDashboard() {
             </div>
           </div>
 
-          {/* Upcoming Events + JCI promo stacked in one column */}
+          {/* Today's Schedule + Upcoming Events + JCI promo stacked in one column */}
           <div className="flex flex-col gap-3">
+
+          {/* Today's Schedule */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-brand text-xs font-bold uppercase tracking-widest">On The Mat</span>
+              <span className="text-xs text-gray-500 uppercase tracking-widest">{dayName}</span>
+            </div>
+            <h2 className="text-xl font-black uppercase mb-4">Today&apos;s Classes</h2>
+            {todayClasses.length === 0 ? (
+              <p className="text-gray-500 text-sm">No classes today — rest up!</p>
+            ) : (
+              <div className="space-y-1.5">
+                {(() => {
+                  const rows: React.ReactNode[] = []
+                  let i = 0
+                  while (i < todayClasses.length) {
+                    const cls = todayClasses[i]
+                    if (cls.concurrent && i + 1 < todayClasses.length) {
+                      const next = todayClasses[i + 1]
+                      rows.push(
+                        <div key={i} className="flex items-stretch gap-1.5">
+                          <div className="w-12 shrink-0 flex items-center">
+                            <span className="text-gray-400 text-xs font-bold">{cls.time}</span>
+                          </div>
+                          <div className="flex-1 flex gap-1.5">
+                            <div className={`flex-1 text-xs font-bold px-2.5 py-1.5 rounded-lg border ${TAG_COLORS[cls.tag ?? 'gi']}`}>
+                              {cls.name}
+                            </div>
+                            <div className={`flex-1 text-xs font-bold px-2.5 py-1.5 rounded-lg border ${TAG_COLORS[next.tag ?? 'nogi']}`}>
+                              {next.name}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                      i += 2
+                    } else {
+                      rows.push(
+                        <div key={i} className="flex items-center gap-1.5">
+                          <span className="text-gray-400 text-xs font-bold w-12 shrink-0">{cls.time}</span>
+                          <div className={`flex-1 text-xs font-bold px-2.5 py-1.5 rounded-lg border ${TAG_COLORS[cls.tag ?? 'gi']}`}>
+                            {cls.name}
+                          </div>
+                        </div>
+                      )
+                      i++
+                    }
+                  }
+                  return rows
+                })()}
+              </div>
+            )}
+          </div>
           {new Date() < new Date('2026-09-20T00:00:00-05:00') && (
             <div className="rounded-xl px-5 py-4 flex items-center gap-4 flex-wrap" style={{ background: '#111111', borderLeft: '4px solid #cc0000', borderTop: '1px solid #333', borderRight: '1px solid #333', borderBottom: '1px solid #333' }}>
               <p className="text-white font-black uppercase tracking-wide text-sm leading-snug flex-1">
