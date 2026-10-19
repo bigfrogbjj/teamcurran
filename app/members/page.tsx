@@ -88,60 +88,46 @@ export default async function MembersDashboard() {
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* Today's Curriculum */}
-          {todaySchedule && (
-            <div className="md:col-span-2 bg-gray-900 border border-brand/30 rounded-2xl overflow-hidden">
-              {todaySchedule.special ? (
-                <div className="p-6">
-                  <span className="text-brand text-xs font-bold uppercase tracking-widest">Today's Curriculum</span>
-                  <h2 className="text-xl font-black uppercase mt-1">{todaySchedule.special}</h2>
-                  <p className="text-gray-400 text-sm mt-1">No curriculum class today — come roll!</p>
-                </div>
-              ) : todaySchedule.video ? (
-                <div className="flex flex-col sm:flex-row">
-                  <div className="relative sm:w-64 aspect-video sm:aspect-auto shrink-0">
-                    <Image src={todaySchedule.video.thumb} alt={todaySchedule.video.title} fill className="object-cover" unoptimized />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6 flex flex-col justify-center gap-3">
-                    <div>
-                      <span className="text-brand text-xs font-bold uppercase tracking-widest">Today&apos;s Curriculum Video</span>
-                      <p className="text-gray-500 text-xs uppercase tracking-widest">Class {String(todaySchedule.video.num).padStart(2,'0')} of 25</p>
-                      <h2 className="text-xl font-black uppercase mt-1">{todaySchedule.video.title}</h2>
-                    </div>
-                    <div className="flex gap-3 flex-wrap">
-                      <a href="/api/bfn-sso" className="bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-5 py-2.5 rounded-lg transition-colors">
-                        Watch Now →
-                      </a>
-                      <Link href="/members/curriculum" className="border border-gray-700 hover:border-brand text-gray-300 hover:text-brand text-sm font-bold uppercase tracking-widest px-5 py-2.5 rounded-lg transition-colors">
-                        Full Schedule
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* Watch Library */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
-            <div className="flex items-center gap-2 mb-1">
+          {/* Watch Library + Today's Curriculum */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between px-6 pt-6 mb-3">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Video Library</span>
+              <Link href="/members/curriculum" className="text-xs text-gray-500 hover:text-brand transition-colors">Full schedule →</Link>
             </div>
-            <h2 className="text-xl font-black uppercase mb-2">Watch Library</h2>
-            <p className="text-gray-400 text-sm mb-6 flex-1">
-              Access the full Team Curran technique library — hundreds of BJJ and Muay Thai videos, organized by instructor and category.
-            </p>
-            <a
-              href="/api/bfn-sso"
-              className="bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
-            >
-              Open Watch Library
-            </a>
+            <h2 className="text-xl font-black uppercase px-6 mb-4">Watch Library</h2>
+
+            {todaySchedule?.video ? (
+              <>
+                <div className="relative mx-6 rounded-xl overflow-hidden aspect-video mb-4">
+                  <Image src={todaySchedule.video.thumb} alt={todaySchedule.video.title} fill className="object-cover" unoptimized />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                  <div className="absolute top-2 left-2 bg-brand text-white text-xs font-black px-2 py-0.5 rounded">
+                    Today · Class {String(todaySchedule.video.num).padStart(2,'0')} of 25
+                  </div>
+                </div>
+                <p className="text-white font-black uppercase px-6 mb-1">{todaySchedule.video.title}</p>
+                <p className="text-gray-400 text-xs px-6 mb-4 flex-1">Today&apos;s fundamental curriculum class. Access the full technique library below.</p>
+              </>
+            ) : todaySchedule?.special ? (
+              <div className="mx-6 mb-4 bg-brand/10 border border-brand/30 rounded-xl p-4 flex-1">
+                <p className="text-brand text-xs font-bold uppercase tracking-widest mb-0.5">Today</p>
+                <p className="text-white font-black uppercase">{todaySchedule.special}</p>
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm px-6 mb-4 flex-1">
+                Access the full Team Curran technique library — hundreds of BJJ and Muay Thai videos, organized by instructor and category.
+              </p>
+            )}
+
+            <div className="px-6 pb-6">
+              <a href="/api/bfn-sso" className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
+                Open Watch Library
+              </a>
+            </div>
           </div>
 
           {/* Upcoming Events + JCI promo stacked in one column */}
