@@ -30,8 +30,9 @@ export default async function MembersDashboard() {
       .from("tc_events")
       .select("*")
       .gte("event_date", new Date().toISOString().split("T")[0])
+      .lte("event_date", (() => { const d = new Date(); d.setDate(d.getDate() + 45); return d.toISOString().split("T")[0]; })())
       .order("event_date", { ascending: true })
-      .limit(3),
+      .limit(20),
     supabase
       .from("tc_posts")
       .select("id, title, excerpt, published_at, is_members_only")
@@ -177,7 +178,7 @@ export default async function MembersDashboard() {
             </div>
             <h2 className="text-xl font-black uppercase mb-4">Upcoming Events</h2>
             {upcomingEvents && upcomingEvents.length > 0 ? (
-              <ul className="space-y-3 flex-1">
+              <ul className="space-y-3 flex-1 overflow-y-auto max-h-96">
                 {upcomingEvents.map((event) => (
                   <li key={event.id} className="border-l-2 border-brand pl-3">
                     <p className="text-white text-sm font-bold">{event.title}</p>
