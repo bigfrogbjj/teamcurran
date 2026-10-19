@@ -51,12 +51,14 @@ export default function AdminMembersPage() {
   }
 
   async function sendTempPassword(email: string) {
+    const password = window.prompt(`Set temporary password for ${email}:`);
+    if (!password) return;
     setSending(email + "_temp");
     setError((e) => ({ ...e, [email]: "" }));
     const res = await fetch("/api/admin/set-temp-password", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email, password: "UseTHISpasswordDaMNit!" }),
+      body: JSON.stringify({ email, password }),
     });
     if (res.ok) {
       setTempSent((s) => ({ ...s, [email]: true }));
