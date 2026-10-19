@@ -103,7 +103,7 @@ export default async function MembersDashboard() {
 
             {todaySchedule?.video ? (
               <>
-                <div className="relative mx-6 rounded-xl overflow-hidden aspect-video mb-4">
+                <a href={`/api/bfn-sso?class=${todaySchedule.video.num}`} className="relative mx-6 rounded-xl overflow-hidden aspect-video mb-4 block">
                   <Image src={todaySchedule.video.thumb} alt={todaySchedule.video.title} fill className="object-cover" unoptimized />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
@@ -113,7 +113,7 @@ export default async function MembersDashboard() {
                   <div className="absolute top-2 left-2 bg-brand text-white text-xs font-black px-2 py-0.5 rounded">
                     Today · Class {String(todaySchedule.video.num).padStart(2,'0')} of 25
                   </div>
-                </div>
+                </a>
                 <p className="text-white font-black uppercase px-6 mb-1">{todaySchedule.video.title}</p>
                 <p className="text-gray-400 text-xs px-6 mb-4 flex-1">Today&apos;s fundamental curriculum class. Access the full technique library below.</p>
               </>
@@ -131,12 +131,12 @@ export default async function MembersDashboard() {
             {(yesterdaySchedule?.video || tomorrowSchedule?.video) && (
               <div className="flex gap-4 px-6 mb-4">
                 {yesterdaySchedule?.video && (
-                  <a href="/api/bfn-sso" className="text-xs text-gray-500 hover:text-brand transition-colors">
+                  <a href={`/api/bfn-sso?class=${yesterdaySchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors">
                     ← Yesterday: #{yesterdaySchedule.video.num} {yesterdaySchedule.video.title}
                   </a>
                 )}
                 {tomorrowSchedule?.video && (
-                  <a href="/api/bfn-sso" className="text-xs text-gray-500 hover:text-brand transition-colors ml-auto text-right">
+                  <a href={`/api/bfn-sso?class=${tomorrowSchedule.video.num}`} className="text-xs text-gray-500 hover:text-brand transition-colors ml-auto text-right">
                     Tomorrow: #{tomorrowSchedule.video.num} {tomorrowSchedule.video.title} →
                   </a>
                 )}

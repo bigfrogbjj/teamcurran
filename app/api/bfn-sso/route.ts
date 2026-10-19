@@ -1,11 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // Generates a BF Nation magic link for the currently logged-in TC member
 // and redirects them to bigfrogbjj.com/watch/library
-export async function GET() {
+// Optional ?class=N deep-links to #class-N on the library page
+export async function GET(req: NextRequest) {
   const cookieStore = await cookies();
 
   const tcSupabase = createServerClient(
@@ -24,6 +25,9 @@ export async function GET() {
     return NextResponse.redirect(new URL("/members/login", process.env.NEXT_PUBLIC_SITE_URL || "https://teamcurran.com"));
   }
 
+  const classNum = req.nextUrl.searchParams.get('class')
+  const libraryPath = classNum ? `/watch/library#class-${classNum}` : '/watch/library'
+
   const bfnAdmin = createClient(
     process.env.BFN_SUPABASE_URL!,
     process.env.BFN_SUPABASE_SERVICE_ROLE_KEY!
@@ -33,13 +37,13 @@ export async function GET() {
     type: "magiclink",
     email: user.email,
     options: {
-      redirectTo: "https://bigfrogbjj.com/auth/bfn-callback?next=/watch/library",
+      redirectTo: `https://bigfrogbjj.com/auth/bfn-callback?next=${encodeURIComponent(libraryPath)}`,
     },
   });
 
   if (error || !data?.properties?.action_link) {
     console.error("BFN SSO error:", error);
-    return NextResponse.redirect("https://bigfrogbjj.com/sign-in?redirect=/watch/library");
+    return NextResponse.redirect(`https://bigfrogbjj.com/sign-in?redirect=${encodeURIComponent(libraryPath)}`);
   }
 
   // Ensure BFN members row exists with gym access so library is unlocked
