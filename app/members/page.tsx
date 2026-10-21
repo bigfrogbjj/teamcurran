@@ -278,11 +278,11 @@ export default async function MembersDashboard() {
             <h2 className="text-xl font-black uppercase mb-4">Team Curran Gear</h2>
             <div className="grid grid-cols-3 gap-3 mb-4 flex-1">
               {[
-                { src: '/rashguards/rashguard-nonranked-black.webp', label: 'Rashguard', price: '$49.95' },
-                { src: '/rashguards/rashguard-blue.webp', label: 'Rashguard', price: '$49.95' },
-                { src: '/gi-black.jpg', label: 'Gi', price: '$179.95' },
+                { src: '/rashguards/rashguard-nonranked-black.png', label: 'Rashguard', price: '$49.95', href: '/shop/adult-rashguard' },
+                { src: '/rashguards/rashguard-ls-blue-belt.png', label: 'Long Sleeve', price: '$49.95', href: '/shop/adult-rashguard' },
+                { src: '/gi-blue.jpg', label: 'Gi', price: '$169.00', href: '/shop/tc-gi-adult' },
               ].map((item) => (
-                <Link key={item.src} href="/shop" className="group block">
+                <Link key={item.src} href={item.href} className="group block">
                   <div className="aspect-square bg-gray-800 rounded-lg overflow-hidden mb-1.5">
                     <Image
                       src={item.src}
