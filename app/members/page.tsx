@@ -97,11 +97,14 @@ export default async function MembersDashboard() {
           </div>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Cards grid — two independent columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
-          {/* Watch Library + Today's Curriculum */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden self-start">
+          {/* LEFT COLUMN */}
+          <div className="flex flex-col gap-6">
+
+          {/* Watch Library */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden">
             <div className="flex items-center justify-between px-6 pt-6 mb-3">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Video Library</span>
               <Link href="/members/curriculum" className="text-xs text-gray-500 hover:text-brand transition-colors">Full schedule →</Link>
@@ -156,9 +159,43 @@ export default async function MembersDashboard() {
                 Open Watch Library
               </a>
             </div>
+          </div>{/* end Watch Library card */}
+
+          {/* Shop */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-brand text-xs font-bold uppercase tracking-widest">Team Store</span>
+              <Link href="/shop" className="text-xs text-gray-500 hover:text-brand transition-colors">
+                Shop all →
+              </Link>
+            </div>
+            <h2 className="text-xl font-black uppercase mb-4">Team Curran Gear</h2>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {[
+                { src: '/rashguards/rashguard-nonranked-black.png', label: 'Rashguard', price: '$49.95', href: '/shop/adult-rashguard' },
+                { src: '/rashguards/rashguard-ls-blue-belt.png', label: 'Long Sleeve', price: '$49.95', href: '/shop/adult-rashguard' },
+                { src: '/gi-blue.jpg', label: 'Gi', price: '$169.00', href: '/shop/tc-gi-adult' },
+              ].map((item) => (
+                <Link key={item.src} href={item.href} className="group block">
+                  <div className="aspect-square bg-gray-800 rounded-lg overflow-hidden mb-1.5">
+                    <Image src={item.src} alt={item.label} width={120} height={120} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" unoptimized />
+                  </div>
+                  <p className="text-white text-xs font-bold truncate">{item.label}</p>
+                  <p className="text-gray-400 text-xs">{item.price}</p>
+                </Link>
+              ))}
+            </div>
+            <Link href="/shop" className="bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
+              Shop Team Gear
+            </Link>
           </div>
 
-          {/* Today's Schedule + Upcoming Events + JCI promo stacked in one column */}
+          </div>{/* end LEFT COLUMN */}
+
+          {/* RIGHT COLUMN */}
+          <div className="flex flex-col gap-6">
+
+          {/* Today's Schedule + Upcoming Events + JCI promo */}
           <div className="flex flex-col gap-3">
 
           {/* Today's Schedule */}
@@ -265,45 +302,7 @@ export default async function MembersDashboard() {
               All Events
             </Link>
           </div>
-          </div>{/* end events column wrapper */}
-
-          {/* Shop */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-brand text-xs font-bold uppercase tracking-widest">Team Store</span>
-              <Link href="/shop" className="text-xs text-gray-500 hover:text-brand transition-colors">
-                Shop all →
-              </Link>
-            </div>
-            <h2 className="text-xl font-black uppercase mb-4">Team Curran Gear</h2>
-            <div className="grid grid-cols-3 gap-3 mb-4 flex-1">
-              {[
-                { src: '/rashguards/rashguard-nonranked-black.png', label: 'Rashguard', price: '$49.95', href: '/shop/adult-rashguard' },
-                { src: '/rashguards/rashguard-ls-blue-belt.png', label: 'Long Sleeve', price: '$49.95', href: '/shop/adult-rashguard' },
-                { src: '/gi-blue.jpg', label: 'Gi', price: '$169.00', href: '/shop/tc-gi-adult' },
-              ].map((item) => (
-                <Link key={item.src} href={item.href} className="group block">
-                  <div className="aspect-square bg-gray-800 rounded-lg overflow-hidden mb-1.5">
-                    <Image
-                      src={item.src}
-                      alt={item.label}
-                      width={120}
-                      height={120}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                    />
-                  </div>
-                  <p className="text-white text-xs font-bold truncate">{item.label}</p>
-                  <p className="text-gray-400 text-xs">{item.price}</p>
-                </Link>
-              ))}
-            </div>
-            <Link
-              href="/shop"
-              className="bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
-            >
-              Shop Team Gear
-            </Link>
-          </div>
+          </div>{/* end Today's Schedule + Events stack */}
 
           {/* Latest News */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
@@ -384,7 +383,9 @@ export default async function MembersDashboard() {
             </div>
           </div>
 
-        </div>
+          </div>{/* end RIGHT COLUMN */}
+
+        </div>{/* end two-column grid */}
       </main>
     </div>
   );
