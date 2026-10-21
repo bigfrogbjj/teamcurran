@@ -73,6 +73,9 @@ export default async function MembersDashboard() {
                 Admin
               </Link>
             )}
+            <Link href="/members/schedule" className="text-xs text-gray-400 hover:text-brand transition-colors uppercase tracking-wide">
+              Schedule
+            </Link>
             <Link href="/members/account" className="text-xs text-gray-400 hover:text-brand transition-colors uppercase tracking-wide">
               Account
             </Link>

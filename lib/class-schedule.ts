@@ -2,7 +2,7 @@ export interface ClassEntry {
   time: string
   name: string
   concurrent?: boolean // shown at same time as the next entry
-  tag?: 'gi' | 'nogi' | 'kids' | 'muay-thai' | 'open-mat'
+  tag?: 'gi' | 'nogi' | 'kids' | 'muay-thai' | 'open-mat' | 'womens'
 }
 
 // Day index: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
@@ -43,7 +43,8 @@ export const WEEKLY_SCHEDULE: Record<number, ClassEntry[]> = {
     { time: '7pm',  name: 'Gi – Advanced',                      tag: 'gi' },
   ],
   5: [ // Friday
-    { time: '12pm', name: 'NoGi Open Mat — Visitors Welcome!', tag: 'open-mat' },
+    { time: '12pm',   name: 'NoGi Open Mat — Visitors Welcome!', tag: 'open-mat' },
+    { time: '6:30pm', name: "Women's Open Mat",                  tag: 'womens' },
   ],
   6: [ // Saturday
     { time: '10am', name: 'Kids NoGi',            tag: 'kids' },
@@ -63,4 +64,5 @@ export const TAG_COLORS: Record<string, string> = {
   'kids':      'bg-sky-500/20 text-sky-300 border-sky-500/40',
   'muay-thai': 'bg-gray-300 text-black border-gray-400',
   'open-mat':  'bg-gray-800 text-white border-gray-600',
+  'womens':    'bg-rose-500/20 text-rose-300 border-rose-500/40',
 }
