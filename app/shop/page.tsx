@@ -3,7 +3,8 @@ import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Image from 'next/image'
-import { TC_PRODUCTS, money } from '@/lib/tc-products'
+import { money } from '@/lib/tc-products'
+import { getProductsWithPrices } from '@/lib/tc-shop-prices'
 import CartIcon from './CartIcon'
 
 export const metadata = { title: 'Team Curran Shop', robots: 'noindex,nofollow' }
@@ -36,8 +37,9 @@ async function getMemberDiscount(): Promise<number> {
 
 export default async function ShopPage() {
   const discountPct = await getMemberDiscount()
-  const training = TC_PRODUCTS.filter((p) => p.category === 'training')
-  const apparel = TC_PRODUCTS.filter((p) => p.category === 'apparel')
+  const allProducts = await getProductsWithPrices()
+  const training = allProducts.filter((p) => p.category === 'training')
+  const apparel = allProducts.filter((p) => p.category === 'apparel')
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
@@ -82,7 +84,7 @@ export default async function ShopPage() {
   )
 }
 
-function Section({ title, products }: { title: string; products: typeof TC_PRODUCTS }) {
+function Section({ title, products }: { title: string; products: import('@/lib/tc-products').TCProduct[] }) {
   if (!products.length) return null
   return (
     <div className="mb-12">
