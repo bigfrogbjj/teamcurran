@@ -151,8 +151,7 @@ export default async function MembersDashboard() {
               </div>
             )}
 
-            <div className="flex-1" />
-            <div className="px-6 pb-6">
+            <div className="px-6 pb-6 mt-2">
               <a target="_blank" rel="noopener noreferrer" href="/api/bfn-sso" className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
                 Open Watch Library
               </a>
