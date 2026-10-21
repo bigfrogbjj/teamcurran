@@ -43,18 +43,34 @@ export default async function ShopPage() {
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
-      {/* Header */}
-      <div className="border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-end justify-between">
-          <div>
-            <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-2">Team Curran</p>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
-              Team Store
-            </h1>
-            <p className="text-gray-400 mt-2 text-base">Official Team Curran gear · Preorder closes Nov 1</p>
+      {/* Nav */}
+      <header className="bg-gray-950 border-b border-gray-800 px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Image src="/Team Curran C .png" alt="Team Curran" width={44} height={44} className="h-9 w-auto" />
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wider">Team Store</p>
+              <p className="text-sm font-bold text-white leading-none">Team Curran</p>
+            </div>
           </div>
-          <CartIcon />
+          <div className="flex items-center gap-4">
+            <Link href="/members" className="text-xs text-gray-400 hover:text-blue-400 transition-colors uppercase tracking-wide">
+              Portal
+            </Link>
+            <Link href="/members/schedule" className="text-xs text-gray-400 hover:text-blue-400 transition-colors uppercase tracking-wide">
+              Schedule
+            </Link>
+            <CartIcon />
+          </div>
         </div>
+      </header>
+
+      {/* Page title */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
+          Team Store
+        </h1>
+        <p className="text-gray-400 mt-2 text-base">Official Team Curran gear · Preorder closes Nov 1</p>
       </div>
 
       {discountPct > 0 && (
