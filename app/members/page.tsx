@@ -101,7 +101,7 @@ export default async function MembersDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* Watch Library + Today's Curriculum */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden self-start">
             <div className="flex items-center justify-between px-6 pt-6 mb-3">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Video Library</span>
               <Link href="/members/curriculum" className="text-xs text-gray-500 hover:text-brand transition-colors">Full schedule →</Link>

@@ -4,22 +4,31 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { money, type TCProduct, type TCColorVariant } from '@/lib/tc-products'
+import { money, type TCProduct, type TCColorVariant, type TCSleeveVariant } from '@/lib/tc-products'
 import { useCart } from '../CartContext'
 
 export function ProductDetail({ product }: { product: TCProduct }) {
   const router = useRouter()
   const { addItem, totalItems } = useCart()
 
+  const firstSleeve = product.sleeveVariants?.[0] ?? null
+  const [selectedSleeve, setSelectedSleeve] = useState<TCSleeveVariant | null>(firstSleeve)
+
+  const activeColorVariants = selectedSleeve?.colorVariants ?? product.colorVariants ?? []
   const [selectedColor, setSelectedColor] = useState<TCColorVariant | null>(
-    product.colorVariants?.[0] ?? null
+    activeColorVariants[0] ?? null
   )
   const [selectedSize, setSelectedSize] = useState('')
   const [qty, setQty] = useState(1)
   const [error, setError] = useState('')
   const [added, setAdded] = useState(false)
 
-  const activeImage = selectedColor?.imageUrl ?? product.imageUrl
+  function handleSleeveChange(sv: TCSleeveVariant) {
+    setSelectedSleeve(sv)
+    setSelectedColor(sv.colorVariants[0] ?? null)
+  }
+
+  const activeImage = selectedColor?.imageUrl ?? selectedSleeve?.imageUrl ?? product.imageUrl
 
   function handleAdd() {
     if (!selectedSize) { setError('Please select a size.'); return }
@@ -28,7 +37,7 @@ export function ProductDetail({ product }: { product: TCProduct }) {
     addItem(
       {
         slug: product.slug,
-        name: product.name,
+        name: selectedSleeve ? `${product.name} (${selectedSleeve.label})` : product.name,
         colorKey: selectedColor?.key ?? null,
         colorLabel: selectedColor?.label ?? null,
         imageUrl: activeImage,
@@ -108,14 +117,36 @@ export function ProductDetail({ product }: { product: TCProduct }) {
             </div>
 
             <div className="mt-8 space-y-6">
+              {/* Sleeve length */}
+              {product.sleeveVariants && product.sleeveVariants.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Sleeve</p>
+                  <div className="flex gap-2">
+                    {product.sleeveVariants.map((sv) => (
+                      <button
+                        key={sv.key}
+                        onClick={() => handleSleeveChange(sv)}
+                        className={`px-4 py-2 rounded border text-sm font-bold uppercase tracking-wide transition-colors ${
+                          selectedSleeve?.key === sv.key
+                            ? 'bg-blue-700 border-blue-600 text-white'
+                            : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-blue-700 hover:text-white'
+                        }`}
+                      >
+                        {sv.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Color */}
-              {product.colorVariants && product.colorVariants.length > 0 && (
+              {activeColorVariants.length > 0 && (
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
                     Color{selectedColor && <span className="text-white ml-2 normal-case font-normal">— {selectedColor.label}</span>}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {product.colorVariants.map((cv) => (
+                    {activeColorVariants.map((cv) => (
                       <button
                         key={cv.key}
                         onClick={() => setSelectedColor(cv)}

@@ -17,6 +17,13 @@ export interface TCCustomization {
   rankOptions: string[]
 }
 
+export interface TCSleeveVariant {
+  key: 'short' | 'long'
+  label: string
+  colorVariants: TCColorVariant[]
+  imageUrl: string
+}
+
 export interface TCProduct {
   slug: string
   name: string
@@ -28,6 +35,7 @@ export interface TCProduct {
   imageUrl: string | null
   variants: TCVariant[]
   colorVariants?: TCColorVariant[]
+  sleeveVariants?: TCSleeveVariant[]
   customization?: TCCustomization
   category: 'training' | 'apparel'
 }
@@ -59,45 +67,43 @@ export const TC_PRODUCTS: TCProduct[] = [
   {
     slug: 'adult-rashguard',
     name: 'Adult Rashguard',
-    tagline: 'Competition-cut compression rashguard. Choose your rank color.',
+    tagline: 'Competition-cut compression rashguard. Choose your sleeve length and rank color.',
     description: [
       'Competition-cut compression rashguard in the 2026 Team Curran design.',
-      'Select the color that matches your belt rank.',
+      'Available in short sleeve and long sleeve. Select the color that matches your belt rank.',
     ],
     priceMinor: 4995,
     shippingMinor: 1000,
     imageUrl: '/rashguards/rashguard-nonranked-black.png',
-    colorVariants: [
-      { key: 'nonranked-black', label: 'Non-Ranked Black', imageUrl: '/rashguards/rashguard-nonranked-black.png', swatch: '#374151' },
-      { key: 'nonranked-white', label: 'Non-Ranked White', imageUrl: '/rashguards/rashguard-nonranked-white.png', swatch: '#e5e7eb' },
-      { key: 'white-belt', label: 'White Belt', imageUrl: '/rashguards/rashguard-white-belt.png', swatch: '#f3f4f6' },
-      { key: 'blue-belt', label: 'Blue Belt', imageUrl: '/rashguards/rashguard-blue.png', swatch: '#2563eb' },
-      { key: 'purple-belt', label: 'Purple Belt', imageUrl: '/rashguards/rashguard-purple.png', swatch: '#7c3aed' },
-      { key: 'brown-belt', label: 'Brown Belt', imageUrl: '/rashguards/rashguard-brown.png', swatch: '#78350f' },
-      { key: 'black-belt', label: 'Black Belt', imageUrl: '/rashguards/rashguard-black-belt.png', swatch: '#dc2626' },
-    ],
-    variants: ADULT_SIZES,
-    category: 'training',
-  },
-  {
-    slug: 'adult-rashguard-ls',
-    name: 'Adult Rashguard — Long Sleeve',
-    tagline: 'Long-sleeve competition rashguard. Choose your rank color.',
-    description: [
-      'Long-sleeve compression rashguard in the 2026 Team Curran design.',
-      'Select the color that matches your belt rank.',
-    ],
-    priceMinor: 5495,
-    shippingMinor: 1000,
-    imageUrl: '/rashguards/rashguard-ls-nonranked-black.png',
-    colorVariants: [
-      { key: 'nonranked-black', label: 'Non-Ranked Black', imageUrl: '/rashguards/rashguard-ls-nonranked-black.png', swatch: '#374151' },
-      { key: 'nonranked-white', label: 'Non-Ranked White', imageUrl: '/rashguards/rashguard-ls-nonranked-white.png', swatch: '#f3f4f6' },
-      { key: 'white-belt',     label: 'White Belt',       imageUrl: '/rashguards/rashguard-ls-white-belt.png',     swatch: '#e5e7eb' },
-      { key: 'blue-belt',      label: 'Blue Belt',        imageUrl: '/rashguards/rashguard-ls-blue-belt.png',      swatch: '#2563eb' },
-      { key: 'purple-belt',    label: 'Purple Belt',      imageUrl: '/rashguards/rashguard-ls-purple-belt.png',    swatch: '#7c3aed' },
-      { key: 'brown-belt',     label: 'Brown Belt',       imageUrl: '/rashguards/rashguard-ls-brown-belt.png',     swatch: '#78350f' },
-      { key: 'black-belt',     label: 'Black Belt',       imageUrl: '/rashguards/rashguard-ls-black-belt.png',     swatch: '#dc2626' },
+    sleeveVariants: [
+      {
+        key: 'short',
+        label: 'Short Sleeve',
+        imageUrl: '/rashguards/rashguard-nonranked-black.png',
+        colorVariants: [
+          { key: 'nonranked-black', label: 'Non-Ranked Black', imageUrl: '/rashguards/rashguard-nonranked-black.png', swatch: '#374151' },
+          { key: 'nonranked-white', label: 'Non-Ranked White', imageUrl: '/rashguards/rashguard-nonranked-white.png', swatch: '#e5e7eb' },
+          { key: 'white-belt',      label: 'White Belt',       imageUrl: '/rashguards/rashguard-white-belt.png',     swatch: '#f3f4f6' },
+          { key: 'blue-belt',       label: 'Blue Belt',        imageUrl: '/rashguards/rashguard-blue.png',           swatch: '#2563eb' },
+          { key: 'purple-belt',     label: 'Purple Belt',      imageUrl: '/rashguards/rashguard-purple.png',         swatch: '#7c3aed' },
+          { key: 'brown-belt',      label: 'Brown Belt',       imageUrl: '/rashguards/rashguard-brown.png',          swatch: '#78350f' },
+          { key: 'black-belt',      label: 'Black Belt',       imageUrl: '/rashguards/rashguard-black-belt.png',     swatch: '#dc2626' },
+        ],
+      },
+      {
+        key: 'long',
+        label: 'Long Sleeve',
+        imageUrl: '/rashguards/rashguard-ls-nonranked-black.png',
+        colorVariants: [
+          { key: 'nonranked-black', label: 'Non-Ranked Black', imageUrl: '/rashguards/rashguard-ls-nonranked-black.png', swatch: '#374151' },
+          { key: 'nonranked-white', label: 'Non-Ranked White', imageUrl: '/rashguards/rashguard-ls-nonranked-white.png', swatch: '#f3f4f6' },
+          { key: 'white-belt',      label: 'White Belt',       imageUrl: '/rashguards/rashguard-ls-white-belt.png',     swatch: '#e5e7eb' },
+          { key: 'blue-belt',       label: 'Blue Belt',        imageUrl: '/rashguards/rashguard-ls-blue-belt.png',      swatch: '#2563eb' },
+          { key: 'purple-belt',     label: 'Purple Belt',      imageUrl: '/rashguards/rashguard-ls-purple-belt.png',    swatch: '#7c3aed' },
+          { key: 'brown-belt',      label: 'Brown Belt',       imageUrl: '/rashguards/rashguard-ls-brown-belt.png',     swatch: '#78350f' },
+          { key: 'black-belt',      label: 'Black Belt',       imageUrl: '/rashguards/rashguard-ls-black-belt.png',     swatch: '#dc2626' },
+        ],
+      },
     ],
     variants: ADULT_SIZES,
     category: 'training',
