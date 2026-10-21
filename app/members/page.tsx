@@ -122,15 +122,15 @@ export default async function MembersDashboard() {
                   </div>
                 </a>
                 <p className="text-white font-black uppercase px-6 mb-1">{todaySchedule.video.title}</p>
-                <p className="text-gray-400 text-xs px-6 mb-4 flex-1">Daily Fundamentals Video. Access the full technique library below.</p>
+                <p className="text-gray-400 text-xs px-6 mb-4">Daily Fundamentals Video. Access the full technique library below.</p>
               </>
             ) : todaySchedule?.special ? (
-              <div className="mx-6 mb-4 bg-brand/10 border border-brand/30 rounded-xl p-4 flex-1">
+              <div className="mx-6 mb-4 bg-brand/10 border border-brand/30 rounded-xl p-4">
                 <p className="text-brand text-xs font-bold uppercase tracking-widest mb-0.5">Today</p>
                 <p className="text-white font-black uppercase">{todaySchedule.special}</p>
               </div>
             ) : (
-              <p className="text-gray-400 text-sm px-6 mb-4 flex-1">
+              <p className="text-gray-400 text-sm px-6 mb-4">
                 Access the full Team Curran technique library — hundreds of BJJ and Muay Thai videos, organized by instructor and category.
               </p>
             )}
@@ -150,6 +150,7 @@ export default async function MembersDashboard() {
               </div>
             )}
 
+            <div className="flex-1" />
             <div className="px-6 pb-6">
               <a target="_blank" rel="noopener noreferrer" href="/api/bfn-sso" className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center">
                 Open Watch Library
