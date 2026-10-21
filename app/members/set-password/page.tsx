@@ -14,11 +14,19 @@ export default function SetPasswordPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Supabase puts the session in the URL hash after clicking the reset link
     const supabase = createSupabaseClient();
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setReady(true);
+
+    // Check immediately — the browser client may have already consumed the hash
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
     });
+
+    // Also listen in case the hash hasn't been processed yet
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
