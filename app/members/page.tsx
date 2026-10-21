@@ -106,7 +106,8 @@ export default async function MembersDashboard() {
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Video Library</span>
               <Link href="/members/curriculum" className="text-xs text-gray-500 hover:text-brand transition-colors">Full schedule →</Link>
             </div>
-            <h2 className="text-xl font-black uppercase px-6 mb-4">Watch Library</h2>
+            <h2 className="text-xl font-black uppercase px-6 mb-1">Watch Library</h2>
+            <p className="text-gray-500 text-xs px-6 mb-4 uppercase tracking-wide">Daily Fundamentals Video</p>
 
             {todaySchedule?.video ? (
               <>
