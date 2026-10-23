@@ -70,14 +70,23 @@ function generateTempPassword(): string {
   return result;
 }
 
-async function callBfnInternal(path: string, body: Record<string, unknown>) {
+async function callBfnInternal(path: string, body: Record<string, unknown>): Promise<string | null> {
   const secret = process.env.INTERNAL_API_SECRET;
-  if (!secret) return;
-  await fetch(`https://bigfrogbjj.com/api/internal/${path}`, {
-    method: "POST",
-    headers: { "content-type": "application/json", "x-internal-secret": secret },
-    body: JSON.stringify(body),
-  }).catch(() => {});
+  if (!secret) return "INTERNAL_API_SECRET not set";
+  try {
+    const res = await fetch(`https://bigfrogbjj.com/api/internal/${path}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-internal-secret": secret },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return `BFN ${path} failed (${res.status}): ${text}`;
+    }
+    return null;
+  } catch (err) {
+    return `BFN ${path} threw: ${String(err)}`;
+  }
 }
 
 export const maxDuration = 300;
@@ -238,14 +247,15 @@ export async function POST(request: NextRequest) {
         }
 
         // --- Brevo via BFN (tag + welcome email for brand-new members only) ---
-        await callBfnInternal("tag-tc-member", {
+        const brevoErr = await callBfnInternal("tag-tc-member", {
           email: row.email,
           name: row.name,
           phone: row.phone,
           isNew: sendWelcome,
           tempPassword,
         });
-        brevoSynced++;
+        if (brevoErr) errors.push(`Brevo ${row.email}: ${brevoErr}`);
+        else brevoSynced++;
       } else {
         // Inactive: deactivate in TC, revoke BFN gym access, remove from Brevo TC list
         if (tcUser) {
@@ -256,7 +266,8 @@ export async function POST(request: NextRequest) {
         if (bfnUser) {
           await bfnAdmin.from("members").update({ gym_id: null, status: "inactive" }).eq("id", bfnUser.id);
         }
-        await callBfnInternal("untag-tc-member", { email: row.email });
+        const untagErr = await callBfnInternal("untag-tc-member", { email: row.email });
+        if (untagErr) errors.push(`Brevo untag ${row.email}: ${untagErr}`);
       }
     } catch (err) {
       errors.push(`Error processing ${row.email}: ${String(err)}`);
