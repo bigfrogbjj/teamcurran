@@ -74,7 +74,7 @@ async function callBfnInternal(path: string, body: Record<string, unknown>): Pro
   const secret = process.env.INTERNAL_API_SECRET;
   if (!secret) return "INTERNAL_API_SECRET not set";
   try {
-    const res = await fetch(`https://bigfrogbjj.com/api/internal/${path}`, {
+    const res = await fetch(`https://www.bigfrogbjj.com/api/internal/${path}`, {
       method: "POST",
       headers: { "content-type": "application/json", "x-internal-secret": secret },
       body: JSON.stringify(body),
