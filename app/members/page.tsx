@@ -55,8 +55,23 @@ export default async function MembersDashboard() {
   const yesterdaySchedule = getScheduleForDate(yesterday);
   const tomorrowSchedule = getScheduleForDate(tomorrow);
 
+  // Banner: show parking lot notice until Oct 27, 2026
+  const bannerExpiry = new Date('2026-10-27T23:59:59-05:00')
+  const showParkingBanner = new Date() < bannerExpiry
+
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Parking lot banner */}
+      {showParkingBanner && (
+        <div className="bg-amber-900/60 border-b border-amber-700/60 px-6 py-3">
+          <div className="max-w-5xl mx-auto flex items-start gap-3">
+            <span className="text-amber-400 text-base mt-0.5">⚠️</span>
+            <p className="text-amber-200 text-sm leading-snug">
+              <span className="font-bold">Parking Notice:</span> Our side of the lot is being sealcoated Friday Oct 24. Park on the west side of the building or across the street — a path will be open on the west side to the patio and building. Pin striping possible this weekend.
+            </p>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <header className="bg-gray-950 border-b border-gray-800 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
