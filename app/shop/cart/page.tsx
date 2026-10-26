@@ -124,7 +124,7 @@ export default function CartPage() {
           >
             Proceed to Checkout →
           </button>
-          <p className="text-gray-600 text-xs text-center mt-3">Active TC members receive 5% off at checkout.</p>
+          <p className="text-gray-600 text-xs text-center mt-3">BFN All Access members: use code BFN20 for 20% off.</p>
         </div>
       </div>
     </div>

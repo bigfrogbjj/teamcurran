@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 import { discounted } from '@/lib/tc-products'
 import { createHostedCheckout } from '@/lib/clover'
 import type { CartLine } from '@/app/shop/CartContext'
@@ -29,30 +27,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
   }
 
-  // Resolve member discount server-side
+  // Promo code — server-side verification
   let discountPct = 0
-  try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    )
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user?.email) {
-      const admin = adminClient()
-      const { data: member } = await admin
+  if (promoCode?.toUpperCase() === 'BFN20') {
+    try {
+      const bfn = createClient(
+        process.env.BFN_SUPABASE_URL!,
+        process.env.BFN_SUPABASE_SERVICE_ROLE_KEY!,
+        { auth: { persistSession: false, autoRefreshToken: false } }
+      )
+      const { data: bfnMember } = await bfn
         .from('members')
         .select('status')
-        .eq('email', user.email.toLowerCase())
+        .eq('email', email.toLowerCase())
         .maybeSingle()
-      if (member?.status === 'active') discountPct = 5
-    }
-  } catch {}
-
-  // Promo code — server-side validation (overrides member discount if higher)
-  if (promoCode?.toUpperCase() === 'BFN20') {
-    discountPct = Math.max(discountPct, 20)
+      if (bfnMember?.status === 'active') discountPct = 20
+    } catch {}
   }
 
   const cloverLineItems = lines.map((line) => {

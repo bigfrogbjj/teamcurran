@@ -1,6 +1,3 @@
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Image from 'next/image'
 import { money } from '@/lib/tc-products'
@@ -9,34 +6,7 @@ import CartIcon from './CartIcon'
 
 export const metadata = { title: 'Team Curran Shop', robots: 'noindex,nofollow' }
 
-async function getMemberDiscount(): Promise<number> {
-  try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    )
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user?.email) return 0
-    const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      { auth: { persistSession: false, autoRefreshToken: false } }
-    )
-    const { data: member } = await admin
-      .from('members')
-      .select('status')
-      .eq('email', user.email.toLowerCase())
-      .maybeSingle()
-    return member?.status === 'active' ? 5 : 0
-  } catch {
-    return 0
-  }
-}
-
 export default async function ShopPage() {
-  const discountPct = await getMemberDiscount()
   const allProducts = await getProductsWithPrices()
   const training = allProducts.filter((p) => p.category === 'training')
   const apparel = allProducts.filter((p) => p.category === 'apparel')
@@ -73,16 +43,6 @@ export default async function ShopPage() {
         <p className="text-gray-400 mt-2 text-base">Official Team Curran gear · Preorder closes Nov 13</p>
         <p className="text-amber-500/80 text-xs mt-1">Note: Gi orders placed close to the deadline may not arrive before the holidays.</p>
       </div>
-
-      {discountPct > 0 && (
-        <div className="bg-blue-900/40 border-b border-blue-800">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <span className="text-blue-400 font-bold uppercase text-sm tracking-wide">
-              ✓ Active student — {discountPct}% discount applied at checkout
-            </span>
-          </div>
-        </div>
-      )}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <Section title="Training Gear" products={training} />

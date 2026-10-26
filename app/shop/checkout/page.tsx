@@ -17,6 +17,7 @@ export default function CheckoutPage() {
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoDiscountPct, setPromoDiscountPct] = useState(0)
   const [promoError, setPromoError] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -25,15 +26,32 @@ export default function CheckoutPage() {
   const promoSavings = promoApplied ? Math.round(subtotalMinor * promoDiscountPct / 100) : 0
   const totalMinor = subtotalMinor - promoSavings + shippingMinor
 
-  function applyPromo() {
+  async function applyPromo() {
     setPromoError('')
-    if (promoCode.trim().toUpperCase() === 'BFN20') {
-      setPromoApplied(true)
-      setPromoDiscountPct(20)
-    } else {
-      setPromoApplied(false)
-      setPromoDiscountPct(0)
-      setPromoError('Invalid promo code.')
+    setPromoApplied(false)
+    setPromoDiscountPct(0)
+    if (!email.trim()) {
+      setPromoError('Enter your email first.')
+      return
+    }
+    setPromoLoading(true)
+    try {
+      const res = await fetch('/api/shop/verify-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode.trim(), email: email.trim() }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setPromoApplied(true)
+        setPromoDiscountPct(data.discountPct)
+      } else {
+        setPromoError(data.error || 'Invalid promo code.')
+      }
+    } catch {
+      setPromoError('Could not verify code. Try again.')
+    } finally {
+      setPromoLoading(false)
     }
   }
 
@@ -141,12 +159,13 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={applyPromo}
-              className="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase tracking-wide text-sm px-5 py-3 rounded-lg border border-gray-700 transition-colors"
+              disabled={promoLoading}
+              className="bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white font-bold uppercase tracking-wide text-sm px-5 py-3 rounded-lg border border-gray-700 transition-colors"
             >
-              Apply
+              {promoLoading ? '...' : 'Apply'}
             </button>
           </div>
-          {promoApplied && <p className="text-green-400 text-xs mt-1">✓ 20% discount applied</p>}
+          {promoApplied && <p className="text-green-400 text-xs mt-1">✓ {promoDiscountPct}% discount applied</p>}
           {promoError && <p className="text-red-400 text-xs mt-1">{promoError}</p>}
         </div>
 
