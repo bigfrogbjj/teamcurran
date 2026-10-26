@@ -5,10 +5,14 @@ import Link from 'next/link'
 import { useCart } from '../CartContext'
 import { money } from '@/lib/tc-products'
 
+
 export default function CheckoutPage() {
   const { lines, subtotalMinor, clear } = useCart()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [gym, setGym] = useState('')
+  const [shippingOption, setShippingOption] = useState<'ship' | 'pickup'>('ship')
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoDiscountPct, setPromoDiscountPct] = useState(0)
@@ -16,7 +20,8 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const shippingMinor = lines.length > 0 ? Math.max(...lines.map((l) => l.shippingMinor)) : 0
+  const baseShippingMinor = lines.length > 0 ? Math.max(...lines.map((l) => l.shippingMinor)) : 0
+  const shippingMinor = shippingOption === 'pickup' ? 0 : baseShippingMinor
   const promoSavings = promoApplied ? Math.round(subtotalMinor * promoDiscountPct / 100) : 0
   const totalMinor = subtotalMinor - promoSavings + shippingMinor
 
@@ -44,14 +49,25 @@ export default function CheckoutPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (!fullName.trim() || !email.trim()) { setError('Please fill in all fields.'); return }
+    if (!fullName.trim() || !email.trim() || !phone.trim() || !gym.trim()) {
+      setError('Please fill in all fields.')
+      return
+    }
 
     setLoading(true)
     try {
       const res = await fetch('/api/shop/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lines, fullName: fullName.trim(), email: email.trim(), shippingMinor, promoCode: promoCode.trim().toUpperCase() }),
+        body: JSON.stringify({
+          lines,
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          gym: gym.trim(),
+          shippingMinor,
+          promoCode: promoCode.trim().toUpperCase(),
+        }),
       })
       const data = await res.json()
       if (data.url) {
@@ -154,6 +170,57 @@ export default function CheckoutPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
             />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Phone</label>
+            <input
+              type="tel"
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="(555) 555-5555"
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Where do you train?</label>
+            <input
+              type="text"
+              required
+              value={gym}
+              onChange={(e) => setGym(e.target.value)}
+              placeholder="e.g. Team Curran Crystal Lake"
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-2">Delivery</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setShippingOption('ship')}
+                className={`rounded-lg border px-4 py-3 text-sm font-bold uppercase tracking-wide text-left transition-colors ${
+                  shippingOption === 'ship'
+                    ? 'bg-blue-900/60 border-blue-600 text-white'
+                    : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-gray-500'
+                }`}
+              >
+                <span className="block">Ship to me</span>
+                <span className="text-xs font-normal normal-case text-gray-400">{money(baseShippingMinor)}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShippingOption('pickup')}
+                className={`rounded-lg border px-4 py-3 text-sm font-bold uppercase tracking-wide text-left transition-colors ${
+                  shippingOption === 'pickup'
+                    ? 'bg-blue-900/60 border-blue-600 text-white'
+                    : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-gray-500'
+                }`}
+              >
+                <span className="block">Gym pickup</span>
+                <span className="text-xs font-normal normal-case text-gray-400">Free</span>
+              </button>
+            </div>
           </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
