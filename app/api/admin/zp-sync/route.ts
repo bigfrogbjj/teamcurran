@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (bfnUserId) {
-          const accessUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+          const accessUntil = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
             .toISOString().slice(0, 10);
           await bfnAdmin.from("members").upsert(
             {
