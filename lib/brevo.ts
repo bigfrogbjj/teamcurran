@@ -37,6 +37,29 @@ export async function upsertContact(params: {
   })
 }
 
+/**
+ * Find or create a Brevo list by name. Returns the numeric list ID.
+ * Caches the result in-process so we only hit the API once per cold start.
+ */
+const listIdCache = new Map<string, number>()
+export async function getOrCreateList(name: string, folderId?: number): Promise<number> {
+  if (listIdCache.has(name)) return listIdCache.get(name)!
+  // Try to find existing list
+  const res = await bf('/contacts/lists?limit=50&offset=0')
+  if (res.ok) {
+    const data = await res.json() as { lists?: { id: number; name: string }[] }
+    const existing = data.lists?.find((l) => l.name === name)
+    if (existing) { listIdCache.set(name, existing.id); return existing.id }
+  }
+  // Create it
+  const body: Record<string, unknown> = { name, isVisible: true }
+  if (folderId) body.folderId = folderId
+  const createRes = await bf('/contacts/lists', { method: 'POST', body: JSON.stringify(body) })
+  const created = await createRes.json() as { id: number }
+  listIdCache.set(name, created.id)
+  return created.id
+}
+
 /** Remove a contact from a list by list ID. Best-effort. */
 export async function removeFromList(email: string, listId: number) {
   await bf(`/contacts/lists/${listId}/contacts/remove`, {

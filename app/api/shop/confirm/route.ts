@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { sendEmail } from '@/lib/brevo'
+import { sendEmail, upsertContact, getOrCreateList } from '@/lib/brevo'
 
 const ADMIN_EMAILS = ['bigfrog145@me.com', 'jcinvitationalonline@gmail.com']
 
@@ -173,6 +173,24 @@ export async function POST(req: NextRequest) {
     })
   } catch (err) {
     console.error('TC shop: failed to send admin notification', err)
+  }
+
+  // Add purchaser to Brevo lists (best-effort)
+  try {
+    const [tcListId, bfnListId] = await Promise.all([
+      getOrCreateList('tc-shop-customers'),
+      getOrCreateList('BFN Master List'),
+    ])
+    const nameParts = (order.customer_name as string).split(' ')
+    await upsertContact({
+      email: order.customer_email as string,
+      firstName: nameParts[0],
+      lastName: nameParts.slice(1).join(' ') || undefined,
+      phone: order.customer_phone as string | undefined,
+      listIds: [tcListId, bfnListId],
+    })
+  } catch (err) {
+    console.error('TC shop: failed to sync contact to Brevo', err)
   }
 
   return NextResponse.json({ ok: true })
