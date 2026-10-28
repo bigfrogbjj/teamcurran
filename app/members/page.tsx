@@ -176,6 +176,23 @@ export default async function MembersDashboard() {
             </div>
           </div>{/* end Watch Library card */}
 
+          {/* Team Store card */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-brand text-xs font-bold uppercase tracking-widest">Team Store</span>
+              <span className="text-xs text-gray-500 uppercase tracking-wide">Preorder closes Nov 13</span>
+            </div>
+            <h2 className="text-xl font-black uppercase mb-2">Shop Gear</h2>
+            <p className="text-gray-400 text-sm mb-1">Official Team Curran gis and apparel — preorder now.</p>
+            <p className="text-xs text-amber-500/80 mb-4">BFN All Access members: use code <span className="font-bold tracking-widest">BFN20</span> for 20% off.</p>
+            <Link
+              href="/shop"
+              className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+            >
+              Shop Now →
+            </Link>
+          </div>
+
           </div>{/* end LEFT COLUMN */}
 
           {/* RIGHT COLUMN */}
