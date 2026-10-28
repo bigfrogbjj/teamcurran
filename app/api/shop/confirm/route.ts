@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
       subject: `Your Team Curran order is confirmed`,
       htmlContent: customerEmailHtml(order, checkoutSessionId),
       senderName: 'Team Curran',
-      senderEmail: 'no-reply@teamcurran.com',
+      senderEmail: 'info@bigfrogbjj.com',
     })
   } catch (err) {
     console.error('TC shop: failed to send customer email', err)
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
       subject: `TC Shop Order — ${order.customer_name} · ${fmt(order.total_minor as number)}`,
       htmlContent: adminEmailHtml(order, checkoutSessionId),
       senderName: 'Team Curran Shop',
-      senderEmail: 'no-reply@teamcurran.com',
+      senderEmail: 'info@bigfrogbjj.com',
     })
   } catch (err) {
     console.error('TC shop: failed to send admin notification', err)
