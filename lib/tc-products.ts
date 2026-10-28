@@ -273,6 +273,17 @@ export const TC_PRODUCTS: TCProduct[] = [
     variants: YOUTH_APPAREL_SIZES,
     category: 'apparel',
   },
+  {
+    slug: 'tc-jacket',
+    name: 'Adult Jacket',
+    tagline: 'Harriton fleece-lined nylon jacket. Black only.',
+    description: ['Harriton Unisex Fleece Lined Nylon Jacket in the 2026 Team Curran design. Black only.'],
+    priceMinor: 9495,
+    shippingMinor: 1000,
+    imageUrl: '/jacket.png',
+    variants: APPAREL_SIZES,
+    category: 'apparel',
+  },
 ]
 
 export function money(minor: number): string {
