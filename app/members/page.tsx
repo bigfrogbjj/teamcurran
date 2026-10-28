@@ -7,6 +7,8 @@ import Link from "next/link";
 import type { MemberProfile } from "../../lib/supabase";
 import { getScheduleForDate } from "../../lib/curriculum-schedule";
 import { getTodaySchedule, TAG_COLORS } from "../../lib/class-schedule";
+import { TC_PRODUCTS } from "../../lib/tc-products";
+import { money } from "../../lib/tc-products";
 
 
 export default async function MembersDashboard() {
@@ -177,20 +179,36 @@ export default async function MembersDashboard() {
           </div>{/* end Watch Library card */}
 
           {/* Team Store card */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-1">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-5 pt-5 mb-3">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Team Store</span>
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Preorder closes Nov 13</span>
+              <span className="text-xs text-gray-500 uppercase tracking-wide">Closes Nov 13</span>
             </div>
-            <h2 className="text-xl font-black uppercase mb-2">Shop Gear</h2>
-            <p className="text-gray-400 text-sm mb-1">Official Team Curran gis and apparel — preorder now.</p>
-            <p className="text-xs text-amber-500/80 mb-4">BFN All Access members: use code <span className="font-bold tracking-widest">BFN20</span> for 20% off.</p>
-            <Link
-              href="/shop"
-              className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
-            >
-              Shop Now →
-            </Link>
+            <h2 className="text-xl font-black uppercase px-5 mb-3">Shop Gear</h2>
+            {/* Product preview grid */}
+            <div className="grid grid-cols-3 gap-1 mx-5 mb-4">
+              {TC_PRODUCTS.slice(0, 6).map((p) => (
+                <Link key={p.slug} href={`/shop/${p.slug}`} className="group bg-gray-800 rounded-lg overflow-hidden aspect-square flex items-center justify-center hover:border hover:border-brand transition-all">
+                  {p.imageUrl ? (
+                    <Image src={p.imageUrl} alt={p.name} width={120} height={120} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" unoptimized />
+                  ) : (
+                    <Image src="/Team Curran Circle Logo.png" alt={p.name} width={40} height={40} className="opacity-20" />
+                  )}
+                </Link>
+              ))}
+            </div>
+            <div className="px-5 pb-5 flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>{TC_PRODUCTS.length} items available</span>
+                <span>from {money(Math.min(...TC_PRODUCTS.map(p => p.priceMinor)))}</span>
+              </div>
+              <Link
+                href="/shop"
+                className="block bg-brand hover:bg-blue-800 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-lg transition-colors text-center"
+              >
+                View Full Store →
+              </Link>
+            </div>
           </div>
 
           </div>{/* end LEFT COLUMN */}
