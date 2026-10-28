@@ -52,7 +52,7 @@ export default async function ShopSuccessPage({
         </h1>
 
         <p className="text-gray-300 text-base leading-relaxed mb-2">
-          Thanks for your order! You&apos;ll receive a confirmation email from Clover shortly.
+          Thanks for your order! You&apos;ll receive a confirmation email shortly.
         </p>
 
         <p className="text-gray-500 text-sm mb-8">

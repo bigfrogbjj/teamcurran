@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { discounted } from '@/lib/tc-products'
-import { createHostedCheckout } from '@/lib/clover'
+import { createHostedCheckout, isCloverConfigured } from '@/lib/clover'
 import type { CartLine } from '@/app/shop/CartContext'
 
 function adminClient() {
@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
   }
 
+  if (!isCloverConfigured()) {
+    return NextResponse.json({ error: 'Checkout is not configured.' }, { status: 500 })
+  }
+
   // Promo code — server-side verification
   let discountPct = 0
   if (promoCode?.toUpperCase() === 'BFN20') {
@@ -45,36 +49,35 @@ export async function POST(req: NextRequest) {
     } catch {}
   }
 
-  const cloverLineItems = lines.map((line) => {
-    const unit = discounted(line.priceMinor, discountPct)
-    return {
-      name: [line.name, line.colorLabel, `Size ${line.sizeLabel}`].filter(Boolean).join(' · '),
-      price: unit,
-      unitQty: line.qty,
-    }
-  })
-
-  if (shippingMinor > 0) {
-    cloverLineItems.push({ name: 'Shipping', price: shippingMinor, unitQty: 1 })
-  }
-
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
-  const [firstName, ...rest] = fullName.trim().split(' ')
   const externalRef = `tc-shop-${Date.now()}`
+
   const subtotalMinor = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
   const totalMinor = subtotalMinor + (shippingMinor ?? 0)
 
+  const nameParts = fullName.trim().split(/\s+/)
+  const firstName = nameParts[0] ?? ''
+  const lastName = nameParts.slice(1).join(' ') || ''
+
+  const cloverLineItems = [
+    ...lines.map((line) => ({
+      name: [line.name, line.colorLabel, `Size ${line.sizeLabel}`].filter(Boolean).join(' · '),
+      price: discounted(line.priceMinor, discountPct),
+      unitQty: line.qty,
+    })),
+    ...(shippingMinor > 0 ? [{ name: 'Shipping', price: shippingMinor, unitQty: 1 }] : []),
+  ]
+
   try {
-    // Clover appends ?checkoutSessionId=xxx to the success URL automatically
     const session = await createHostedCheckout({
       lineItems: cloverLineItems,
-      customer: { email: email.toLowerCase(), firstName, lastName: rest.join(' ') || undefined },
+      customer: { email: email.toLowerCase(), firstName, lastName },
       externalReferenceId: externalRef,
-      successUrl: `${siteUrl}/shop/success`,
+      successUrl: `${siteUrl}/shop/success?checkoutSessionId={checkoutSessionId}`,
       cancelUrl: `${siteUrl}/shop/checkout`,
     })
 
-    // Save pending order — success page will mark it paid and send notifications
+    // Save pending order
     try {
       await adminClient().from('tc_shop_orders').insert({
         clover_session_id: session.checkoutSessionId,
