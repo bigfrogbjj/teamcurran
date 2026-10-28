@@ -40,8 +40,8 @@ export default async function ShopPage() {
         <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
           Team Store
         </h1>
-        <p className="text-gray-400 mt-2 text-base">Official Team Curran gear · Preorder closes Nov 13</p>
-        <p className="text-amber-500/80 text-xs mt-1">Note: Gi orders placed close to the deadline may not arrive before the holidays.</p>
+        <p className="text-gray-400 mt-2 text-base">Official Team Curran gear · Preorder closes Nov 26</p>
+        <p className="text-amber-500/80 text-xs mt-1">Note: Gi orders may take longer to arrive — apparel ships faster.</p>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

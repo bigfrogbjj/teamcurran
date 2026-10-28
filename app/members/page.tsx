@@ -182,7 +182,7 @@ export default async function MembersDashboard() {
           <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden flex flex-col">
             <div className="flex items-center justify-between px-5 pt-5 mb-3">
               <span className="text-brand text-xs font-bold uppercase tracking-widest">Team Store</span>
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Closes Nov 13</span>
+              <span className="text-xs text-gray-500 uppercase tracking-wide">Closes Nov 26</span>
             </div>
             <h2 className="text-xl font-black uppercase px-5 mb-3">Shop Gear</h2>
             {/* Product preview grid */}
