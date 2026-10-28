@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
       to: ADMIN_EMAILS.map((e) => ({ email: e })),
       subject: `TC Shop Order — ${order.customer_name} · ${fmt(order.total_minor as number)}`,
       htmlContent: adminEmailHtml(order, checkoutSessionId),
-      senderName: 'Team Curran Shop',
+      senderName: 'Team Curran',
       senderEmail: 'info@bigfrogbjj.com',
     })
   } catch (err) {
