@@ -38,6 +38,7 @@ export interface TCProduct {
   sleeveVariants?: TCSleeveVariant[]
   customization?: TCCustomization
   category: 'training' | 'apparel'
+  subcategory: 'adult' | 'youth'
 }
 
 function sizes(labels: string[]): TCVariant[] {
@@ -114,6 +115,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     ],
     variants: ADULT_SIZES,
     category: 'training',
+    subcategory: 'adult',
   },
   {
     slug: 'kids-rashguard',
@@ -129,6 +131,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     ],
     variants: KIDS_SIZES,
     category: 'training',
+    subcategory: 'youth',
   },
   {
     slug: 'adult-shorts',
@@ -140,6 +143,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/shorts.png',
     variants: ADULT_SIZES,
     category: 'training',
+    subcategory: 'adult',
   },
   {
     slug: 'kids-shorts',
@@ -151,6 +155,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/shorts.png',
     variants: KIDS_SIZES,
     category: 'training',
+    subcategory: 'youth',
   },
   {
     slug: 'tc-gi-adult',
@@ -167,6 +172,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     colorVariants: GI_COLORS,
     variants: GI_ADULT_SIZES,
     category: 'training',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-gi-kids',
@@ -182,6 +188,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     colorVariants: GI_COLORS,
     variants: GI_KIDS_SIZES,
     category: 'training',
+    subcategory: 'youth',
   },
   // ── Apparel ────────────────────────────────────────────────
   {
@@ -195,6 +202,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     colorVariants: TEE_COLORS,
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-kids-tee',
@@ -206,6 +214,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/tshirt-black.png',
     variants: YOUTH_APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'youth',
   },
   {
     slug: 'tc-crewneck',
@@ -217,6 +226,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/crewneck.png',
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-hoodie',
@@ -228,6 +238,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/hoodie.png',
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-zip-hoodie',
@@ -239,6 +250,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/zip-hoodie.png',
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-kids-hoodie',
@@ -250,6 +262,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/hoodie.png',
     variants: YOUTH_APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'youth',
   },
   {
     slug: 'tc-joggers',
@@ -261,6 +274,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/sweatpants.png',
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
   {
     slug: 'tc-kids-joggers',
@@ -272,6 +286,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/sweatpants.png',
     variants: YOUTH_APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'youth',
   },
   {
     slug: 'tc-jacket',
@@ -283,6 +298,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     imageUrl: '/jacket.png',
     variants: APPAREL_SIZES,
     category: 'apparel',
+    subcategory: 'adult',
   },
 ]
 

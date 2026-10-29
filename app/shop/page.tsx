@@ -1,19 +1,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { money } from '@/lib/tc-products'
 import { getProductsWithPrices } from '@/lib/tc-shop-prices'
 import CartIcon from './CartIcon'
+import ShopFilter from './ShopFilter'
 
 export const metadata = { title: 'Team Curran Shop', robots: 'noindex,nofollow' }
 
 export default async function ShopPage() {
   const allProducts = await getProductsWithPrices()
-  const training = allProducts.filter((p) => p.category === 'training')
-  const apparel = allProducts.filter((p) => p.category === 'apparel')
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
-      {/* Nav */}
+      {/* Top nav */}
       <header className="bg-gray-950 border-b border-gray-800 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -36,7 +34,7 @@ export default async function ShopPage() {
       </header>
 
       {/* Page title */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
         <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
           Team Store
         </h1>
@@ -44,10 +42,8 @@ export default async function ShopPage() {
         <p className="text-amber-500/80 text-xs mt-1">Note: Gi orders may take longer to arrive — apparel ships faster.</p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Section title="Training Gear" products={training} />
-        <Section title="Apparel" products={apparel} />
-      </div>
+      {/* Filter nav + products */}
+      <ShopFilter products={allProducts} />
 
       <footer className="border-t border-gray-800 py-8 mt-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,51 +53,6 @@ export default async function ShopPage() {
           </p>
         </div>
       </footer>
-    </div>
-  )
-}
-
-function Section({ title, products }: { title: string; products: import('@/lib/tc-products').TCProduct[] }) {
-  if (!products.length) return null
-  return (
-    <div className="mb-12">
-      <h2 className="text-xl font-black uppercase tracking-widest text-gray-400 mb-6 border-b border-gray-800 pb-3" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
-        {title}
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/shop/${p.slug}`}
-            className="group bg-gray-900 border border-gray-800 hover:border-blue-700 rounded-xl overflow-hidden transition-colors"
-          >
-            <div className="aspect-square bg-gray-800 flex items-center justify-center overflow-hidden">
-              {p.imageUrl ? (
-                <Image
-                  src={p.imageUrl}
-                  alt={p.name}
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  unoptimized
-                />
-              ) : (
-                <div className="flex flex-col items-center gap-2 px-4 text-center">
-                  <Image src="/Team Curran Circle Logo.png" alt="Team Curran" width={80} height={80} className="opacity-20" />
-                  <span className="text-gray-600 text-xs uppercase tracking-wide">Photo coming soon</span>
-                </div>
-              )}
-            </div>
-            <div className="p-4">
-              <h3 className="font-black uppercase text-sm leading-tight group-hover:text-blue-400 transition-colors" style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
-                {p.name}
-              </h3>
-              <p className="text-gray-400 text-xs mt-1 leading-snug line-clamp-2">{p.tagline}</p>
-              <p className="text-white font-bold text-sm mt-3">{money(p.priceMinor)}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
     </div>
   )
 }
