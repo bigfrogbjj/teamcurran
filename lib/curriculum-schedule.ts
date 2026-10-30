@@ -72,8 +72,39 @@ export const OCTOBER_2026: Record<string, DaySchedule> = {
   '2026-10-31': { video: v(21) },
 }
 
+// November 2026 — picks up at #22 from Oct 31 (#21), cycles back to #1 after #25
+// Thanksgiving (Nov 26) closed; Women's Open Mat Nov 27 handled in class-schedule.ts
+export const NOVEMBER_2026: Record<string, DaySchedule> = {
+  '2026-11-02': { video: v(22) },
+  '2026-11-03': { video: v(23) },
+  '2026-11-04': { video: v(24) },
+  '2026-11-05': { video: v(25) },
+  '2026-11-06': NOGI,
+  '2026-11-07': { video: v(1) },
+  '2026-11-09': { video: v(2) },
+  '2026-11-10': { video: v(3) },
+  '2026-11-11': { video: v(4) },
+  '2026-11-12': { video: v(5) },
+  '2026-11-13': NOGI,
+  '2026-11-14': { video: v(6) },
+  '2026-11-16': { video: v(7) },
+  '2026-11-17': { video: v(8) },
+  '2026-11-18': { video: v(9) },
+  '2026-11-19': { video: v(10) },
+  '2026-11-20': NOGI,
+  '2026-11-21': { video: v(11) },
+  '2026-11-23': { video: v(12) },
+  '2026-11-24': { video: v(13) },
+  '2026-11-25': { video: v(14) },
+  // Nov 26 = Thanksgiving — closed
+  '2026-11-27': NOGI,
+  '2026-11-28': { video: v(15) },
+  '2026-11-30': { video: v(16) },
+}
+
 export const MONTHLY_SCHEDULES: Record<string, Record<string, DaySchedule>> = {
   '2026-10': OCTOBER_2026,
+  '2026-11': NOVEMBER_2026,
 }
 
 export function getScheduleForDate(date: Date): DaySchedule | null {
