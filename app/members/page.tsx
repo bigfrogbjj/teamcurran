@@ -77,13 +77,13 @@ export default async function MembersDashboard() {
       {/* Header */}
       <header className="bg-gray-950 border-b border-gray-800 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Image src="/Team Curran C .png" alt="Team Curran" width={44} height={44} className="h-9 w-auto" />
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wider">Members Portal</p>
               <p className="text-sm font-bold text-white leading-none">Team Curran</p>
             </div>
-          </div>
+          </Link>
           <div className="flex items-center gap-4">
             {profile?.is_admin && (
               <Link href="/admin" className="text-xs text-gray-400 hover:text-brand transition-colors uppercase tracking-wide">

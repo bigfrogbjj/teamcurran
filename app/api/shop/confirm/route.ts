@@ -48,7 +48,7 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
 
   <!-- Header -->
   <tr><td style="background:#111;border-radius:12px 12px 0 0;padding:32px;border-bottom:3px solid #1d4ed8;text-align:center">
-    <img src="https://teamcurran.com/Team%20Curran%20Circle%20Logo.png" alt="Team Curran" width="72" height="72" style="display:block;margin:0 auto 16px;border-radius:50%" />
+    <img src="https://teamcurran.com/Team%20Curran%20Circle%20Logo.png" alt="Team Curran" width="72" height="72" style="display:block;margin:0 auto 16px;width:72px;height:auto" />
     <h1 style="margin:0;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#fff">Order Confirmed</h1>
     <p style="margin:12px 0 0;color:#888;font-size:13px">Thanks for your order, ${order.customer_name}!</p>
   </td></tr>

@@ -12,6 +12,7 @@ const links = [
   { label: "Affiliates", href: "/affiliates" },
   { label: "Videos", href: "https://teamcurrantv.com", external: true },
   { label: "Contact", href: "/#contact" },
+  { label: "Shop", href: "/shop" },
 ];
 
 export default function Navbar() {
