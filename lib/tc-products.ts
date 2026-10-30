@@ -221,7 +221,7 @@ export const TC_PRODUCTS: TCProduct[] = [
     name: 'Adult Crew Neck',
     tagline: 'Official Team Curran gear. Classic fleece crew neck.',
     description: ['Rep the team year-round. Fleece crew neck sweatshirt featuring the Team Curran logo. Black only.'],
-    priceMinor: 5495,
+    priceMinor: 4995,
     shippingMinor: 1000,
     imageUrl: '/crewneck.png',
     variants: APPAREL_SIZES,
