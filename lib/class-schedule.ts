@@ -43,8 +43,7 @@ export const WEEKLY_SCHEDULE: Record<number, ClassEntry[]> = {
     { time: '7pm',  name: 'Gi – Advanced',                      tag: 'gi' },
   ],
   5: [ // Friday
-    { time: '12pm',   name: 'NoGi Open Mat — Visitors Welcome!', tag: 'open-mat' },
-    { time: '6:30pm', name: "Women's Open Mat",                  tag: 'womens' },
+    { time: '12pm', name: 'NoGi Open Mat — Visitors Welcome!', tag: 'open-mat' },
   ],
   6: [ // Saturday
     { time: '10am', name: 'Kids NoGi',            tag: 'kids' },
@@ -53,9 +52,19 @@ export const WEEKLY_SCHEDULE: Record<number, ClassEntry[]> = {
   ],
 }
 
+// One-time class additions keyed by YYYY-MM-DD (local date)
+const ONE_TIME_CLASSES: Record<string, ClassEntry[]> = {
+  '2026-10-30': [{ time: '5pm', name: 'Halloween Party @ Team Curran HQ', tag: 'open-mat' }],
+  '2026-11-27': [{ time: '6:30pm', name: "Women's Open Mat", tag: 'womens' }],
+  '2026-12-18': [{ time: '6:30pm', name: "Women's Open Mat", tag: 'womens' }],
+}
+
 export function getTodaySchedule(): ClassEntry[] {
-  const day = new Date().getDay()
-  return WEEKLY_SCHEDULE[day] ?? []
+  const now = new Date()
+  const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const base = WEEKLY_SCHEDULE[now.getDay()] ?? []
+  const extras = ONE_TIME_CLASSES[dateKey] ?? []
+  return [...base, ...extras]
 }
 
 export const TAG_COLORS: Record<string, string> = {
