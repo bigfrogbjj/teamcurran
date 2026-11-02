@@ -49,10 +49,13 @@ export async function POST(req: NextRequest) {
       const bfnUserId = data.user?.id
       if (!bfnUserId) throw new Error('No BFN user id returned')
 
-      // Upsert BFN members row with active status + gym access
+      // Check if a BFN members row already exists for this email (may have a different id)
+      const { data: existing } = await bfnAdmin.from('members').select('id').eq('email', member.email).maybeSingle()
+      const rowId = existing?.id ?? bfnUserId
+
       const { error: upsertErr } = await bfnAdmin.from('members').upsert(
         {
-          id: bfnUserId,
+          id: rowId,
           email: member.email,
           full_name: member.full_name || member.email,
           gym_id: gymId,
