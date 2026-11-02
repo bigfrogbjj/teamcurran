@@ -26,9 +26,9 @@ export async function POST(req: NextRequest) {
   // Fetch all TC members with active membership
   const { data: tcMembers, error: tcErr } = await tcAdmin
     .from('members')
-    .select('email, first_name, last_name')
+    .select('email, full_name')
     .eq('is_tc_member', true)
-    .order('last_name')
+    .order('full_name')
 
   if (tcErr || !tcMembers) {
     return NextResponse.json({ error: 'Failed to fetch TC members', detail: tcErr }, { status: 500 })
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         {
           id: bfnUserId,
           email: member.email,
-          full_name: [member.first_name, member.last_name].filter(Boolean).join(' ') || member.email,
+          full_name: member.full_name || member.email,
           gym_id: gymId,
           tier: 'nation',
           status: 'active',
