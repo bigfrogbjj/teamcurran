@@ -65,7 +65,8 @@ export async function POST(req: NextRequest) {
 
       results.push({ email: member.email, action: 'synced' })
     } catch (err: unknown) {
-      results.push({ email: member.email, action: 'error', error: String(err) })
+      const msg = err instanceof Error ? err.message : (typeof err === 'object' && err !== null ? JSON.stringify(err) : String(err))
+      results.push({ email: member.email, action: 'error', error: msg })
     }
   }
 
