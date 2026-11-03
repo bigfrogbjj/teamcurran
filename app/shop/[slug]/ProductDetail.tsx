@@ -109,6 +109,10 @@ export function ProductDetail({ product }: { product: TCProduct }) {
               <span className="text-3xl font-black">{money(product.priceMinor)}</span>
             </div>
             <p className="text-gray-500 text-xs mt-1">+ {money(product.shippingMinor)} shipping</p>
+            <div className="mt-3 inline-flex items-center gap-2 bg-yellow-400/10 border border-yellow-500/40 rounded-lg px-3 py-2">
+              <span className="text-yellow-400 text-xs font-bold uppercase tracking-wider">Preorder</span>
+              <span className="text-yellow-300/70 text-xs">— ships after production · order by Nov 26</span>
+            </div>
 
             <div className="mt-4 space-y-1">
               {product.description.map((line, i) => (

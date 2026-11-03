@@ -22,8 +22,10 @@ export default function ShopFilter({ products }: { products: TCProduct[] }) {
 
   return (
     <>
-      {/* Filter nav */}
-      <div className="sticky top-0 z-20 bg-gray-950 border-b border-gray-800">
+      {/* Preorder banner */}
+      <div className="bg-blue-700 text-white text-center text-xs font-bold uppercase tracking-widest py-2.5 px-4">
+        🛒 Preorder Open — All Items Ship After Production · Order Deadline: <span className="text-yellow-300">November 26th</span>
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-1 py-3 overflow-x-auto scrollbar-none">
             {FILTERS.map(({ key, label }) => (
@@ -107,7 +109,10 @@ function Section({ id, title, products }: { id: string; title: string; products:
                 </span>
               </div>
               <p className="text-gray-400 text-xs mt-1 leading-snug line-clamp-2">{p.tagline}</p>
-              <p className="text-white font-bold text-sm mt-3">{money(p.priceMinor)}</p>
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-white font-bold text-sm">{money(p.priceMinor)}</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-yellow-400/10 border border-yellow-500/40 text-yellow-400">Preorder</span>
+              </div>
             </div>
           </Link>
         ))}
