@@ -231,6 +231,113 @@ export function ProductDetail({ product }: { product: TCProduct }) {
             </div>
           </div>
         </div>
+
+        {/* Gi size chart */}
+        {(product.slug === 'tc-gi-adult' || product.slug === 'tc-gi-kids') && (
+          <div className="mt-14 border-t border-gray-800 pt-10">
+            <h2 className="text-xl font-black uppercase tracking-widest text-gray-400 mb-6"
+                style={{ fontFamily: 'var(--font-anton), Arial, sans-serif' }}>
+              Size Guide
+            </h2>
+
+            {product.slug === 'tc-gi-adult' && (
+              <div className="space-y-6">
+                <p className="text-gray-400 text-sm">Adult sizes by height &amp; weight. Between two sizes? Size up.</p>
+
+                {[
+                  { group: 'Standard', sizes: [
+                    { id: 'A00', height: "4'9\"–5'2\"", weight: '90–115 lbs' },
+                    { id: 'A0',  height: "5'0\"–5'5\"", weight: '105–135 lbs' },
+                    { id: 'A1',  height: "5'5\"–5'8\"", weight: '135–170 lbs' },
+                    { id: 'A2',  height: "5'8\"–6'0\"", weight: '170–190 lbs' },
+                    { id: 'A3',  height: "5'11\"–6'2\"", weight: '190–230 lbs' },
+                    { id: 'A4',  height: "6'2\"–6'5\"", weight: '220–260 lbs' },
+                    { id: 'A5',  height: "6'4\"–6'7\"", weight: '250–290 lbs' },
+                  ]},
+                  { group: 'Husky', sizes: [
+                    { id: 'A0H', height: "5'0\"–5'5\"", weight: '150–180 lbs' },
+                    { id: 'A1H', height: "5'5\"–5'8\"", weight: '180–200 lbs' },
+                    { id: 'A2H', height: "5'8\"–6'0\"", weight: '190–235 lbs' },
+                    { id: 'A3H', height: "5'11\"–6'2\"", weight: '225–265 lbs' },
+                    { id: 'A4H', height: "6'2\"–6'5\"", weight: '245–290 lbs' },
+                  ]},
+                  { group: 'Tall', sizes: [
+                    { id: 'A1T', height: "5'8\"–5'11\"", weight: '140–175 lbs' },
+                    { id: 'A2T', height: "5'11\"–6'2\"", weight: '175–200 lbs' },
+                    { id: 'A3T', height: "6'2\"–6'5\"", weight: '195–240 lbs' },
+                  ]},
+                  { group: 'Female Fitted', sizes: [
+                    { id: 'F1', height: "5'1\"–5'5\"", weight: '105–130 lbs' },
+                    { id: 'F2', height: "5'4\"–5'7\"", weight: '125–155 lbs' },
+                    { id: 'F3', height: "5'6\"–5'9\"", weight: '150–180 lbs' },
+                  ]},
+                ].map(({ group, sizes }) => (
+                  <div key={group}>
+                    <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">{group}</p>
+                    <div className="overflow-x-auto rounded-lg border border-gray-800">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-900 text-left">
+                            <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Size</th>
+                            <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Height</th>
+                            <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Weight</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {sizes.map((s, i) => (
+                            <tr key={s.id} className={i % 2 === 0 ? 'bg-black' : 'bg-gray-900/50'}>
+                              <td className="px-4 py-2 font-bold text-white">{s.id}</td>
+                              <td className="px-4 py-2 text-gray-300">{s.height}</td>
+                              <td className="px-4 py-2 text-gray-300">{s.weight}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {product.slug === 'tc-gi-kids' && (
+              <div>
+                <p className="text-gray-400 text-sm mb-4">Kids sizes (M000–M4) by garment measurement.</p>
+                <div className="overflow-x-auto rounded-lg border border-gray-800">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-900 text-left">
+                        <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Size</th>
+                        <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Jacket Length (in)</th>
+                        <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Sleeve (in)</th>
+                        <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Pant Inseam (in)</th>
+                        <th className="px-4 py-2 text-gray-400 font-bold uppercase tracking-wider text-xs">Weight (lbs)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { size: 'M000', jacket: '17', sleeve: '11', inseam: '13', weight: '33–44' },
+                        { size: 'M00',  jacket: '19', sleeve: '12', inseam: '15', weight: '44–55' },
+                        { size: 'M0',   jacket: '21', sleeve: '14', inseam: '17', weight: '55–77' },
+                        { size: 'M1',   jacket: '23', sleeve: '16', inseam: '20', weight: '77–99' },
+                        { size: 'M2',   jacket: '25', sleeve: '18', inseam: '23', weight: '99–121' },
+                        { size: 'M3',   jacket: '27', sleeve: '20', inseam: '26', weight: '121–143' },
+                        { size: 'M4',   jacket: '29', sleeve: '22', inseam: '29', weight: '143–165' },
+                      ].map((s, i) => (
+                        <tr key={s.size} className={i % 2 === 0 ? 'bg-black' : 'bg-gray-900/50'}>
+                          <td className="px-4 py-2 font-bold text-white">{s.size}</td>
+                          <td className="px-4 py-2 text-gray-300">{s.jacket}</td>
+                          <td className="px-4 py-2 text-gray-300">{s.sleeve}</td>
+                          <td className="px-4 py-2 text-gray-300">{s.inseam}</td>
+                          <td className="px-4 py-2 text-gray-300">{s.weight}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
