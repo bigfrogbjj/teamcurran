@@ -12,7 +12,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [gym, setGym] = useState('')
-  const [shippingOption, setShippingOption] = useState<'ship' | 'pickup'>('ship')
+  const [shippingOption, setShippingOption] = useState<'ship' | 'pickup'>('pickup')
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoDiscountPct, setPromoDiscountPct] = useState(0)
@@ -217,6 +217,18 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
+                onClick={() => setShippingOption('pickup')}
+                className={`rounded-lg border px-4 py-3 text-sm font-bold uppercase tracking-wide text-left transition-colors ${
+                  shippingOption === 'pickup'
+                    ? 'bg-blue-900/60 border-blue-600 text-white'
+                    : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-gray-500'
+                }`}
+              >
+                <span className="block">Gym Pickup — Free</span>
+                <span className="text-xs font-normal normal-case text-gray-400">Crystal Lake, IL</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => setShippingOption('ship')}
                 className={`rounded-lg border px-4 py-3 text-sm font-bold uppercase tracking-wide text-left transition-colors ${
                   shippingOption === 'ship'
@@ -226,18 +238,6 @@ export default function CheckoutPage() {
               >
                 <span className="block">Ship to me</span>
                 <span className="text-xs font-normal normal-case text-gray-400">{money(baseShippingMinor)}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setShippingOption('pickup')}
-                className={`rounded-lg border px-4 py-3 text-sm font-bold uppercase tracking-wide text-left transition-colors ${
-                  shippingOption === 'pickup'
-                    ? 'bg-blue-900/60 border-blue-600 text-white'
-                    : 'bg-gray-900 border-gray-700 text-gray-300 hover:border-gray-500'
-                }`}
-              >
-                <span className="block">Gym pickup</span>
-                <span className="text-xs font-normal normal-case text-gray-400">Free</span>
               </button>
             </div>
           </div>
