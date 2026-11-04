@@ -74,3 +74,14 @@ export async function createHostedCheckout(
   }
   return { checkoutSessionId: data.checkoutSessionId, href: data.href }
 }
+
+export async function getCheckoutStatus(
+  checkoutSessionId: string
+): Promise<{ paid: boolean; state: string }> {
+  const url = `${API_BASE[environment()]}/invoicingcheckoutservice/v1/checkouts/${checkoutSessionId}`
+  const res = await fetch(url, { headers: authHeaders(), cache: 'no-store' })
+  if (!res.ok) throw new Error(`Clover status check failed (${res.status})`)
+  const data = await res.json() as { state?: string }
+  // Clover states: CREATED, IN_PROGRESS, PAID, ABANDONED, CANCELLED, EXPIRED
+  return { paid: data.state === 'PAID', state: data.state ?? 'UNKNOWN' }
+}

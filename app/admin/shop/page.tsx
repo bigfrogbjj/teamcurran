@@ -23,6 +23,7 @@ interface OrderLine {
 }
 
 interface ShopOrder {
+  clover_session_id: string
   id: string
   created_at: string
   status: string
@@ -85,6 +86,8 @@ export default function AdminShopPage() {
   const [orders, setOrders] = useState<ShopOrder[]>([])
   const [loadingOrders, setLoadingOrders] = useState(true)
   const [ordersError, setOrdersError] = useState('')
+  const [verifying, setVerifying] = useState<string | null>(null)
+  const [verifyMsg, setVerifyMsg] = useState<Record<string, string>>({})
 
   useEffect(() => {
     fetch('/api/admin/shop')
@@ -182,6 +185,28 @@ export default function AdminShopPage() {
       setMsg(d.error || 'Save failed.')
     }
     setSaving(false)
+  }
+
+  async function verifyOrder(order: ShopOrder) {
+    setVerifying(order.id)
+    setVerifyMsg((m) => ({ ...m, [order.id]: '' }))
+    try {
+      const res = await fetch('/api/admin/verify-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cloverSessionId: order.clover_session_id }),
+      })
+      const d = await res.json()
+      if (d.paid) {
+        setOrders((prev) => prev.map((o) => o.id === order.id ? { ...o, status: 'paid' } : o))
+        setVerifyMsg((m) => ({ ...m, [order.id]: '✓ Paid — confirmation sent' }))
+      } else {
+        setVerifyMsg((m) => ({ ...m, [order.id]: `Not paid · Clover state: ${d.state}` }))
+      }
+    } catch {
+      setVerifyMsg((m) => ({ ...m, [order.id]: 'Error checking Clover' }))
+    }
+    setVerifying(null)
   }
 
   // ── Order summary stats ──
@@ -342,6 +367,22 @@ export default function AdminShopPage() {
                           <p className="text-green-500 text-xs">{order.discount_pct}% discount applied</p>
                         )}
                       </div>
+                      {order.status === 'pending' && (
+                        <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-3">
+                          <button
+                            onClick={() => verifyOrder(order)}
+                            disabled={verifying === order.id}
+                            className="text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg border border-yellow-600/50 text-yellow-400 hover:bg-yellow-900/20 disabled:opacity-50 transition-colors"
+                          >
+                            {verifying === order.id ? 'Checking…' : 'Verify Payment'}
+                          </button>
+                          {verifyMsg[order.id] && (
+                            <span className={`text-xs ${verifyMsg[order.id].startsWith('✓') ? 'text-green-400' : 'text-gray-500'}`}>
+                              {verifyMsg[order.id]}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
