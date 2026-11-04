@@ -18,6 +18,25 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ orders: data ?? [], error })
 }
 
+// Member name search
+export async function PUT(req: NextRequest) {
+  if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const db = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  )
+  const { search } = await req.json() as { search: string[] }
+  const results: Record<string, { full_name: string; email: string }[]> = {}
+  for (const term of search) {
+    const { data } = await db.from('members').select('full_name, email').ilike('full_name', `%${term}%`)
+    results[term] = data ?? []
+  }
+  return NextResponse.json(results)
+}
+
 // Cross-reference orders missing emails against TC members table
 export async function PATCH(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
