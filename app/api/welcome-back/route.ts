@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       </tr>
       <tr>
         <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;color:#555">Email</td>
-        <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;color:#111"><a href="mailto:${email}" style="color:#1d4ed8">${email}</a></td>
+        <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;color:#111"><a href="mailto:${email}" style="color:#2255d0">${email}</a></td>
       </tr>
       ${phone ? `<tr>
         <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;color:#555">Phone</td>
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     </table>
 
     <div style="margin-top:24px;background:#eff6ff;border-radius:8px;padding:16px;">
-      <p style="margin:0;font-size:13px;color:#1d4ed8;font-weight:600">Offer: $99/mo for first 3 months returning member rate</p>
+      <p style="margin:0;font-size:13px;color:#2255d0;font-weight:600">Offer: $99/mo for first 3 months returning member rate</p>
     </div>
   </div>
 </body>

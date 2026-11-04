@@ -25,9 +25,12 @@ export default function ShopFilter({ products }: { products: TCProduct[] }) {
       {/* Preorder banner */}
       <div className="bg-blue-700 text-white text-center text-xs font-bold uppercase tracking-widest py-2.5 px-4">
         🛒 Preorder Open — All Items Ship After Production · Order Deadline: <span className="text-yellow-300">November 26th</span>
+      </div>
 
+      {/* Filter nav */}
+      <div className="border-b border-gray-900 bg-black sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-1 py-3 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-none">
             {FILTERS.map(({ key, label }) => (
               <button
                 key={key}
@@ -42,9 +45,9 @@ export default function ShopFilter({ products }: { products: TCProduct[] }) {
                 {label}
               </button>
             ))}
-            <div className="ml-auto flex gap-4 text-xs text-gray-600 whitespace-nowrap pl-4">
-              <a href="#training" className="hover:text-gray-400 transition-colors">Training Gear</a>
-              <a href="#apparel"  className="hover:text-gray-400 transition-colors">Apparel</a>
+            <div className="ml-auto flex gap-4 text-xs text-gray-500 whitespace-nowrap pl-4">
+              <a href="#training" className="hover:text-white transition-colors">Training Gear</a>
+              <a href="#apparel"  className="hover:text-white transition-colors">Apparel</a>
             </div>
           </div>
         </div>

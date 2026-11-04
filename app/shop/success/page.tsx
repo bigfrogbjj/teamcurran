@@ -29,8 +29,9 @@ export default async function ShopSuccessPage({
     } catch {}
   }
 
+  type OrderRow = { customer_name: string; lines: { name: string; price_minor: number; qty: number }[]; subtotal_minor: number; shipping_minor: number; total_minor: number; discount_pct: number; ship_address: string | null; external_ref: string }
   // Fetch order for display
-  let order: Record<string, unknown> | null = null
+  let order: OrderRow | null = null
   if (checkoutSessionId) {
     try {
       const db = createClient(
@@ -47,7 +48,7 @@ export default async function ShopSuccessPage({
     } catch {}
   }
 
-  const lines = order?.lines as { name: string; price_minor: number; qty: number }[] | undefined
+  const lines = order?.lines
 
   return (
     <div
@@ -72,7 +73,7 @@ export default async function ShopSuccessPage({
             Order Confirmed
           </h1>
           {order?.customer_name && (
-            <p className="text-gray-400 text-sm">Thanks, {(order.customer_name as string).split(' ')[0]}! A confirmation email is on its way.</p>
+            <p className="text-gray-400 text-sm">Thanks, {order.customer_name.split(' ')[0]}! A confirmation email is on its way.</p>
           )}
         </div>
 
@@ -85,26 +86,30 @@ export default async function ShopSuccessPage({
                 <span className="text-white font-bold">{fmt(line.price_minor * line.qty)}</span>
               </div>
             ))}
-            {(order?.shipping_minor as number) > 0 && (
+            {order && order.shipping_minor > 0 && (
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Shipping</span>
-                <span>{fmt(order?.shipping_minor as number)}</span>
+                <span>{fmt(order.shipping_minor)}</span>
               </div>
             )}
-            {(order?.discount_pct as number) > 0 && (
-              <p className="text-green-400 text-xs">{order?.discount_pct}% BFN discount applied</p>
+            {order && order.discount_pct > 0 && (
+              <p className="text-green-400 text-xs">{order.discount_pct}% BFN discount applied</p>
             )}
-            <div className="flex justify-between font-black text-base border-t border-gray-800 pt-2 mt-1">
-              <span>Total</span>
-              <span>{fmt(order?.total_minor as number)}</span>
-            </div>
-            <div className="pt-2 border-t border-gray-800">
-              <p className="text-gray-500 text-xs">
-                {(order?.shipping_minor as number) === 0
-                  ? '📍 Gym Pickup · Crystal Lake, IL'
-                  : `📦 Ships to: ${order?.ship_address || 'your address'}`}
-              </p>
-            </div>
+            {order && (
+              <div className="flex justify-between font-black text-base border-t border-gray-800 pt-2 mt-1">
+                <span>Total</span>
+                <span>{fmt(order.total_minor)}</span>
+              </div>
+            )}
+            {order && (
+              <div className="pt-2 border-t border-gray-800">
+                <p className="text-gray-500 text-xs">
+                  {order.shipping_minor === 0
+                    ? '📍 Gym Pickup · Crystal Lake, IL'
+                    : `📦 Ships to: ${order.ship_address || 'your address'}`}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

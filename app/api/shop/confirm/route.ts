@@ -47,7 +47,7 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px">
 
   <!-- Header -->
-  <tr><td style="background:#111;border-radius:12px 12px 0 0;padding:32px;border-bottom:3px solid #1d4ed8;text-align:center">
+  <tr><td style="background:#111;border-radius:12px 12px 0 0;padding:32px;border-bottom:3px solid #2255d0;text-align:center">
     <img src="https://teamcurran.com/Team%20Curran%20Circle%20Logo.png" alt="Team Curran" width="72" height="72" style="display:block;margin:0 auto 16px;width:72px;height:auto" />
     <h1 style="margin:0;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#fff">Order Confirmed</h1>
     <p style="margin:12px 0 0;color:#888;font-size:13px">Thanks for your order, ${order.customer_name}!</p>
@@ -63,9 +63,9 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
       ${discount}
       ${shipping}
       <tr>
-        <td style="padding:14px 16px 0 0;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;border-top:2px solid #1d4ed8">Total</td>
-        <td style="border-top:2px solid #1d4ed8"></td>
-        <td style="padding:14px 0 0 16px;text-align:right;font-size:18px;font-weight:900;color:#fff;border-top:2px solid #1d4ed8;white-space:nowrap">${fmt(order.total_minor as number)}</td>
+        <td style="padding:14px 16px 0 0;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;border-top:2px solid #2255d0">Total</td>
+        <td style="border-top:2px solid #2255d0"></td>
+        <td style="padding:14px 0 0 16px;text-align:right;font-size:18px;font-weight:900;color:#fff;border-top:2px solid #2255d0;white-space:nowrap">${fmt(order.total_minor as number)}</td>
       </tr>
     </table>
 
@@ -76,7 +76,7 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
 
     <div style="margin-top:16px;background:#0d0d0d;border-radius:8px;padding:20px">
       <p style="margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#555;font-weight:bold">Questions?</p>
-      <p style="margin:0;color:#e5e5e5;font-size:14px">Reply to this email or reach us at <a href="mailto:info@bigfrogbjj.com" style="color:#1d4ed8;text-decoration:none">info@bigfrogbjj.com</a></p>
+      <p style="margin:0;color:#e5e5e5;font-size:14px">Reply to this email or reach us at <a href="mailto:info@bigfrogbjj.com" style="color:#2255d0;text-decoration:none">info@bigfrogbjj.com</a></p>
     </div>
 
   </td></tr>
@@ -104,8 +104,8 @@ function adminEmailHtml(order: Record<string, unknown>, sessionId: string) {
 <html lang="en">
 <head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:24px;background:#0d0d0d;font-family:Arial,Helvetica,sans-serif;color:#e5e5e5">
-<div style="max-width:520px;margin:0 auto;background:#111;border-radius:12px;padding:28px;border-top:3px solid #1d4ed8">
-  <p style="margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#1d4ed8;font-weight:bold">Team Curran Shop</p>
+<div style="max-width:520px;margin:0 auto;background:#111;border-radius:12px;padding:28px;border-top:3px solid #2255d0">
+  <p style="margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#2255d0;font-weight:bold">Team Curran Shop</p>
   <h2 style="margin:0 0 20px;font-size:20px;font-weight:900;text-transform:uppercase;color:#fff">New Order — ${fmt(order.total_minor as number)}</h2>
 
   <div style="background:#0d0d0d;border-radius:8px;padding:16px;margin-bottom:16px">
