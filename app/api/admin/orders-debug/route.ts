@@ -18,17 +18,18 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ orders: data ?? [], error })
 }
 
-// Also expose a manual confirm trigger
+// Direct order insert (for backfilling orders from Clover)
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { checkoutSessionId } = await req.json() as { checkoutSessionId?: string }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
-  const res = await fetch(`${siteUrl}/api/shop/confirm`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ checkoutSessionId }),
-  })
-  return NextResponse.json(await res.json())
+  const db = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  )
+  const order = await req.json()
+  const { error } = await db.from('tc_shop_orders').upsert(order, { onConflict: 'clover_session_id' })
+  if (error) return NextResponse.json({ error }, { status: 500 })
+  return NextResponse.json({ ok: true })
 }
