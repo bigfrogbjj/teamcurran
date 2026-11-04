@@ -177,10 +177,9 @@ export async function POST(req: NextRequest) {
   // Add purchaser to Brevo lists (best-effort)
   try {
     if (!(order.customer_email as string)) throw new Error('no customer email')
-    const [tcListId, bfnListId, tcActiveId] = await Promise.all([
+    const [tcShopListId, bfnListId] = await Promise.all([
       getOrCreateList('tc-shop-customers'),
       getOrCreateList('BFN Master List'),
-      getOrCreateList('team-curran-active'),
     ])
     const nameParts = (order.customer_name as string).split(' ')
     await upsertContact({
@@ -188,7 +187,7 @@ export async function POST(req: NextRequest) {
       firstName: nameParts[0],
       lastName: nameParts.slice(1).join(' ') || undefined,
       phone: order.customer_phone as string | undefined,
-      listIds: [tcListId, bfnListId, tcActiveId],
+      listIds: [tcShopListId, bfnListId],
     })
   } catch (err) {
     console.error('TC shop: failed to sync contact to Brevo', err)
