@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
 
   await sendEmail({
     to: [{ email: 'chuck@teamcurran.com', name: 'Chuck' }],
+    cc: [{ email: 'jcinvitationalonline@gmail.com', name: 'Alexa' }],
     subject: `Returning Member: ${name} wants to come back`,
     htmlContent: html,
     senderName: 'Team Curran Website',

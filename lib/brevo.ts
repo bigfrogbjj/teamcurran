@@ -71,22 +71,25 @@ export async function removeFromList(email: string, listId: number) {
 /** Send a transactional email via Brevo. */
 export async function sendEmail(params: {
   to: { email: string; name?: string }[]
+  cc?: { email: string; name?: string }[]
   subject: string
   htmlContent: string
   senderName?: string
   senderEmail?: string
 }) {
+  const body: Record<string, unknown> = {
+    sender: {
+      name: params.senderName ?? 'Team Curran',
+      email: params.senderEmail ?? 'no-reply@teamcurran.com',
+    },
+    to: params.to,
+    subject: params.subject,
+    htmlContent: params.htmlContent,
+  }
+  if (params.cc?.length) body.cc = params.cc
   const res = await bf('/smtp/email', {
     method: 'POST',
-    body: JSON.stringify({
-      sender: {
-        name: params.senderName ?? 'Team Curran',
-        email: params.senderEmail ?? 'no-reply@teamcurran.com',
-      },
-      to: params.to,
-      subject: params.subject,
-      htmlContent: params.htmlContent,
-    }),
+    body: JSON.stringify(body),
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
