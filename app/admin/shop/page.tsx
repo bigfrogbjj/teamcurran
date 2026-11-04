@@ -30,6 +30,7 @@ interface ShopOrder {
   customer_email: string
   customer_phone: string | null
   customer_gym: string | null
+  ship_address: string | null
   lines: OrderLine[]
   subtotal_minor: number
   shipping_minor: number
@@ -274,13 +275,14 @@ export default function AdminShopPage() {
                     <button
                       onClick={() => {
                         const rows = [
-                          ['Date', 'Name', 'Email', 'Phone', 'Gym', 'Items', 'Subtotal', 'Shipping', 'Discount %', 'Total', 'Status', 'Ref'].join(','),
+                          ['Date', 'Name', 'Email', 'Phone', 'Gym', 'Ship To', 'Items', 'Subtotal', 'Shipping', 'Discount %', 'Total', 'Status', 'Ref'].join(','),
                           ...orders.map((o) => [
                             new Date(o.created_at).toLocaleDateString('en-US'),
                             `"${o.customer_name}"`,
                             o.customer_email || '',
                             o.customer_phone || '',
                             `"${o.customer_gym || ''}"`,
+                            `"${o.ship_address || ''}"`,
                             `"${o.lines.map((l) => `${l.name} x${l.qty}`).join('; ')}"`,
                             (o.subtotal_minor / 100).toFixed(2),
                             (o.shipping_minor / 100).toFixed(2),
@@ -311,6 +313,7 @@ export default function AdminShopPage() {
                           <p className="text-gray-400 text-xs">{order.customer_email}</p>
                           {order.customer_phone && <p className="text-gray-400 text-xs">{order.customer_phone}</p>}
                           {order.customer_gym && <p className="text-gray-500 text-xs">{order.customer_gym}</p>}
+                          {order.ship_address && <p className="text-blue-400 text-xs">📦 {order.ship_address}</p>}
                           <p className="text-gray-600 text-xs mt-0.5">
                             {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
                           </p>

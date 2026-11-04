@@ -13,6 +13,10 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('')
   const [gym, setGym] = useState('')
   const [shippingOption, setShippingOption] = useState<'ship' | 'pickup'>('pickup')
+  const [shipStreet, setShipStreet] = useState('')
+  const [shipCity, setShipCity] = useState('')
+  const [shipState, setShipState] = useState('')
+  const [shipZip, setShipZip] = useState('')
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoDiscountPct, setPromoDiscountPct] = useState(0)
@@ -71,6 +75,10 @@ export default function CheckoutPage() {
       setError('Please fill in all fields.')
       return
     }
+    if (shippingOption === 'ship' && (!shipStreet.trim() || !shipCity.trim() || !shipState.trim() || !shipZip.trim())) {
+      setError('Please enter your full shipping address.')
+      return
+    }
 
     setLoading(true)
     try {
@@ -85,6 +93,7 @@ export default function CheckoutPage() {
           gym: gym.trim(),
           shippingMinor,
           promoCode: promoCode.trim().toUpperCase(),
+          shipAddress: shippingOption === 'ship' ? `${shipStreet.trim()}, ${shipCity.trim()}, ${shipState.trim()} ${shipZip.trim()}` : null,
         }),
       })
       const data = await res.json()
@@ -241,6 +250,56 @@ export default function CheckoutPage() {
               </button>
             </div>
           </div>
+
+          {shippingOption === 'ship' && (
+            <div className="space-y-3 border border-gray-800 rounded-xl p-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Shipping Address</p>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-500 block mb-1">Street Address</label>
+                <input
+                  type="text"
+                  value={shipStreet}
+                  onChange={(e) => setShipStreet(e.target.value)}
+                  placeholder="123 Main St"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-gray-500 block mb-1">City</label>
+                  <input
+                    type="text"
+                    value={shipCity}
+                    onChange={(e) => setShipCity(e.target.value)}
+                    placeholder="Crystal Lake"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-gray-500 block mb-1">State</label>
+                  <input
+                    type="text"
+                    value={shipState}
+                    onChange={(e) => setShipState(e.target.value)}
+                    placeholder="IL"
+                    maxLength={2}
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none uppercase"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-500 block mb-1">ZIP Code</label>
+                <input
+                  type="text"
+                  value={shipZip}
+                  onChange={(e) => setShipZip(e.target.value)}
+                  placeholder="60014"
+                  maxLength={10}
+                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-600 focus:outline-none"
+                />
+              </div>
+            </div>
+          )}
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
 

@@ -13,7 +13,7 @@ function adminClient() {
 }
 
 export async function POST(req: NextRequest) {
-  const { lines, fullName, email, phone, gym, shippingMinor, promoCode } = await req.json() as {
+  const { lines, fullName, email, phone, gym, shippingMinor, promoCode, shipAddress } = await req.json() as {
     lines: CartLine[]
     fullName: string
     email: string
@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     gym?: string
     shippingMinor: number
     promoCode?: string
+    shipAddress?: string | null
   }
 
   if (!lines?.length || !fullName || !email) {
@@ -87,6 +88,7 @@ export async function POST(req: NextRequest) {
         customer_email: email.toLowerCase(),
         customer_phone: phone ?? null,
         customer_gym: gym ?? null,
+        ship_address: shipAddress ?? null,
         lines: lines.map((l) => ({
           name: [l.name, l.colorLabel, `Size ${l.sizeLabel}`].filter(Boolean).join(' · '),
           price_minor: discounted(l.priceMinor, discountPct),
