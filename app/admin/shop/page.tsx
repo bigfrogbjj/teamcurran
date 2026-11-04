@@ -267,7 +267,38 @@ export default function AdminShopPage() {
 
                 {/* Order list */}
                 <div className="space-y-3">
-                  <p className="text-blue-500 text-xs font-bold uppercase tracking-widest">All Orders</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest">All Orders</p>
+                    <button
+                      onClick={() => {
+                        const rows = [
+                          ['Date', 'Name', 'Email', 'Items', 'Subtotal', 'Shipping', 'Discount %', 'Total', 'Status', 'Ref'].join(','),
+                          ...orders.map((o) => [
+                            new Date(o.created_at).toLocaleDateString('en-US'),
+                            `"${o.customer_name}"`,
+                            o.customer_email || '',
+                            `"${o.lines.map((l) => `${l.name} x${l.qty}`).join('; ')}"`,
+                            (o.subtotal_minor / 100).toFixed(2),
+                            (o.shipping_minor / 100).toFixed(2),
+                            o.discount_pct,
+                            (o.total_minor / 100).toFixed(2),
+                            o.status,
+                            o.external_ref || '',
+                          ].join(','))
+                        ].join('\n')
+                        const blob = new Blob([rows], { type: 'text/csv' })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `tc-shop-orders-${new Date().toISOString().slice(0,10)}.csv`
+                        a.click()
+                        URL.revokeObjectURL(url)
+                      }}
+                      className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      ↓ CSV
+                    </button>
+                  </div>
                   {orders.map((order) => (
                     <div key={order.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                       <div className="flex items-start justify-between gap-4 mb-3">
