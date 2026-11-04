@@ -71,12 +71,12 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
 
     <div style="margin-top:28px;background:#0d0d0d;border-radius:8px;padding:20px">
       <p style="margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#555;font-weight:bold">Delivery</p>
-      <p style="margin:0;color:#e5e5e5;font-size:14px">${(order.shipping_minor as number) === 0 ? 'Gym Pickup · Crystal Lake, IL' : 'Ships to your address'}</p>
+      <p style="margin:0;color:#e5e5e5;font-size:14px">${(order.shipping_minor as number) === 0 ? 'Gym Pickup · Crystal Lake, IL' : (order.ship_address ? `Ships to: ${order.ship_address}` : 'Ships to your address')}</p>
     </div>
 
     <div style="margin-top:16px;background:#0d0d0d;border-radius:8px;padding:20px">
       <p style="margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#555;font-weight:bold">Questions?</p>
-      <p style="margin:0;color:#e5e5e5;font-size:14px">Reply to this email or reach us at <a href="mailto:chuck@teamcurran.com" style="color:#1d4ed8;text-decoration:none">chuck@teamcurran.com</a></p>
+      <p style="margin:0;color:#e5e5e5;font-size:14px">Reply to this email or reach us at <a href="mailto:info@bigfrogbjj.com" style="color:#1d4ed8;text-decoration:none">info@bigfrogbjj.com</a></p>
     </div>
 
   </td></tr>
@@ -113,7 +113,7 @@ function adminEmailHtml(order: Record<string, unknown>, sessionId: string) {
     <p style="margin:0;color:#888;font-size:13px">${order.customer_email}</p>
     ${order.customer_phone ? `<p style="margin:4px 0 0;color:#888;font-size:13px">${order.customer_phone}</p>` : ''}
     ${order.customer_gym ? `<p style="margin:4px 0 0;color:#888;font-size:13px">Trains at: ${order.customer_gym}</p>` : ''}
-    <p style="margin:4px 0 0;color:#888;font-size:13px">${(order.shipping_minor as number) === 0 ? '📍 Gym Pickup' : '📦 Ship to address'}</p>
+    <p style="margin:4px 0 0;color:#888;font-size:13px">${(order.shipping_minor as number) === 0 ? '📍 Gym Pickup · Crystal Lake, IL' : `📦 ${order.ship_address || 'Ship to address (see order notes)'}`}</p>
   </div>
 
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px">
@@ -147,10 +147,9 @@ export async function POST(req: NextRequest) {
 
   await db.from('tc_shop_orders').update({ status: 'paid', notified_at: new Date().toISOString() }).eq('id', order.id)
 
-  const firstName = (order.customer_name as string).split(' ')[0]
-
   try {
     // Customer receipt
+    if (!(order.customer_email as string)) throw new Error('no customer email')
     await sendEmail({
       to: [{ email: order.customer_email as string, name: order.customer_name as string }],
       subject: `Your Team Curran order is confirmed`,
@@ -177,9 +176,11 @@ export async function POST(req: NextRequest) {
 
   // Add purchaser to Brevo lists (best-effort)
   try {
-    const [tcListId, bfnListId] = await Promise.all([
+    if (!(order.customer_email as string)) throw new Error('no customer email')
+    const [tcListId, bfnListId, tcActiveId] = await Promise.all([
       getOrCreateList('tc-shop-customers'),
       getOrCreateList('BFN Master List'),
+      getOrCreateList('team-curran-active'),
     ])
     const nameParts = (order.customer_name as string).split(' ')
     await upsertContact({
@@ -187,7 +188,7 @@ export async function POST(req: NextRequest) {
       firstName: nameParts[0],
       lastName: nameParts.slice(1).join(' ') || undefined,
       phone: order.customer_phone as string | undefined,
-      listIds: [tcListId, bfnListId],
+      listIds: [tcListId, bfnListId, tcActiveId],
     })
   } catch (err) {
     console.error('TC shop: failed to sync contact to Brevo', err)
