@@ -79,13 +79,42 @@ export default function WelcomeBackPage() {
         {/* Form */}
         <div className="bg-[#111] rounded-xl p-8 border border-[#1a2540]">
           {status === 'sent' ? (
-            <div className="text-center py-6">
-              <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-xl font-black uppercase tracking-wide mb-2">You&apos;re All Set</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Chuck will reach out to you soon to lock in your returning member rate.<br />
-                We can&apos;t wait to see you back on the mat.
-              </p>
+            <div>
+              <div className="text-center py-6">
+                <div className="text-4xl mb-4">✓</div>
+                <h2 className="text-xl font-black uppercase tracking-wide mb-2">You&apos;re All Set</h2>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Chuck will reach out to you soon to lock in your returning member rate.<br />
+                  See you on the mat!
+                </p>
+              </div>
+
+              {/* Schedule */}
+              <div className="mt-6 pt-6 border-t border-[#1a2540]">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-5">Weekly Class Schedule</p>
+                <div className="space-y-5">
+                  {[
+                    { day: 'Monday', classes: [['11am','Gi – Fundamentals'],['12pm','Gi – Mixed Level'],['4:15pm','Gi – Little Frogs (Kids)'],['5pm','Gi – Kids Advanced (Kids)'],['6pm','Muay Thai'],['7pm','NoGi – Fundamentals'],['8pm','NoGi – Advanced']] },
+                    { day: 'Tuesday', classes: [['11am','Muay Thai'],['12pm','NoGi Adult Fundamentals & Advanced'],['5pm','Gi – Kids All Ages (Kids)'],['6pm','Gi – Fundamentals'],['7pm','Gi – Advanced']] },
+                    { day: 'Wednesday', classes: [['11am','Gi – Fundamentals'],['12pm','Gi – Mixed Level'],['4:15pm','Gi – Little Frogs (Kids)'],['5pm','NoGi – Kids Advanced (Kids)'],['6pm','Muay Thai'],['7pm','NoGi – Fundamentals'],['8pm','NoGi – Advanced']] },
+                    { day: 'Thursday', classes: [['11am','Muay Thai'],['12pm','NoGi Adult Fundamentals & Advanced'],['5pm','Gi – Kids All Ages (Kids)'],['6pm','Gi – Fundamentals'],['7pm','Gi – Advanced']] },
+                    { day: 'Friday', classes: [['12pm','NoGi Open Mat — Visitors Welcome!']] },
+                    { day: 'Saturday', classes: [['10am','Kids NoGi (Kids)'],['11am','Gi – Fundamentals'],['12pm','Gi – Advanced']] },
+                  ].map(({ day, classes }) => (
+                    <div key={day}>
+                      <p className="text-white text-xs font-bold uppercase tracking-widest mb-2">{day}</p>
+                      <div className="space-y-1">
+                        {classes.map(([time, name]) => (
+                          <div key={time + name} className="flex gap-3 text-xs">
+                            <span className="text-gray-600 w-12 shrink-0">{time}</span>
+                            <span className="text-gray-400">{name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <>
