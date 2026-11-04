@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
     cc: [{ email: 'jcinvitationalonline@gmail.com', name: 'Alexa' }],
     subject: `Returning Member: ${name} wants to come back`,
     htmlContent: html,
-    senderName: 'Team Curran Website',
-    senderEmail: 'no-reply@teamcurran.com',
+    senderName: 'Team Curran',
+    senderEmail: 'info@bigfrogbjj.com',
   })
 
   return NextResponse.json({ ok: true })
