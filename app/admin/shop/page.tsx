@@ -213,16 +213,42 @@ export default function AdminShopPage() {
   const paidOrders = orders.filter((o) => o.status === 'paid')
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
 
-  // Item breakdown: count each line item name across all paid orders
-  const itemCounts: Record<string, { qty: number; revenue: number }> = {}
+  // Build pivot: { productBase: { size: qty } }
+  // Line name format: "Product Name · Color · Size XL"  (color optional)
+  type PivotRow = { sizes: Record<string, number>; total: number }
+  const pivot: Record<string, PivotRow> = {}
+  const allSizes = new Set<string>()
+
   for (const order of paidOrders) {
     for (const line of order.lines) {
-      if (!itemCounts[line.name]) itemCounts[line.name] = { qty: 0, revenue: 0 }
-      itemCounts[line.name].qty += line.qty
-      itemCounts[line.name].revenue += line.price_minor * line.qty
+      // Extract size — always last segment after "Size "
+      const sizeMatch = line.name.match(/Size\s+(\S+)\s*$/)
+      const size = sizeMatch ? sizeMatch[1] : '—'
+      // Product base = everything before the first " · Color · Size" portion
+      // Strip " · Size X" and optionally " · ColorName" before it
+      const base = line.name
+        .replace(/\s*·\s*Size\s+\S+\s*$/, '')         // remove " · Size XL"
+        .replace(/\s*·\s*[A-Z][a-z][\w\s]+$/, '')     // remove " · Blue" color segment if present
+        .trim()
+
+      if (!pivot[base]) pivot[base] = { sizes: {}, total: 0 }
+      pivot[base].sizes[size] = (pivot[base].sizes[size] ?? 0) + line.qty
+      pivot[base].total += line.qty
+      allSizes.add(size)
     }
   }
-  const itemSummary = Object.entries(itemCounts).sort((a, b) => b[1].qty - a[1].qty)
+
+  // Sort sizes: numeric first (kids M0–M4), then alpha (XS S M L XL 2XL…), then adult gi (A0–A5H)
+  const sizeOrder = ['M000','M00','M0','M1','M2','M3','M4','XS','S','M','L','XL','2XL','3XL','4XL','A0','A1','A2','A3','A3H','A4','A4H','A5','F0','F1','F2','F3','F4']
+  const sortedSizes = [...allSizes].sort((a, b) => {
+    const ai = sizeOrder.indexOf(a), bi = sizeOrder.indexOf(b)
+    if (ai >= 0 && bi >= 0) return ai - bi
+    if (ai >= 0) return -1
+    if (bi >= 0) return 1
+    return a.localeCompare(b)
+  })
+
+  const pivotRows = Object.entries(pivot).sort((a, b) => a[0].localeCompare(b[0]))
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
@@ -277,18 +303,41 @@ export default function AdminShopPage() {
                   </div>
                 </div>
 
-                {/* Item breakdown */}
-                {itemSummary.length > 0 && (
+                {/* Size pivot table */}
+                {pivotRows.length > 0 && (
                   <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4">Items Sold</p>
-                    <div className="space-y-2">
-                      {itemSummary.map(([name, { qty, revenue }]) => (
-                        <div key={name} className="flex items-center justify-between gap-4">
-                          <p className="text-sm text-white font-bold flex-1 min-w-0 truncate">{name}</p>
-                          <span className="text-gray-400 text-xs shrink-0">×{qty}</span>
-                          <span className="text-gray-300 text-xs w-20 text-right shrink-0">{fmt(revenue)}</span>
-                        </div>
-                      ))}
+                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4">Units Sold by Size</p>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs" style={{ minWidth: `${200 + sortedSizes.length * 52}px` }}>
+                        <thead>
+                          <tr>
+                            <th className="text-left text-gray-500 font-bold uppercase tracking-widest pb-2 pr-4 whitespace-nowrap">Product</th>
+                            {sortedSizes.map((s) => (
+                              <th key={s} className="text-center text-gray-500 font-bold uppercase tracking-widest pb-2 px-2 whitespace-nowrap">{s}</th>
+                            ))}
+                            <th className="text-center text-gray-400 font-bold uppercase tracking-widest pb-2 pl-3 whitespace-nowrap">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pivotRows.map(([product, { sizes, total }]) => (
+                            <tr key={product} className="border-t border-gray-800">
+                              <td className="py-2 pr-4 text-white font-bold whitespace-nowrap">{product}</td>
+                              {sortedSizes.map((s) => (
+                                <td key={s} className="py-2 px-2 text-center">
+                                  {sizes[s] ? (
+                                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-700/20 text-blue-400 font-black">
+                                      {sizes[s]}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-800">—</span>
+                                  )}
+                                </td>
+                              ))}
+                              <td className="py-2 pl-3 text-center text-white font-black">{total}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
