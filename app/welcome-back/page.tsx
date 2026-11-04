@@ -89,31 +89,55 @@ export default function WelcomeBackPage() {
                 </p>
               </div>
 
-              {/* Schedule */}
+              {/* Schedule — visual grid matching homepage */}
               <div className="mt-6 pt-6 border-t border-[#1a2540]">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-5">Weekly Class Schedule</p>
-                <div className="space-y-5">
-                  {[
-                    { day: 'Monday', classes: [['11am','Gi – Fundamentals'],['12pm','Gi – Mixed Level'],['4:15pm','Gi – Little Frogs (Kids)'],['5pm','Gi – Kids Advanced (Kids)'],['6pm','Muay Thai'],['7pm','NoGi – Fundamentals'],['8pm','NoGi – Advanced']] },
-                    { day: 'Tuesday', classes: [['11am','Muay Thai'],['12pm','NoGi Adult Fundamentals & Advanced'],['5pm','Gi – Kids All Ages (Kids)'],['6pm','Gi – Fundamentals'],['7pm','Gi – Advanced']] },
-                    { day: 'Wednesday', classes: [['11am','Gi – Fundamentals'],['12pm','Gi – Mixed Level'],['4:15pm','Gi – Little Frogs (Kids)'],['5pm','NoGi – Kids Advanced (Kids)'],['6pm','Muay Thai'],['7pm','NoGi – Fundamentals'],['8pm','NoGi – Advanced']] },
-                    { day: 'Thursday', classes: [['11am','Muay Thai'],['12pm','NoGi Adult Fundamentals & Advanced'],['5pm','Gi – Kids All Ages (Kids)'],['6pm','Gi – Fundamentals'],['7pm','Gi – Advanced']] },
-                    { day: 'Friday', classes: [['12pm','NoGi Open Mat — Visitors Welcome!']] },
-                    { day: 'Saturday', classes: [['10am','Kids NoGi (Kids)'],['11am','Gi – Fundamentals'],['12pm','Gi – Advanced']] },
-                  ].map(({ day, classes }) => (
-                    <div key={day}>
-                      <p className="text-white text-xs font-bold uppercase tracking-widest mb-2">{day}</p>
-                      <div className="space-y-1">
-                        {classes.map(([time, name]) => (
-                          <div key={time + name} className="flex gap-3 text-xs">
-                            <span className="text-gray-600 w-12 shrink-0">{time}</span>
-                            <span className="text-gray-400">{name}</span>
-                          </div>
+                <div className="rounded-xl overflow-hidden border border-gray-800">
+                  <div className="overflow-x-auto bg-gray-950">
+                    <table className="w-full min-w-[560px] text-xs">
+                      <thead>
+                        <tr>
+                          <th className="w-16" />
+                          {['Mon','Tue','Wed','Thu','Fri','Sat'].map(d => (
+                            <th key={d} className="py-3 px-1 text-center">
+                              <span className="block bg-blue-600 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1.5 rounded">{d}</span>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { time: '10am',   Mon: null,                        Tue: null,                    Wed: null,                        Thu: null,              Fri: null,                            Sat: 'Kids NoGi' },
+                          { time: '11am',   Mon: 'Gi – Fundamentals',         Tue: 'Muay Thai',             Wed: 'Gi – Fundamentals',         Thu: 'Muay Thai',       Fri: null,                            Sat: 'Gi – Fundamentals' },
+                          { time: '12pm',   Mon: 'Gi – Mixed Level',          Tue: 'NoGi – Mixed Level',    Wed: 'Gi – Mixed Level',          Thu: 'NoGi – Mixed Level', Fri: 'NoGi Open Mat\nVisitors Welcome!', Sat: 'Gi – Advanced*' },
+                          { time: '4:15pm', Mon: 'Gi – Little Frogs**',       Tue: null,                    Wed: 'Gi – Little Frogs**',       Thu: null,              Fri: null,                            Sat: null },
+                          { time: '5pm',    Mon: 'Gi – Kids Advanced*',       Tue: 'Gi – Kids All Ages',    Wed: 'NoGi – Kids Advanced*',     Thu: 'Gi – Kids All Ages', Fri: null,                         Sat: null },
+                          { time: '6pm',    Mon: 'Muay Thai',                 Tue: 'Gi – Fundamentals',     Wed: 'Muay Thai',                 Thu: 'Gi – Fundamentals', Fri: null,                          Sat: null },
+                          { time: '7–8pm',  Mon: 'NoGi – Fundamentals\n& Advanced*', Tue: 'Gi – Advanced*', Wed: 'NoGi – Fundamentals\n& Advanced*', Thu: 'Gi – Advanced*', Fri: null,                   Sat: null },
+                        ].map((row, i) => (
+                          <tr key={row.time} className={i % 2 === 0 ? 'bg-black/20' : ''}>
+                            <td className="py-2 px-2 text-right align-middle">
+                              <span className="inline-block bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded min-w-[48px] text-center">{row.time}</span>
+                            </td>
+                            {(['Mon','Tue','Wed','Thu','Fri','Sat'] as const).map(d => {
+                              const cls = row[d as keyof typeof row] as string | null
+                              return (
+                                <td key={d} className="py-1.5 px-1 text-center align-middle">
+                                  {cls ? (
+                                    <div className="bg-white text-gray-900 rounded border border-gray-200 px-1.5 py-1.5 text-[10px] font-bold leading-snug whitespace-pre-line shadow-sm">{cls}</div>
+                                  ) : (
+                                    <div className="h-8" />
+                                  )}
+                                </td>
+                              )
+                            })}
+                          </tr>
                         ))}
-                      </div>
-                    </div>
-                  ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+                <p className="text-gray-600 text-[10px] mt-3">* Instructor Approval Required &nbsp;·&nbsp; ** Little Frogs: beginners under 8</p>
               </div>
             </div>
           ) : (
