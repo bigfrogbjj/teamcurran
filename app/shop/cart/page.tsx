@@ -10,11 +10,6 @@ export default function CartPage() {
   const { lines, updateQty, removeItem, subtotalMinor } = useCart()
   const router = useRouter()
 
-  // Use the max shipping across items (all items ship for one flat fee — take the highest)
-  const shippingMinor = lines.length > 0
-    ? Math.max(...lines.map((l) => l.shippingMinor))
-    : 0
-  const totalMinor = subtotalMinor + shippingMinor
 
   if (lines.length === 0) {
     return (
@@ -103,18 +98,11 @@ export default function CartPage() {
         {/* Summary */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <div className="space-y-2 text-sm mb-4">
-            <div className="flex justify-between">
-              <span className="text-gray-400">Subtotal</span>
-              <span className="text-white font-bold">{money(subtotalMinor)}</span>
+            <div className="flex justify-between border-t border-gray-700 pt-3">
+              <span className="font-black uppercase tracking-wide text-base">Subtotal</span>
+              <span className="font-black text-xl">{money(subtotalMinor)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Shipping</span>
-              <span className="text-white">{money(shippingMinor)}</span>
-            </div>
-            <div className="flex justify-between border-t border-gray-700 pt-3 mt-3">
-              <span className="font-black uppercase tracking-wide text-base">Total</span>
-              <span className="font-black text-xl">{money(totalMinor)}</span>
-            </div>
+            <p className="text-gray-500 text-xs">Shipping calculated at checkout</p>
           </div>
 
           <button
@@ -124,7 +112,6 @@ export default function CartPage() {
           >
             Proceed to Checkout →
           </button>
-          <p className="text-gray-600 text-xs text-center mt-3">BFN All Access members: use code BFN20 for 20% off.</p>
         </div>
       </div>
     </div>
