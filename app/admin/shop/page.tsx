@@ -189,27 +189,29 @@ export default function AdminShopPage() {
   const paidOrders = orders.filter((o) => o.status === 'paid')
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
 
-  // Build pivot: { productBase: { size: qty } }
-  // Line name format: "Product Name · Color · Size XL"  (color optional)
-  type PivotRow = { sizes: Record<string, number>; total: number }
+  // Parse a line name into { base, size }
+  function parseLine(name: string) {
+    const sizeMatch = name.match(/Size\s+(\S+)\s*$/)
+    const size = sizeMatch ? sizeMatch[1] : '—'
+    const base = name
+      .replace(/\s*·\s*Size\s+\S+\s*$/, '')
+      .replace(/\s*·\s*[A-Z][a-z][\w\s()]+$/, '')
+      .trim()
+    return { base, size }
+  }
+
+  // Build pivot: { productBase: { sizes: {size: qty}, revenue: minor, total: qty } }
+  type PivotRow = { sizes: Record<string, number>; total: number; revenue: number }
   const pivot: Record<string, PivotRow> = {}
   const allSizes = new Set<string>()
 
   for (const order of paidOrders) {
     for (const line of order.lines) {
-      // Extract size — always last segment after "Size "
-      const sizeMatch = line.name.match(/Size\s+(\S+)\s*$/)
-      const size = sizeMatch ? sizeMatch[1] : '—'
-      // Product base = everything before the first " · Color · Size" portion
-      // Strip " · Size X" and optionally " · ColorName" before it
-      const base = line.name
-        .replace(/\s*·\s*Size\s+\S+\s*$/, '')         // remove " · Size XL"
-        .replace(/\s*·\s*[A-Z][a-z][\w\s]+$/, '')     // remove " · Blue" color segment if present
-        .trim()
-
-      if (!pivot[base]) pivot[base] = { sizes: {}, total: 0 }
+      const { base, size } = parseLine(line.name)
+      if (!pivot[base]) pivot[base] = { sizes: {}, total: 0, revenue: 0 }
       pivot[base].sizes[size] = (pivot[base].sizes[size] ?? 0) + line.qty
       pivot[base].total += line.qty
+      pivot[base].revenue += line.price_minor * line.qty
       allSizes.add(size)
     }
   }
@@ -224,7 +226,7 @@ export default function AdminShopPage() {
     return a.localeCompare(b)
   })
 
-  const pivotRows = Object.entries(pivot).sort((a, b) => a[0].localeCompare(b[0]))
+  const pivotRows = Object.entries(pivot).sort((a, b) => b[1].revenue - a[1].revenue)
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
@@ -279,27 +281,28 @@ export default function AdminShopPage() {
                   </div>
                 </div>
 
-                {/* Size pivot table */}
+                {/* Product breakdown table */}
                 {pivotRows.length > 0 && (
                   <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4">Units Sold by Size</p>
+                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4">Sales by Product</p>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-xs" style={{ minWidth: `${200 + sortedSizes.length * 52}px` }}>
+                      <table className="w-full text-xs" style={{ minWidth: `${260 + sortedSizes.length * 56}px` }}>
                         <thead>
-                          <tr>
-                            <th className="text-left text-gray-500 font-bold uppercase tracking-widest pb-2 pr-4 whitespace-nowrap">Product</th>
+                          <tr className="border-b border-gray-700">
+                            <th className="text-left text-gray-500 font-bold uppercase tracking-widest pb-3 pr-4 whitespace-nowrap">Product</th>
                             {sortedSizes.map((s) => (
-                              <th key={s} className="text-center text-gray-500 font-bold uppercase tracking-widest pb-2 px-2 whitespace-nowrap">{s}</th>
+                              <th key={s} className="text-center text-gray-500 font-bold uppercase tracking-widest pb-3 px-2 whitespace-nowrap">{s}</th>
                             ))}
-                            <th className="text-center text-gray-400 font-bold uppercase tracking-widest pb-2 pl-3 whitespace-nowrap">Total</th>
+                            <th className="text-center text-gray-400 font-bold uppercase tracking-widest pb-3 px-3 whitespace-nowrap">Units</th>
+                            <th className="text-right text-gray-400 font-bold uppercase tracking-widest pb-3 pl-3 whitespace-nowrap">Revenue</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {pivotRows.map(([product, { sizes, total }]) => (
+                          {pivotRows.map(([product, { sizes, total, revenue }]) => (
                             <tr key={product} className="border-t border-gray-800">
-                              <td className="py-2 pr-4 text-white font-bold whitespace-nowrap">{product}</td>
+                              <td className="py-3 pr-4 text-white font-bold whitespace-nowrap">{product}</td>
                               {sortedSizes.map((s) => (
-                                <td key={s} className="py-2 px-2 text-center">
+                                <td key={s} className="py-3 px-2 text-center">
                                   {sizes[s] ? (
                                     <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-700/20 text-blue-400 font-black">
                                       {sizes[s]}
@@ -309,9 +312,18 @@ export default function AdminShopPage() {
                                   )}
                                 </td>
                               ))}
-                              <td className="py-2 pl-3 text-center text-white font-black">{total}</td>
+                              <td className="py-3 px-3 text-center text-white font-black">{total}</td>
+                              <td className="py-3 pl-3 text-right text-green-400 font-black whitespace-nowrap">{fmt(revenue)}</td>
                             </tr>
                           ))}
+                          <tr className="border-t-2 border-gray-600">
+                            <td className="py-3 pr-4 text-gray-400 font-bold uppercase tracking-widest text-xs">Total</td>
+                            {sortedSizes.map((s) => <td key={s} />)}
+                            <td className="py-3 px-3 text-center text-white font-black">
+                              {pivotRows.reduce((s, [, r]) => s + r.total, 0)}
+                            </td>
+                            <td className="py-3 pl-3 text-right text-white font-black">{fmt(totalRevenue)}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -375,21 +387,38 @@ export default function AdminShopPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        {order.lines.map((line, i) => (
-                          <div key={i} className="flex justify-between text-xs">
-                            <span className="text-gray-300">{line.name} ×{line.qty}</span>
-                            <span className="text-gray-400">{fmt(line.price_minor * line.qty)}</span>
-                          </div>
-                        ))}
+                      <div className="space-y-2 mt-1">
+                        {(() => {
+                          // Group lines by product base
+                          const groups: Record<string, { base: string; size: string; qty: number; price_minor: number }[]> = {}
+                          for (const line of order.lines) {
+                            const { base, size } = parseLine(line.name)
+                            if (!groups[base]) groups[base] = []
+                            groups[base].push({ base, size, qty: line.qty, price_minor: line.price_minor })
+                          }
+                          return Object.entries(groups).map(([base, items]) => {
+                            const groupTotal = items.reduce((s, i) => s + i.price_minor * i.qty, 0)
+                            const groupQty = items.reduce((s, i) => s + i.qty, 0)
+                            const sizeSummary = items.map(i => `${i.size}${i.qty > 1 ? ` ×${i.qty}` : ''}`).join(' · ')
+                            return (
+                              <div key={base} className="bg-gray-800/50 rounded-lg px-3 py-2">
+                                <div className="flex justify-between items-baseline">
+                                  <span className="text-white font-bold text-sm">{base}{groupQty > 1 && items.length === 1 ? ` ×${groupQty}` : ''}</span>
+                                  <span className="text-white font-black text-sm ml-4 shrink-0">{fmt(groupTotal)}</span>
+                                </div>
+                                <p className="text-gray-500 text-xs mt-0.5">{sizeSummary}</p>
+                              </div>
+                            )
+                          })
+                        })()}
                         {order.shipping_minor > 0 && (
-                          <div className="flex justify-between text-xs">
+                          <div className="flex justify-between text-xs px-1">
                             <span className="text-gray-500">Shipping</span>
                             <span className="text-gray-500">{fmt(order.shipping_minor)}</span>
                           </div>
                         )}
                         {order.discount_pct > 0 && (
-                          <p className="text-green-500 text-xs">{order.discount_pct}% discount applied</p>
+                          <p className="text-green-500 text-xs px-1">{order.discount_pct}% discount applied</p>
                         )}
                       </div>
                     </div>
