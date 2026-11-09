@@ -190,14 +190,17 @@ export default function AdminShopPage() {
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
 
   // Parse a line name into { base, size }
+  // Handles both "TC Adult Gi Black · F2" and "Competition Gi — Adult · Royal Blue · Size A3"
+  const SIZE_RE = /^(M0{0,3}|M[0-4]|[2-4]XL|XS|[SML]|A[0-5]H?|F[0-4])$/i
   function parseLine(name: string) {
-    const sizeMatch = name.match(/Size\s+(\S+)\s*$/)
-    const size = sizeMatch ? sizeMatch[1] : '—'
-    const base = name
-      .replace(/\s*·\s*Size\s+\S+\s*$/, '')
-      .replace(/\s*·\s*[A-Z][a-z][\w\s()]+$/, '')
-      .trim()
-    return { base, size }
+    const parts = name.split(/\s*·\s*/)
+    const lastPart = parts[parts.length - 1]
+    // Check "Size XL" prefix or bare size token
+    const sizeToken = lastPart.startsWith('Size ') ? lastPart.slice(5).trim() : lastPart.trim()
+    if (SIZE_RE.test(sizeToken) && parts.length > 1) {
+      return { base: parts.slice(0, -1).join(' · ').trim(), size: sizeToken.toUpperCase() }
+    }
+    return { base: name.trim(), size: '—' }
   }
 
   // Build pivot: { productBase: { sizes: {size: qty}, revenue: minor, total: qty } }
