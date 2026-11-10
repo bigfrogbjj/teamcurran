@@ -223,7 +223,7 @@ export default function CheckoutPage() {
                 }`}
               >
                 <span className="block">Ship to me</span>
-                <span className="text-xs font-normal normal-case text-gray-400">{money(baseShippingMinor)}</span>
+                <span className="text-xs font-normal normal-case text-gray-400">{money(calcShipping(totalQty))}</span>
               </button>
             </div>
           </div>
