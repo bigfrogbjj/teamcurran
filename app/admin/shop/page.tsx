@@ -185,6 +185,16 @@ export default function AdminShopPage() {
     setSaving(false)
   }
 
+  async function deleteOrder(id: string) {
+    if (!confirm('Delete this pending order? This cannot be undone.')) return
+    await fetch('/api/admin/shop-orders', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    setOrders((prev) => prev.filter((o) => o.id !== id))
+  }
+
   // ── Order summary stats ──
   const paidOrders = orders.filter((o) => o.status === 'paid')
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
@@ -383,8 +393,19 @@ export default function AdminShopPage() {
                             {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
                           </p>
                         </div>
-                        <div className="text-right shrink-0">
-                          <p className="font-black text-lg">{fmt(order.total_minor)}</p>
+                        <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                          <div className="flex items-center gap-2">
+                            <p className="font-black text-lg">{fmt(order.total_minor)}</p>
+                            {order.status === 'pending' && (
+                              <button
+                                onClick={() => deleteOrder(order.id)}
+                                className="text-gray-600 hover:text-red-400 transition-colors text-lg leading-none"
+                                title="Delete pending order"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </div>
                           <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${order.status === 'paid' ? 'bg-green-900/50 text-green-400' : 'bg-yellow-900/50 text-yellow-400'}`}>
                             {order.status}
                           </span>
