@@ -25,8 +25,14 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const baseShippingMinor = lines.length > 0 ? Math.max(...lines.map((l) => l.shippingMinor)) : 0
-  const shippingMinor = shippingOption === 'pickup' ? 0 : baseShippingMinor
+  const totalQty = lines.reduce((s, l) => s + l.qty, 0)
+  function calcShipping(qty: number) {
+    if (qty <= 1) return 1000
+    if (qty === 2) return 1500
+    if (qty <= 5) return 2000
+    return 2500
+  }
+  const shippingMinor = shippingOption === 'pickup' ? 0 : calcShipping(totalQty)
   const promoSavings = promoApplied ? Math.round(subtotalMinor * promoDiscountPct / 100) : 0
   const totalMinor = subtotalMinor - promoSavings + shippingMinor
 

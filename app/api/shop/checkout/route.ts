@@ -53,8 +53,16 @@ export async function POST(req: NextRequest) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
   const externalRef = `tc-shop-${Date.now()}`
 
+  const totalQty = lines.reduce((s, l) => s + l.qty, 0)
+  function calcShipping(qty: number) {
+    if (qty <= 1) return 1000
+    if (qty === 2) return 1500
+    if (qty <= 5) return 2000
+    return 2500
+  }
+  const computedShipping = shippingMinor > 0 ? calcShipping(totalQty) : 0
   const subtotalMinor = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
-  const totalMinor = subtotalMinor + (shippingMinor ?? 0)
+  const totalMinor = subtotalMinor + computedShipping
 
   const nameParts = fullName.trim().split(/\s+/)
   const firstName = nameParts[0] ?? ''
@@ -66,7 +74,7 @@ export async function POST(req: NextRequest) {
       price: discounted(line.priceMinor, discountPct),
       unitQty: line.qty,
     })),
-    ...(shippingMinor > 0 ? [{ name: 'Shipping', price: shippingMinor, unitQty: 1 }] : []),
+    ...(computedShipping > 0 ? [{ name: 'Shipping', price: computedShipping, unitQty: 1 }] : []),
   ]
 
   try {
@@ -95,7 +103,7 @@ export async function POST(req: NextRequest) {
           qty: l.qty,
         })),
         subtotal_minor: subtotalMinor,
-        shipping_minor: shippingMinor ?? 0,
+        shipping_minor: computedShipping,
         total_minor: totalMinor,
         discount_pct: discountPct,
       })
