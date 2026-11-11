@@ -144,6 +144,12 @@ export default function CheckoutPage() {
               <span className="text-white font-bold shrink-0 ml-4">{money(line.priceMinor * line.qty)}</span>
             </div>
           ))}
+          {promoApplied && promoSavings > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-green-400">BFN20 ({promoDiscountPct}% off)</span>
+              <span className="text-green-400">−{money(promoSavings)}</span>
+            </div>
+          )}
           <div className="border-t border-gray-800 pt-3 flex justify-between text-sm">
             <span className="text-gray-400">Shipping</span>
             <span className="text-white">{money(shippingMinor)}</span>
@@ -277,6 +283,32 @@ export default function CheckoutPage() {
               </div>
             </div>
           )}
+
+          {/* Promo code */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Promo Code <span className="text-gray-600 font-normal normal-case">(optional)</span></label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={promoCode}
+                onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoDiscountPct(0); setPromoError('') }}
+                placeholder="e.g. BFN20"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white uppercase focus:border-blue-600 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={applyPromo}
+                disabled={!promoCode.trim() || promoLoading || promoApplied}
+                className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white font-bold uppercase tracking-wide px-5 py-3 rounded-lg text-sm transition-colors shrink-0"
+              >
+                {promoLoading ? '...' : promoApplied ? '✓ Applied' : 'Apply'}
+              </button>
+            </div>
+            {promoApplied && (
+              <p className="text-green-400 text-sm mt-1">BFN member discount applied — {promoDiscountPct}% off!</p>
+            )}
+            {promoError && <p className="text-red-400 text-sm mt-1">{promoError}</p>}
+          </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
