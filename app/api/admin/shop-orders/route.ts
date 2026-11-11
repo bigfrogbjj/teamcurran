@@ -52,10 +52,8 @@ export async function DELETE(req: Request) {
   const { id } = await req.json() as { id: string }
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
-  // Only allow deleting pending orders
   const { data: order } = await admin.from('tc_shop_orders').select('status').eq('id', id).single()
   if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (order.status !== 'pending') return NextResponse.json({ error: 'Can only delete pending orders' }, { status: 400 })
 
   await admin.from('tc_shop_orders').delete().eq('id', id)
   return NextResponse.json({ ok: true })

@@ -186,7 +186,7 @@ export default function AdminShopPage() {
   }
 
   async function deleteOrder(id: string) {
-    if (!confirm('Delete this pending order? This cannot be undone.')) return
+    if (!confirm('Delete this order? This cannot be undone.')) return
     await fetch('/api/admin/shop-orders', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -396,15 +396,13 @@ export default function AdminShopPage() {
                         <div className="text-right shrink-0 flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2">
                             <p className="font-black text-lg">{fmt(order.total_minor)}</p>
-                            {order.status === 'pending' && (
-                              <button
-                                onClick={() => deleteOrder(order.id)}
-                                className="text-gray-600 hover:text-red-400 transition-colors text-lg leading-none"
-                                title="Delete pending order"
-                              >
-                                ×
-                              </button>
-                            )}
+                            <button
+                              onClick={() => deleteOrder(order.id)}
+                              className="text-gray-600 hover:text-red-400 transition-colors text-lg leading-none"
+                              title="Delete order"
+                            >
+                              ×
+                            </button>
                           </div>
                           <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${order.status === 'paid' ? 'bg-green-900/50 text-green-400' : 'bg-yellow-900/50 text-yellow-400'}`}>
                             {order.status}
