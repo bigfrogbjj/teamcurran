@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendEmail, upsertContact, getOrCreateList } from '@/lib/brevo'
+import { getCheckoutStatus } from '@/lib/clover'
 
 const ADMIN_EMAILS = ['bigfrog145@me.com', 'jcinvitationalonline@gmail.com']
 
@@ -130,7 +131,7 @@ function adminEmailHtml(order: Record<string, unknown>, sessionId: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { checkoutSessionId } = await req.json() as { checkoutSessionId: string }
+  const { checkoutSessionId, skipCloverCheck } = await req.json() as { checkoutSessionId: string; skipCloverCheck?: boolean }
   if (!checkoutSessionId) return NextResponse.json({ error: 'Missing checkoutSessionId' }, { status: 400 })
 
   const db = adminClient()
@@ -144,6 +145,16 @@ export async function POST(req: NextRequest) {
   if (error || !order) return NextResponse.json({ ok: true })
 
   if (order.status === 'paid') return NextResponse.json({ ok: true, already: true })
+
+  // Verify payment with Clover before confirming
+  if (!skipCloverCheck) {
+    try {
+      const { paid, state } = await getCheckoutStatus(checkoutSessionId)
+      if (!paid) return NextResponse.json({ ok: false, reason: `Clover state: ${state}` })
+    } catch {
+      return NextResponse.json({ ok: false, reason: 'Clover check failed' })
+    }
+  }
 
   await db.from('tc_shop_orders').update({ status: 'paid', notified_at: new Date().toISOString() }).eq('id', order.id)
 
