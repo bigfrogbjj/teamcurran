@@ -263,6 +263,34 @@ export default function AdminShopPage() {
       }
     }
 
+    // Grappling Shorts: "Adult Grappling Shorts · Size M", "Kids Grappling Shorts · Size M2"
+    const shortsAdult = /^Adult\s+Grappling\s+Shorts/i.test(coreParts[0] ?? '')
+    const shortsKids  = /^Kids?\s+Grappling\s+Shorts/i.test(coreParts[0] ?? '')
+    if (shortsAdult || shortsKids) {
+      return { product: 'Grappling Shorts', ageGroup: shortsKids ? 'Kids' : 'Adult', color: coreParts[1] ?? null, size: sizeToken ?? '—' }
+    }
+
+    // T-Shirts: "Adult T-Shirt · Black · Size M", "Youth T-Shirt · Size S"
+    const teeAdult = /^Adult\s+T-?Shirt/i.test(coreParts[0] ?? '')
+    const teeYouth = /^Youth\s+T-?Shirt/i.test(coreParts[0] ?? '')
+    if (teeAdult || teeYouth) {
+      return { product: 'T-Shirt', ageGroup: teeYouth ? 'Kids' : 'Adult', color: coreParts[1] ?? null, size: sizeToken ?? '—' }
+    }
+
+    // Hoodies: "Adult Hoodie · Size L", "Youth Hoodie · Size S"
+    const hoodieAdult = /^Adult\s+Hoodie/i.test(coreParts[0] ?? '')
+    const hoodieYouth = /^Youth\s+Hoodie/i.test(coreParts[0] ?? '')
+    if (hoodieAdult || hoodieYouth) {
+      return { product: 'Hoodie', ageGroup: hoodieYouth ? 'Kids' : 'Adult', color: coreParts[1] ?? null, size: sizeToken ?? '—' }
+    }
+
+    // Joggers: "Adult Joggers · Size M", "Youth Joggers · Size S"
+    const joggersAdult = /^Adult\s+Joggers/i.test(coreParts[0] ?? '')
+    const joggersYouth = /^Youth\s+Joggers/i.test(coreParts[0] ?? '')
+    if (joggersAdult || joggersYouth) {
+      return { product: 'Joggers', ageGroup: joggersYouth ? 'Kids' : 'Adult', color: coreParts[1] ?? null, size: sizeToken ?? '—' }
+    }
+
     // Rashguards: "Adult Rashguard (Short Sleeve) · Non-Ranked Black · Size M"
     //             "Kids Rashguard · Black · Size S"
     const rashAdult = /^Adult\s+Rashguard/i.test(coreParts[0] ?? '')
@@ -291,7 +319,7 @@ export default function AdminShopPage() {
   const hpivot: Record<string, ProductEntry> = {}
 
   // Product display order
-  const PRODUCT_ORDER = ['Competition Gi', 'Rashguard', 'Adult Grappling Shorts', 'Kids Grappling Shorts']
+  const PRODUCT_ORDER = ['Competition Gi', 'Rashguard', 'Grappling Shorts', 'T-Shirt', 'Hoodie', 'Zip Hoodie', 'Crew Neck', 'Joggers', 'Jacket']
   const GI_COLOR_ORDER = ['Royal Blue', 'Black', 'White']
   const AGE_GROUP_ORDER = ['Adult', 'Adult · Short Sleeve', 'Adult · Long Sleeve', 'Kids', '__']
   const ADULT_SIZE_ORDER = ['A00','A0','A1','A2','A3','A3T','A3H','A4','A4T','A4H','A5','F1','F2','F3']
