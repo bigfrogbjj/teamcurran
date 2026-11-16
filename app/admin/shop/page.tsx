@@ -214,47 +214,119 @@ export default function AdminShopPage() {
   const paidOrders = orders.filter((o) => o.status === 'paid')
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
 
-  // Parse a line name into { base, size }
-  // Handles both "TC Adult Gi Black · F2" and "Competition Gi — Adult · Royal Blue · Size A3"
-  const SIZE_RE = /^(M0{0,3}|M[0-4]|[2-4]XL|XS|[SML]|A[0-5]H?|F[0-4])$/i
-  function parseLine(name: string) {
-    const parts = name.split(/\s*·\s*/)
-    const lastPart = parts[parts.length - 1]
-    // Check "Size XL" prefix or bare size token
-    const sizeToken = lastPart.startsWith('Size ') ? lastPart.slice(5).trim() : lastPart.trim()
-    if (SIZE_RE.test(sizeToken) && parts.length > 1) {
-      return { base: parts.slice(0, -1).join(' · ').trim(), size: sizeToken.toUpperCase() }
-    }
-    return { base: name.trim(), size: '—' }
+  // All valid gi / apparel size tokens
+  const SIZE_RE = /^(M0{0,3}|M[0-4]|[2-4]XL|XS|[SML]|A0{0,2}|A[0-5][HT]?|F[1-4])$/i
+
+  // Extract the size token from the last segment of a dot-separated line name
+  function extractSize(parts: string[]): string | null {
+    if (parts.length < 2) return null
+    const last = parts[parts.length - 1]
+    const token = last.startsWith('Size ') ? last.slice(5).trim() : last.trim()
+    return SIZE_RE.test(token) ? token.toUpperCase() : null
   }
 
-  // Build pivot: { productBase: { sizes: {size: qty}, revenue: minor, total: qty } }
-  type PivotRow = { sizes: Record<string, number>; total: number; revenue: number }
-  const pivot: Record<string, PivotRow> = {}
-  const allSizes = new Set<string>()
+  // Normalize a line name into { product, ageGroup, color, size }
+  // Handles current format "Competition Gi — Adult · Royal Blue · Size A3"
+  // and legacy formats like "Adult Gi Royal Blue · A2", "TC Adult Gi Black · F2"
+  function normalizeLine(raw: string): { product: string; ageGroup: string | null; color: string | null; size: string } {
+    const parts = raw.split(/\s*·\s*/)
+    const sizeToken = extractSize(parts)
+    const coreParts = sizeToken ? parts.slice(0, -1) : parts
+
+    // Current format: "Competition Gi — Adult" or "Competition Gi — Kids"
+    const giMatch = coreParts[0]?.match(/^Competition\s+Gi\s*[—–-]\s*(Adult|Kids)/i)
+    if (giMatch) {
+      return {
+        product: 'Competition Gi',
+        ageGroup: giMatch[1].charAt(0).toUpperCase() + giMatch[1].slice(1).toLowerCase(),
+        color: coreParts[1] ?? null,
+        size: sizeToken ?? '—',
+      }
+    }
+
+    // Legacy: "Adult Gi …", "TC Adult Gi …", "TC Gi Adult …"
+    const legacyAdult = /^(?:TC\s+)?(?:Adult\s+Gi|Gi\s+Adult)/i.test(coreParts[0] ?? '')
+    const legacyKids  = /^(?:TC\s+)?(?:Kids?\s+Gi|Gi\s+Kids?)/i.test(coreParts[0] ?? '')
+    if (legacyAdult || legacyKids) {
+      // Color may be part of the product name ("Adult Gi Royal Blue") or a separate segment
+      let color: string | null = coreParts[1] ?? null
+      if (!color) {
+        // Try to extract color from the product name string itself
+        const colorMatch = coreParts[0].match(/(White|Royal\s+Blue|Black)$/i)
+        if (colorMatch) color = colorMatch[1]
+      }
+      return {
+        product: 'Competition Gi',
+        ageGroup: legacyAdult ? 'Adult' : 'Kids',
+        color,
+        size: sizeToken ?? '—',
+      }
+    }
+
+    // Everything else: flat product, no age group, optional color
+    const product = coreParts[0] ?? raw
+    const color = coreParts.length > 1 ? coreParts[1] : null
+    return { product, ageGroup: null, color, size: sizeToken ?? '—' }
+  }
+
+  // ── Hierarchical pivot ──
+  // Structure: product → ageGroup (or '__') → color (or '__') → size → qty
+  type SizeQty = Record<string, number>
+  type ColorEntry = { sizes: SizeQty; qty: number; revenue: number }
+  type AgeEntry   = { colors: Record<string, ColorEntry>; qty: number; revenue: number }
+  type ProductEntry = { ages: Record<string, AgeEntry>; qty: number; revenue: number }
+  const hpivot: Record<string, ProductEntry> = {}
+
+  // Product display order
+  const PRODUCT_ORDER = ['Competition Gi', 'Adult Grappling Shorts', 'Kids Grappling Shorts', 'Adult Rashguard', 'Kids Rashguard']
+  const GI_COLOR_ORDER = ['Royal Blue', 'Black', 'White']
+  const AGE_ORDER = ['Adult', 'Kids', '__']
+  const ADULT_SIZE_ORDER = ['A00','A0','A1','A2','A3','A3T','A3H','A4','A4T','A4H','A5','F1','F2','F3']
+  const KIDS_SIZE_ORDER  = ['M000','M00','M0','M1','M2','M3','M4']
+  const APPAREL_SIZE_ORDER = ['XS','S','M','L','XL','2XL','3XL','4XL']
+
+  function sizeOrderFor(ageGroup: string | null): string[] {
+    if (ageGroup === 'Adult') return ADULT_SIZE_ORDER
+    if (ageGroup === 'Kids')  return KIDS_SIZE_ORDER
+    return APPAREL_SIZE_ORDER
+  }
 
   for (const order of paidOrders) {
     for (const line of order.lines) {
-      const { base, size } = parseLine(line.name)
-      if (!pivot[base]) pivot[base] = { sizes: {}, total: 0, revenue: 0 }
-      pivot[base].sizes[size] = (pivot[base].sizes[size] ?? 0) + line.qty
-      pivot[base].total += line.qty
-      pivot[base].revenue += line.price_minor * line.qty
-      allSizes.add(size)
+      const { product, ageGroup, color, size } = normalizeLine(line.name)
+      const ag = ageGroup ?? '__'
+      const cl = color ?? '__'
+      if (!hpivot[product]) hpivot[product] = { ages: {}, qty: 0, revenue: 0 }
+      const pe = hpivot[product]
+      if (!pe.ages[ag]) pe.ages[ag] = { colors: {}, qty: 0, revenue: 0 }
+      const ae = pe.ages[ag]
+      if (!ae.colors[cl]) ae.colors[cl] = { sizes: {}, qty: 0, revenue: 0 }
+      const ce = ae.colors[cl]
+      ce.sizes[size] = (ce.sizes[size] ?? 0) + line.qty
+      ce.qty += line.qty
+      ce.revenue += line.price_minor * line.qty
+      ae.qty += line.qty
+      ae.revenue += line.price_minor * line.qty
+      pe.qty += line.qty
+      pe.revenue += line.price_minor * line.qty
     }
   }
 
-  // Sort sizes: numeric first (kids M0–M4), then alpha (XS S M L XL 2XL…), then adult gi (A0–A5H)
-  const sizeOrder = ['M000','M00','M0','M1','M2','M3','M4','XS','S','M','L','XL','2XL','3XL','4XL','A0','A1','A2','A3','A3H','A4','A4H','A5','F0','F1','F2','F3','F4']
-  const sortedSizes = [...allSizes].sort((a, b) => {
-    const ai = sizeOrder.indexOf(a), bi = sizeOrder.indexOf(b)
+  // Sort products: known order first, then alphabetical
+  const sortedProducts = Object.keys(hpivot).sort((a, b) => {
+    const ai = PRODUCT_ORDER.indexOf(a), bi = PRODUCT_ORDER.indexOf(b)
     if (ai >= 0 && bi >= 0) return ai - bi
     if (ai >= 0) return -1
     if (bi >= 0) return 1
     return a.localeCompare(b)
   })
 
-  const pivotRows = Object.entries(pivot).sort((a, b) => b[1].revenue - a[1].revenue)
+  // parseLine kept for order-card display (unchanged)
+  function parseLine(name: string) {
+    const { product, ageGroup, color, size } = normalizeLine(name)
+    const baseParts = [product, ageGroup, color].filter(Boolean)
+    return { base: baseParts.join(' · '), size }
+  }
 
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'var(--font-oswald), Arial, sans-serif' }}>
@@ -309,52 +381,115 @@ export default function AdminShopPage() {
                   </div>
                 </div>
 
-                {/* Product breakdown table */}
-                {pivotRows.length > 0 && (
-                  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4">Sales by Product</p>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-xs" style={{ minWidth: `${260 + sortedSizes.length * 56}px` }}>
-                        <thead>
-                          <tr className="border-b border-gray-700">
-                            <th className="text-left text-gray-500 font-bold uppercase tracking-widest pb-3 pr-4 whitespace-nowrap">Product</th>
-                            {sortedSizes.map((s) => (
-                              <th key={s} className="text-center text-gray-500 font-bold uppercase tracking-widest pb-3 px-2 whitespace-nowrap">{s}</th>
-                            ))}
-                            <th className="text-center text-gray-400 font-bold uppercase tracking-widest pb-3 px-3 whitespace-nowrap">Units</th>
-                            <th className="text-right text-gray-400 font-bold uppercase tracking-widest pb-3 pl-3 whitespace-nowrap">Revenue</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pivotRows.map(([product, { sizes, total, revenue }]) => (
-                            <tr key={product} className="border-t border-gray-800">
-                              <td className="py-3 pr-4 text-white font-bold whitespace-nowrap">{product}</td>
-                              {sortedSizes.map((s) => (
-                                <td key={s} className="py-3 px-2 text-center">
-                                  {sizes[s] ? (
-                                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-700/20 text-blue-400 font-black">
-                                      {sizes[s]}
-                                    </span>
-                                  ) : (
-                                    <span className="text-gray-800">—</span>
-                                  )}
-                                </td>
-                              ))}
-                              <td className="py-3 px-3 text-center text-white font-black">{total}</td>
-                              <td className="py-3 pl-3 text-right text-green-400 font-black whitespace-nowrap">{fmt(revenue)}</td>
-                            </tr>
-                          ))}
-                          <tr className="border-t-2 border-gray-600">
-                            <td className="py-3 pr-4 text-gray-400 font-bold uppercase tracking-widest text-xs">Total</td>
-                            {sortedSizes.map((s) => <td key={s} />)}
-                            <td className="py-3 px-3 text-center text-white font-black">
-                              {pivotRows.reduce((s, [, r]) => s + r.total, 0)}
-                            </td>
-                            <td className="py-3 pl-3 text-right text-white font-black">{fmt(totalRevenue)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                {/* Hierarchical inventory breakdown */}
+                {sortedProducts.length > 0 && (
+                  <div className="space-y-4">
+                    <p className="text-blue-500 text-xs font-bold uppercase tracking-widest">Inventory by Product</p>
+                    {sortedProducts.map((product) => {
+                      const pe = hpivot[product]
+                      const ages = AGE_ORDER.filter((ag) => pe.ages[ag])
+                      const hasAgeGroups = ages.some((ag) => ag !== '__')
+                      return (
+                        <div key={product} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                          {/* Product header */}
+                          <div className="flex items-center justify-between px-5 py-3 bg-gray-800/60 border-b border-gray-700">
+                            <p className="font-black uppercase tracking-wide text-sm text-white">{product}</p>
+                            <div className="flex items-center gap-4 text-xs">
+                              <span className="text-gray-400">{pe.qty} units</span>
+                              <span className="text-green-400 font-black">{fmt(pe.revenue)}</span>
+                            </div>
+                          </div>
+
+                          {ages.map((ag) => {
+                            const ae = pe.ages[ag]
+                            const ageLabel = ag === '__' ? null : ag
+                            const colorsInOrder = product === 'Competition Gi'
+                              ? [...GI_COLOR_ORDER.filter((c) => ae.colors[c]), ...Object.keys(ae.colors).filter((c) => !GI_COLOR_ORDER.includes(c))]
+                              : Object.keys(ae.colors)
+                            const orderedSizes = sizeOrderFor(ageLabel)
+
+                            // Collect all sizes present for this age group
+                            const sizesPresent = orderedSizes.filter((s) =>
+                              colorsInOrder.some((c) => ae.colors[c]?.sizes[s])
+                            )
+                            // Fallback: include any sizes not in the order list
+                            const extraSizes = [...new Set(colorsInOrder.flatMap((c) => Object.keys(ae.colors[c]?.sizes ?? {})))]
+                              .filter((s) => s !== '—' && !orderedSizes.includes(s))
+                            const allSizeCols = [...sizesPresent, ...extraSizes]
+                            const hasDash = colorsInOrder.some((c) => ae.colors[c]?.sizes['—'])
+
+                            return (
+                              <div key={ag}>
+                                {hasAgeGroups && (
+                                  <div className="px-5 pt-3 pb-1">
+                                    <p className="text-blue-400 text-xs font-bold uppercase tracking-widest">{ageLabel}</p>
+                                  </div>
+                                )}
+                                <div className="overflow-x-auto px-5 pb-4 pt-2">
+                                  <table className="text-xs w-full" style={{ minWidth: `${200 + allSizeCols.length * 48}px` }}>
+                                    <thead>
+                                      <tr className="border-b border-gray-700">
+                                        <th className="text-left text-gray-500 font-bold uppercase tracking-wider pb-2 pr-4 whitespace-nowrap w-28">Color</th>
+                                        {allSizeCols.map((s) => (
+                                          <th key={s} className="text-center text-gray-500 font-bold uppercase tracking-wider pb-2 px-1.5 whitespace-nowrap min-w-[36px]">{s}</th>
+                                        ))}
+                                        {hasDash && <th className="text-center text-gray-600 font-bold pb-2 px-1.5 whitespace-nowrap">?</th>}
+                                        <th className="text-center text-gray-400 font-bold uppercase tracking-wider pb-2 px-3 whitespace-nowrap">Total</th>
+                                        <th className="text-right text-gray-400 font-bold uppercase tracking-wider pb-2 pl-3 whitespace-nowrap">Rev</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {colorsInOrder.map((color) => {
+                                        const ce = ae.colors[color]
+                                        const displayColor = color === '__' ? '—' : color
+                                        return (
+                                          <tr key={color} className="border-t border-gray-800/60">
+                                            <td className="py-2 pr-4 text-white font-bold whitespace-nowrap">{displayColor}</td>
+                                            {allSizeCols.map((s) => (
+                                              <td key={s} className="py-2 px-1.5 text-center">
+                                                {ce.sizes[s] ? (
+                                                  <span className="inline-flex items-center justify-center w-7 h-7 rounded bg-blue-700/20 text-blue-300 font-black">
+                                                    {ce.sizes[s]}
+                                                  </span>
+                                                ) : (
+                                                  <span className="text-gray-800">—</span>
+                                                )}
+                                              </td>
+                                            ))}
+                                            {hasDash && (
+                                              <td className="py-2 px-1.5 text-center text-gray-600 text-xs">{ce.sizes['—'] ?? '—'}</td>
+                                            )}
+                                            <td className="py-2 px-3 text-center text-white font-black">{ce.qty}</td>
+                                            <td className="py-2 pl-3 text-right text-gray-400 whitespace-nowrap">{fmt(ce.revenue)}</td>
+                                          </tr>
+                                        )
+                                      })}
+                                      {/* Age subtotal */}
+                                      {hasAgeGroups && colorsInOrder.length > 1 && (
+                                        <tr className="border-t border-gray-700">
+                                          <td className="py-2 pr-4 text-gray-500 text-xs font-bold uppercase tracking-widest">Subtotal</td>
+                                          {allSizeCols.map((s) => {
+                                            const tot = colorsInOrder.reduce((sum, c) => sum + (ae.colors[c]?.sizes[s] ?? 0), 0)
+                                            return (
+                                              <td key={s} className="py-2 px-1.5 text-center">
+                                                {tot > 0 ? <span className="text-gray-300 font-black">{tot}</span> : <span className="text-gray-800">—</span>}
+                                              </td>
+                                            )
+                                          })}
+                                          {hasDash && <td />}
+                                          <td className="py-2 px-3 text-center text-white font-black">{ae.qty}</td>
+                                          <td className="py-2 pl-3 text-right text-green-400 font-black whitespace-nowrap">{fmt(ae.revenue)}</td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
 
