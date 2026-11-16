@@ -263,6 +263,19 @@ export default function AdminShopPage() {
       }
     }
 
+    // Rashguards: "Adult Rashguard (Short Sleeve) · Non-Ranked Black · Size M"
+    //             "Kids Rashguard · Black · Size S"
+    const rashAdult = /^Adult\s+Rashguard/i.test(coreParts[0] ?? '')
+    const rashKids  = /^Kids\s+Rashguard/i.test(coreParts[0] ?? '')
+    if (rashAdult || rashKids) {
+      const sleeveMatch = coreParts[0].match(/\((Short|Long)\s+Sleeve\)/i)
+      const sleeve = sleeveMatch ? `${sleeveMatch[1].charAt(0).toUpperCase() + sleeveMatch[1].slice(1).toLowerCase()} Sleeve` : null
+      const rawColor = coreParts[1] ?? null
+      const color = rawColor ? rawColor.replace(/Non[\s-]?Ranked?/i, 'Unranked') : null
+      const ageGroup = rashKids ? 'Kids' : (sleeve ? `Adult · ${sleeve}` : 'Adult')
+      return { product: 'Rashguard', ageGroup, color, size: sizeToken ?? '—' }
+    }
+
     // Everything else: flat product, no age group, optional color
     const product = coreParts[0] ?? raw
     const color = coreParts.length > 1 ? coreParts[1] : null
@@ -278,17 +291,37 @@ export default function AdminShopPage() {
   const hpivot: Record<string, ProductEntry> = {}
 
   // Product display order
-  const PRODUCT_ORDER = ['Competition Gi', 'Adult Grappling Shorts', 'Kids Grappling Shorts', 'Adult Rashguard', 'Kids Rashguard']
+  const PRODUCT_ORDER = ['Competition Gi', 'Rashguard', 'Adult Grappling Shorts', 'Kids Grappling Shorts']
   const GI_COLOR_ORDER = ['Royal Blue', 'Black', 'White']
-  const AGE_ORDER = ['Adult', 'Kids', '__']
+  const AGE_GROUP_ORDER = ['Adult', 'Adult · Short Sleeve', 'Adult · Long Sleeve', 'Kids', '__']
   const ADULT_SIZE_ORDER = ['A00','A0','A1','A2','A3','A3T','A3H','A4','A4T','A4H','A5','F1','F2','F3']
   const KIDS_SIZE_ORDER  = ['M000','M00','M0','M1','M2','M3','M4']
   const APPAREL_SIZE_ORDER = ['XS','S','M','L','XL','2XL','3XL','4XL']
+  const RASH_COLOR_ORDER = ['Unranked Black','Unranked White','White Belt','Blue Belt','Purple Belt','Brown Belt','Black Belt']
 
-  function sizeOrderFor(ageGroup: string | null): string[] {
-    if (ageGroup === 'Adult') return ADULT_SIZE_ORDER
-    if (ageGroup === 'Kids')  return KIDS_SIZE_ORDER
+  function sizeOrderFor(product: string, ageGroup: string | null): string[] {
+    if (product === 'Competition Gi') {
+      if (ageGroup === 'Adult') return ADULT_SIZE_ORDER
+      if (ageGroup === 'Kids')  return KIDS_SIZE_ORDER
+    }
+    if (ageGroup === 'Kids') return KIDS_SIZE_ORDER
     return APPAREL_SIZE_ORDER
+  }
+
+  function sortAgeGroups(ageKeys: string[]): string[] {
+    return ageKeys.sort((a, b) => {
+      const ai = AGE_GROUP_ORDER.indexOf(a), bi = AGE_GROUP_ORDER.indexOf(b)
+      if (ai >= 0 && bi >= 0) return ai - bi
+      if (ai >= 0) return -1
+      if (bi >= 0) return 1
+      return a.localeCompare(b)
+    })
+  }
+
+  function colorOrderFor(product: string): string[] {
+    if (product === 'Competition Gi') return GI_COLOR_ORDER
+    if (product === 'Rashguard') return RASH_COLOR_ORDER
+    return []
   }
 
   for (const order of paidOrders) {
@@ -387,7 +420,7 @@ export default function AdminShopPage() {
                     <p className="text-blue-500 text-xs font-bold uppercase tracking-widest">Inventory by Product</p>
                     {sortedProducts.map((product) => {
                       const pe = hpivot[product]
-                      const ages = AGE_ORDER.filter((ag) => pe.ages[ag])
+                      const ages = sortAgeGroups(Object.keys(pe.ages))
                       const hasAgeGroups = ages.some((ag) => ag !== '__')
                       return (
                         <div key={product} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
@@ -403,10 +436,11 @@ export default function AdminShopPage() {
                           {ages.map((ag) => {
                             const ae = pe.ages[ag]
                             const ageLabel = ag === '__' ? null : ag
-                            const colorsInOrder = product === 'Competition Gi'
-                              ? [...GI_COLOR_ORDER.filter((c) => ae.colors[c]), ...Object.keys(ae.colors).filter((c) => !GI_COLOR_ORDER.includes(c))]
+                            const knownColors = colorOrderFor(product)
+                            const colorsInOrder = knownColors.length
+                              ? [...knownColors.filter((c) => ae.colors[c]), ...Object.keys(ae.colors).filter((c) => !knownColors.includes(c))]
                               : Object.keys(ae.colors)
-                            const orderedSizes = sizeOrderFor(ageLabel)
+                            const orderedSizes = sizeOrderFor(product, ageLabel)
 
                             // Collect all sizes present for this age group
                             const sizesPresent = orderedSizes.filter((s) =>
