@@ -195,6 +195,21 @@ export default function AdminShopPage() {
     setOrders((prev) => prev.filter((o) => o.id !== id))
   }
 
+  async function resendConfirmation(id: string) {
+    const res = await fetch('/api/admin/resend-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    const d = await res.json()
+    if (d.ok) {
+      setOrders((prev) => prev.map((o) => o.id === id ? { ...o, status: 'paid' } : o))
+      alert(`Confirmation sent to ${d.customer}`)
+    } else {
+      alert(d.error || 'Failed to send confirmation')
+    }
+  }
+
   // ── Order summary stats ──
   const paidOrders = orders.filter((o) => o.status === 'paid')
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total_minor, 0)
@@ -404,9 +419,19 @@ export default function AdminShopPage() {
                               ×
                             </button>
                           </div>
-                          <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${order.status === 'paid' ? 'bg-green-900/50 text-green-400' : 'bg-yellow-900/50 text-yellow-400'}`}>
-                            {order.status}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${order.status === 'paid' ? 'bg-green-900/50 text-green-400' : 'bg-yellow-900/50 text-yellow-400'}`}>
+                              {order.status}
+                            </span>
+                            {order.status !== 'paid' && (
+                              <button
+                                onClick={() => resendConfirmation(order.id)}
+                                className="text-xs font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 border border-blue-700/40 hover:border-blue-500 px-2 py-0.5 rounded transition-colors"
+                              >
+                                Confirm
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="space-y-2 mt-1">

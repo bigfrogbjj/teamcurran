@@ -90,6 +90,34 @@ export async function PATCH(req: NextRequest) {
   return NextResponse.json({ updated: results.filter((r) => r.found).length, results })
 }
 
+// Resend confirmation email for an order by id (marks paid + resends)
+export async function DELETE(req: NextRequest) {
+  if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const db = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  )
+  const { id } = await req.json() as { id: string }
+  const { data: order, error } = await db.from('tc_shop_orders').select('*').eq('id', id).maybeSingle()
+  if (error || !order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  await db.from('tc_shop_orders').update({ status: 'paid', notified_at: new Date().toISOString() }).eq('id', id)
+
+  // Re-use the confirm route logic
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
+  await fetch(`${siteUrl}/api/shop/confirm`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ checkoutSessionId: order.clover_session_id, skipCloverCheck: true }),
+    cache: 'no-store',
+  })
+
+  return NextResponse.json({ ok: true, customer: order.customer_name })
+}
+
 // Direct order insert (for backfilling orders from Clover)
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
