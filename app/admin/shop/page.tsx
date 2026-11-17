@@ -185,6 +185,18 @@ export default function AdminShopPage() {
     setSaving(false)
   }
 
+  async function sendCartReminder(id: string) {
+    if (!confirm('Send a cart reminder email to this customer?')) return
+    const res = await fetch('/api/admin/cart-reminder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    const d = await res.json()
+    if (d.ok) alert(`Reminder sent to ${d.customer}`)
+    else alert(d.error || 'Failed to send reminder')
+  }
+
   async function deleteOrder(id: string) {
     if (!confirm('Delete this order? This cannot be undone.')) return
     await fetch('/api/admin/shop-orders', {
@@ -621,12 +633,20 @@ export default function AdminShopPage() {
                               {order.status}
                             </span>
                             {order.status !== 'paid' && (
-                              <button
-                                onClick={() => resendConfirmation(order.id)}
-                                className="text-xs font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 border border-blue-700/40 hover:border-blue-500 px-2 py-0.5 rounded transition-colors"
-                              >
-                                Confirm
-                              </button>
+                              <>
+                                <button
+                                  onClick={() => sendCartReminder(order.id)}
+                                  className="text-xs font-bold uppercase tracking-widest text-yellow-400 hover:text-yellow-300 border border-yellow-700/40 hover:border-yellow-500 px-2 py-0.5 rounded transition-colors"
+                                >
+                                  Remind
+                                </button>
+                                <button
+                                  onClick={() => resendConfirmation(order.id)}
+                                  className="text-xs font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 border border-blue-700/40 hover:border-blue-500 px-2 py-0.5 rounded transition-colors"
+                                >
+                                  Confirm
+                                </button>
+                              </>
                             )}
                           </div>
                         </div>
