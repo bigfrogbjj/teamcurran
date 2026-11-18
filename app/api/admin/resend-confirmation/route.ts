@@ -27,10 +27,9 @@ export async function POST(req: NextRequest) {
   const { data: order } = await admin.from('tc_shop_orders').select('*').eq('id', id).maybeSingle()
   if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 })
 
-  // Mark paid
-  await admin.from('tc_shop_orders').update({ status: 'paid', notified_at: new Date().toISOString() }).eq('id', id)
+  // Reset to pending so confirm flow runs fully (sends emails, marks paid)
+  await admin.from('tc_shop_orders').update({ status: 'pending' }).eq('id', id)
 
-  // Fire confirm flow (skipCloverCheck since admin is manually confirming)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamcurran.com'
   await fetch(`${siteUrl}/api/shop/confirm`, {
     method: 'POST',
