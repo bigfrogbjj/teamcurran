@@ -67,7 +67,7 @@ export default function GracieJiuJitsuPage() {
                 },
                 {
                   name: "Master Pedro Sauer",
-                  title: "9th Degree Red-and-Black Belt · Pedro Sauer Association",
+                  title: "8th Degree Coral Belt · Pedro Sauer Association",
                   note: "A personal black belt under Rickson Gracie, Master Pedro Sauer is regarded as one of the finest technicians and teachers in the history of Gracie Jiu-Jitsu. He established the Pedro Sauer BJJ Association with schools worldwide.",
                   highlight: true,
                 },
