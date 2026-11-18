@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { sendEmail, upsertContact, getOrCreateList } from '@/lib/brevo'
 import { getCheckoutStatus } from '@/lib/clover'
 
-const ADMIN_EMAILS = ['bigfrog145@me.com', 'jcinvitationalonline@gmail.com']
+const ADMIN_EMAILS = ['bigfrog145@me.com', 'jcinvitationalonline@gmail.com', 'info@bigfrogbjj.com']
 
 function fmt(minor: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(minor / 100)
