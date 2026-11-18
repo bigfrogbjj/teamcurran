@@ -15,20 +15,21 @@ export async function GET(req: NextRequest) {
   // Recent members ordered by creation date
   const { data: recent, error: recentErr } = await admin
     .from('members')
-    .select('id, email, full_name, status, welcome_sent, is_admin, created_at')
+    .select('id, email, full_name, active, is_tc_member, welcome_sent, is_admin, created_at')
     .order('created_at', { ascending: false })
     .limit(50)
 
-  // Count by status
+  // Count totals
   const { data: all, error: allErr } = await admin
     .from('members')
-    .select('status, is_admin, welcome_sent')
+    .select('active, is_admin, welcome_sent, is_tc_member')
 
   const summary = {
     total: all?.length ?? 0,
-    active: all?.filter(m => m.status === 'active').length ?? 0,
-    inactive: all?.filter(m => m.status !== 'active').length ?? 0,
+    active: all?.filter(m => m.active).length ?? 0,
+    inactive: all?.filter(m => !m.active).length ?? 0,
     admins: all?.filter(m => m.is_admin).length ?? 0,
+    tc_members: all?.filter(m => m.is_tc_member).length ?? 0,
     welcome_sent: all?.filter(m => m.welcome_sent).length ?? 0,
     welcome_not_sent: all?.filter(m => !m.welcome_sent).length ?? 0,
   }
