@@ -40,10 +40,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
-  // Get or create the TC Affiliates list
+  // Get or create the TC Affiliates list (for reference)
   const listId = await getOrCreateList('TC Affiliates')
 
-  // Create draft campaign
+  // Create draft campaign — no recipients yet (add contacts to TC Affiliates list in Brevo before sending)
   const res = await bf('/emailCampaigns', {
     method: 'POST',
     body: JSON.stringify({
@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
       sender: { name: 'Jeff Curran - Team Curran', email: 'info@bigfrogbjj.com' },
       type: 'classic',
       htmlContent,
-      recipients: { listIds: [listId] },
     }),
   })
 
