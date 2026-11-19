@@ -34,7 +34,12 @@ export async function POST(req: NextRequest) {
 
   // Promo code — server-side verification
   let discountPct = 0
-  if (promoCode?.toUpperCase() === 'BFN20') {
+  const upperPromo = promoCode?.toUpperCase()
+
+  if (upperPromo === 'WHOLESALE30') {
+    // Applied after subtotal is known — enforced below
+    discountPct = 30
+  } else if (upperPromo === 'BFN20') {
     try {
       const bfn = createClient(
         process.env.BFN_SUPABASE_URL!,
@@ -61,6 +66,12 @@ export async function POST(req: NextRequest) {
     return 2500
   }
   const computedShipping = shippingMinor > 0 ? calcShipping(totalQty) : 0
+  // WHOLESALE30 requires $500 pre-discount subtotal
+  const rawSubtotalMinor = lines.reduce((sum, l) => sum + l.priceMinor * l.qty, 0)
+  if (upperPromo === 'WHOLESALE30' && rawSubtotalMinor < 50000) {
+    return NextResponse.json({ error: 'WHOLESALE30 requires a minimum order of $500.' }, { status: 400 })
+  }
+
   const subtotalMinor = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
   const totalMinor = subtotalMinor + computedShipping
 

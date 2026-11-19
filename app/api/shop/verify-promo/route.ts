@@ -7,7 +7,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false, error: 'Missing code or email.' })
   }
 
-  if (code.toUpperCase() !== 'BFN20') {
+  const upper = code.toUpperCase()
+
+  if (upper === 'WHOLESALE30') {
+    return NextResponse.json({ valid: true, discountPct: 30, minOrderMinor: 50000 })
+  }
+
+  if (upper !== 'BFN20') {
     return NextResponse.json({ valid: false, error: 'Invalid promo code.' })
   }
 
