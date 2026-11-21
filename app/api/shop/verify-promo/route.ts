@@ -13,6 +13,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: true, discountPct: 30, minOrderMinor: 50000 })
   }
 
+  if (upper === 'STAFF30') {
+    return NextResponse.json({ valid: true, discountPct: 30 })
+  }
+
   if (upper !== 'BFN20') {
     return NextResponse.json({ valid: false, error: 'Invalid promo code.' })
   }

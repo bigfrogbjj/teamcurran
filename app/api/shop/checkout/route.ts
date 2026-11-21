@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
   if (upperPromo === 'WHOLESALE30') {
     // Applied after subtotal is known — enforced below
     discountPct = 30
+  } else if (upperPromo === 'STAFF30') {
+    discountPct = 30
   } else if (upperPromo === 'BFN20') {
     try {
       const bfn = createClient(
