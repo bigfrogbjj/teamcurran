@@ -47,7 +47,11 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           {post.excerpt && (
             <p className="text-gray-300 text-lg mb-6 border-l-4 border-brand pl-4">{post.excerpt}</p>
           )}
-          <div className="text-gray-200 leading-relaxed whitespace-pre-wrap">{post.body}</div>
+          {post.body?.trim().startsWith('<') ? (
+            <div className="text-gray-200 leading-relaxed" dangerouslySetInnerHTML={{ __html: post.body }} />
+          ) : (
+            <div className="text-gray-200 leading-relaxed whitespace-pre-wrap">{post.body}</div>
+          )}
         </article>
       </div>
     </div>
