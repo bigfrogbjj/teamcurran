@@ -40,6 +40,15 @@ export async function POST(req: NextRequest) {
   const upperCredit = creditCode?.toUpperCase()
 
   if (upperCredit === 'TIMSULLIVAN50') {
+    const { data: usedCredit } = await adminClient()
+      .from('tc_shop_orders')
+      .select('id')
+      .eq('credit_code', 'TIMSULLIVAN50')
+      .eq('status', 'paid')
+      .maybeSingle()
+    if (usedCredit) {
+      return NextResponse.json({ error: 'This gift credit has already been used.' }, { status: 400 })
+    }
     creditMinor = 5000
   }
 
@@ -129,6 +138,7 @@ export async function POST(req: NextRequest) {
         total_minor: totalMinor,
         discount_pct: discountPct,
         credit_minor: creditMinor,
+        credit_code: creditMinor > 0 ? (upperCredit ?? null) : null,
       })
     } catch (dbErr) {
       console.error('TC shop: failed to save pending order', dbErr)
