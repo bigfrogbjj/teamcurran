@@ -13,7 +13,7 @@ function adminClient() {
 }
 
 export async function POST(req: NextRequest) {
-  const { lines, fullName, email, phone, gym, shippingMinor, promoCode, shipAddress } = await req.json() as {
+  const { lines, fullName, email, phone, gym, shippingMinor, promoCode, creditCode, shipAddress } = await req.json() as {
     lines: CartLine[]
     fullName: string
     email: string
@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     gym?: string
     shippingMinor: number
     promoCode?: string
+    creditCode?: string
     shipAddress?: string | null
   }
 
@@ -34,7 +35,13 @@ export async function POST(req: NextRequest) {
 
   // Promo code — server-side verification
   let discountPct = 0
+  let creditMinor = 0
   const upperPromo = promoCode?.toUpperCase()
+  const upperCredit = creditCode?.toUpperCase()
+
+  if (upperCredit === 'TIMSULLIVAN50') {
+    creditMinor = 5000
+  }
 
   if (upperPromo === 'WHOLESALE30') {
     // Applied after subtotal is known — enforced below
@@ -74,7 +81,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'WHOLESALE30 requires a minimum order of $500.' }, { status: 400 })
   }
 
-  const subtotalMinor = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
+  const subtotalAfterPct = lines.reduce((sum, l) => sum + discounted(l.priceMinor, discountPct) * l.qty, 0)
+  const subtotalMinor = Math.max(0, subtotalAfterPct - creditMinor)
   const totalMinor = subtotalMinor + computedShipping
 
   const nameParts = fullName.trim().split(/\s+/)
@@ -87,6 +95,7 @@ export async function POST(req: NextRequest) {
       price: discounted(line.priceMinor, discountPct),
       unitQty: line.qty,
     })),
+    ...(creditMinor > 0 ? [{ name: '$50 Gift Credit', price: -creditMinor, unitQty: 1 }] : []),
     ...(computedShipping > 0 ? [{ name: 'Shipping', price: computedShipping, unitQty: 1 }] : []),
   ]
 
@@ -119,6 +128,7 @@ export async function POST(req: NextRequest) {
         shipping_minor: computedShipping,
         total_minor: totalMinor,
         discount_pct: discountPct,
+        credit_minor: creditMinor,
       })
     } catch (dbErr) {
       console.error('TC shop: failed to save pending order', dbErr)

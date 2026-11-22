@@ -22,6 +22,11 @@ export default function CheckoutPage() {
   const [promoDiscountPct, setPromoDiscountPct] = useState(0)
   const [promoError, setPromoError] = useState('')
   const [promoLoading, setPromoLoading] = useState(false)
+  const [creditCode, setCreditCode] = useState('')
+  const [creditApplied, setCreditApplied] = useState(false)
+  const [creditMinor, setCreditMinor] = useState(0)
+  const [creditError, setCreditError] = useState('')
+  const [creditLoading, setCreditLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -34,7 +39,39 @@ export default function CheckoutPage() {
   }
   const shippingMinor = shippingOption === 'pickup' ? 0 : calcShipping(totalQty)
   const promoSavings = promoApplied ? Math.round(subtotalMinor * promoDiscountPct / 100) : 0
-  const totalMinor = subtotalMinor - promoSavings + shippingMinor
+  const creditSavings = creditApplied ? Math.min(creditMinor, subtotalMinor - promoSavings) : 0
+  const totalMinor = subtotalMinor - promoSavings - creditSavings + shippingMinor
+
+  async function applyCredit() {
+    setCreditError('')
+    setCreditApplied(false)
+    setCreditMinor(0)
+    if (!email.trim()) {
+      setCreditError('Enter your email first.')
+      return
+    }
+    setCreditLoading(true)
+    try {
+      const res = await fetch('/api/shop/verify-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: creditCode.trim(), email: email.trim() }),
+      })
+      const data = await res.json()
+      if (data.valid && data.creditMinor) {
+        setCreditApplied(true)
+        setCreditMinor(data.creditMinor)
+      } else if (data.valid) {
+        setCreditError('That code is a discount code — enter it in the Promo Code field above.')
+      } else {
+        setCreditError(data.error || 'Invalid credit code.')
+      }
+    } catch {
+      setCreditError('Could not verify code. Try again.')
+    } finally {
+      setCreditLoading(false)
+    }
+  }
 
   async function applyPromo() {
     setPromoError('')
@@ -99,6 +136,7 @@ export default function CheckoutPage() {
           gym: gym.trim(),
           shippingMinor,
           promoCode: promoCode.trim().toUpperCase(),
+          creditCode: creditCode.trim().toUpperCase(),
           shipAddress: shippingOption === 'ship' ? `${shipStreet.trim()}, ${shipCity.trim()}, ${shipState.trim()} ${shipZip.trim()}` : null,
         }),
       })
@@ -146,8 +184,14 @@ export default function CheckoutPage() {
           ))}
           {promoApplied && promoSavings > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-green-400">BFN20 ({promoDiscountPct}% off)</span>
+              <span className="text-green-400">{promoCode} ({promoDiscountPct}% off)</span>
               <span className="text-green-400">−{money(promoSavings)}</span>
+            </div>
+          )}
+          {creditApplied && creditSavings > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-green-400">Gift Credit</span>
+              <span className="text-green-400">−{money(creditSavings)}</span>
             </div>
           )}
           <div className="border-t border-gray-800 pt-3 flex justify-between text-sm">
@@ -305,9 +349,35 @@ export default function CheckoutPage() {
               </button>
             </div>
             {promoApplied && (
-              <p className="text-green-400 text-sm mt-1">BFN member discount applied — {promoDiscountPct}% off!</p>
+              <p className="text-green-400 text-sm mt-1">Discount applied — {promoDiscountPct}% off!</p>
             )}
             {promoError && <p className="text-red-400 text-sm mt-1">{promoError}</p>}
+          </div>
+
+          {/* Credit code (stackable) */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Gift Credit Code <span className="text-gray-600 font-normal normal-case">(optional)</span></label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={creditCode}
+                onChange={(e) => { setCreditCode(e.target.value.toUpperCase()); setCreditApplied(false); setCreditMinor(0); setCreditError('') }}
+                placeholder="e.g. TIMSULLIVAN50"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white uppercase focus:border-blue-600 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={applyCredit}
+                disabled={!creditCode.trim() || creditLoading || creditApplied}
+                className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white font-bold uppercase tracking-wide px-5 py-3 rounded-lg text-sm transition-colors shrink-0"
+              >
+                {creditLoading ? '...' : creditApplied ? '✓ Applied' : 'Apply'}
+              </button>
+            </div>
+            {creditApplied && (
+              <p className="text-green-400 text-sm mt-1">Gift credit applied — ${(creditMinor / 100).toFixed(2)} off!</p>
+            )}
+            {creditError && <p className="text-red-400 text-sm mt-1">{creditError}</p>}
           </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
