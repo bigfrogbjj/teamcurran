@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === 'insert-post') {
-    const { data, error } = await sb.from('tc_posts').insert(payload).select()
+    const { data, error } = await sb.from('tc_posts').insert(payload as Record<string, unknown>).select()
     return NextResponse.json({ data, error })
   }
 
