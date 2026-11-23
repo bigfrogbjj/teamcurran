@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const SECRET = process.env.INTERNAL_SECRET
+const SECRET = process.env.INTERNAL_API_SECRET
 const BREVO_KEY = process.env.BREVO_API_KEY
 
 export async function POST(req: NextRequest) {
