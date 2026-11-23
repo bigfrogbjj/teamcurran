@@ -137,8 +137,6 @@ export async function POST(req: NextRequest) {
         shipping_minor: computedShipping,
         total_minor: totalMinor,
         discount_pct: discountPct,
-        credit_minor: creditMinor,
-        credit_code: creditMinor > 0 ? (upperCredit ?? null) : null,
       })
     } catch (dbErr) {
       console.error('TC shop: failed to save pending order', dbErr)
