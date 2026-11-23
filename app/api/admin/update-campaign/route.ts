@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { campaignId, htmlContent, subject, sendTestTo } = await req.json()
+  const { campaignId, htmlContent, subject, sendTestTo, sendNow } = await req.json()
 
   if (!campaignId || !BREVO_KEY) {
     return NextResponse.json({ error: 'Missing config' }, { status: 400 })
@@ -51,6 +51,18 @@ export async function POST(req: NextRequest) {
     if (!testRes.ok) {
       const err = await testRes.text()
       return NextResponse.json({ error: 'Brevo test send failed', detail: err }, { status: 500 })
+    }
+  }
+
+  // Send now
+  if (sendNow) {
+    const sendRes = await fetch(`https://api.brevo.com/v3/emailCampaigns/${campaignId}/sendNow`, {
+      method: 'POST',
+      headers: { 'api-key': BREVO_KEY! },
+    })
+    if (!sendRes.ok) {
+      const err = await sendRes.text()
+      return NextResponse.json({ error: 'Brevo send failed', detail: err }, { status: 500 })
     }
   }
 
