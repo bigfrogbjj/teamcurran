@@ -79,7 +79,11 @@ export default async function EventsPage() {
                       {event.event_time && ` · ${event.event_time}`}
                     </p>
                     {event.location && <p className="text-gray-400 text-xs mt-0.5">{event.location}</p>}
-                    {event.description && <p className="text-gray-300 text-sm mt-2">{event.description}</p>}
+                    {event.description && (
+                      event.description.trim().startsWith('<')
+                        ? <div className="text-gray-300 text-sm mt-2" dangerouslySetInnerHTML={{ __html: event.description }} />
+                        : <p className="text-gray-300 text-sm mt-2">{event.description}</p>
+                    )}
                     {event.link_url && (
                       <a
                         href={event.link_url}
