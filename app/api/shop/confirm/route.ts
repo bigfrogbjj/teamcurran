@@ -32,8 +32,10 @@ function lineRowsHtml(lines: { name: string; price_minor: number; qty: number }[
 
 function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
   const lines = order.lines as { name: string; price_minor: number; qty: number }[]
-  const discount = (order.discount_pct as number) > 0
-    ? `<tr><td style="padding:6px 16px 6px 0;color:#4ade80;font-size:13px">BFN20 discount (${order.discount_pct}% off)</td><td></td><td style="padding:6px 0 6px 16px;text-align:right;color:#4ade80;font-size:13px">applied</td></tr>`
+  const discountPct = order.discount_pct as number
+  const discountLabel = discountPct === 20 ? 'BFN member discount (20% off)' : discountPct === 30 ? '30% discount' : `${discountPct}% discount`
+  const discount = discountPct > 0
+    ? `<tr><td style="padding:6px 16px 6px 0;color:#4ade80;font-size:13px">${discountLabel}</td><td></td><td style="padding:6px 0 6px 16px;text-align:right;color:#4ade80;font-size:13px">applied</td></tr>`
     : ''
   const shipping = (order.shipping_minor as number) === 0
     ? `<tr><td style="padding:6px 16px 6px 0;color:#888;font-size:13px">Gym Pickup</td><td></td><td style="padding:6px 0 6px 16px;text-align:right;color:#888;font-size:13px">Free</td></tr>`
@@ -98,8 +100,10 @@ function customerEmailHtml(order: Record<string, unknown>, sessionId: string) {
 
 function adminEmailHtml(order: Record<string, unknown>, sessionId: string) {
   const lines = order.lines as { name: string; price_minor: number; qty: number }[]
-  const discount = (order.discount_pct as number) > 0
-    ? `<p style="color:#4ade80;margin:4px 0;font-size:13px">BFN20 discount: ${order.discount_pct}% off</p>` : ''
+  const pct = order.discount_pct as number
+  const discountLbl = pct === 20 ? 'BFN member discount: 20% off' : pct === 30 ? '30% discount applied' : `${pct}% discount applied`
+  const discount = pct > 0
+    ? `<p style="color:#4ade80;margin:4px 0;font-size:13px">${discountLbl}</p>` : ''
 
   return `<!DOCTYPE html>
 <html lang="en">

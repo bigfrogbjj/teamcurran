@@ -93,7 +93,7 @@ export default async function ShopSuccessPage({
               </div>
             )}
             {order && order.discount_pct > 0 && (
-              <p className="text-green-400 text-xs">{order.discount_pct}% BFN discount applied</p>
+              <p className="text-green-400 text-xs">{order.discount_pct === 20 ? 'BFN member discount (20% off)' : `${order.discount_pct}% discount`} applied</p>
             )}
             {order && (
               <div className="flex justify-between font-black text-base border-t border-gray-800 pt-2 mt-1">
