@@ -12,9 +12,9 @@ export async function GET(req: NextRequest) {
   )
   const { data, error } = await db
     .from('tc_shop_orders')
-    .select('id, created_at, status, customer_name, customer_email, total_minor, clover_session_id')
+    .select('id, created_at, status, customer_name, customer_email, total_minor, clover_session_id, lines')
     .order('created_at', { ascending: false })
-    .limit(50)
+    .limit(200)
   return NextResponse.json({ orders: data ?? [], error })
 }
 
