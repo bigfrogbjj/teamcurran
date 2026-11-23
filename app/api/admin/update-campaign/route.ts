@@ -3,6 +3,20 @@ import { NextRequest, NextResponse } from 'next/server'
 const SECRET = process.env.INTERNAL_API_SECRET
 const BREVO_KEY = process.env.BREVO_API_KEY
 
+export async function GET(req: NextRequest) {
+  if (req.headers.get('x-internal-secret') !== SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const url = new URL(req.url)
+  const id = url.searchParams.get('id')
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+  const res = await fetch(`https://api.brevo.com/v3/emailCampaigns/${id}`, {
+    headers: { 'api-key': BREVO_KEY! },
+  })
+  const data = await res.json()
+  return NextResponse.json({ name: data.name, subject: data.subject, sender: data.sender, recipients: data.recipients, status: data.status })
+}
+
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
