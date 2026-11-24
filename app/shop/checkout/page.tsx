@@ -354,31 +354,6 @@ export default function CheckoutPage() {
             {promoError && <p className="text-red-400 text-sm mt-1">{promoError}</p>}
           </div>
 
-          {/* Credit code (stackable) */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Gift Credit Code <span className="text-gray-600 font-normal normal-case">(optional)</span></label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={creditCode}
-                onChange={(e) => { setCreditCode(e.target.value.toUpperCase()); setCreditApplied(false); setCreditMinor(0); setCreditError('') }}
-                placeholder="e.g. TIMSULLIVAN50"
-                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white uppercase focus:border-blue-600 focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={applyCredit}
-                disabled={!creditCode.trim() || creditLoading || creditApplied}
-                className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white font-bold uppercase tracking-wide px-5 py-3 rounded-lg text-sm transition-colors shrink-0"
-              >
-                {creditLoading ? '...' : creditApplied ? '✓ Applied' : 'Apply'}
-              </button>
-            </div>
-            {creditApplied && (
-              <p className="text-green-400 text-sm mt-1">Gift credit applied — ${(creditMinor / 100).toFixed(2)} off!</p>
-            )}
-            {creditError && <p className="text-red-400 text-sm mt-1">{creditError}</p>}
-          </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
