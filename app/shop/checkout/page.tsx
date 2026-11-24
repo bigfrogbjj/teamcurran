@@ -329,6 +329,32 @@ export default function CheckoutPage() {
           )}
 
 
+          {/* Promo code */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1">Promo Code <span className="text-gray-600 font-normal normal-case">(optional)</span></label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={promoCode}
+                onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoDiscountPct(0); setPromoError('') }}
+                placeholder="Enter promo code"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white uppercase focus:border-blue-600 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={applyPromo}
+                disabled={!promoCode.trim() || promoLoading || promoApplied}
+                className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white font-bold uppercase tracking-wide px-5 py-3 rounded-lg text-sm transition-colors shrink-0"
+              >
+                {promoLoading ? '...' : promoApplied ? '✓ Applied' : 'Apply'}
+              </button>
+            </div>
+            {promoApplied && (
+              <p className="text-green-400 text-sm mt-1">Discount applied — {promoDiscountPct}% off!</p>
+            )}
+            {promoError && <p className="text-red-400 text-sm mt-1">{promoError}</p>}
+          </div>
+
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
           <button
