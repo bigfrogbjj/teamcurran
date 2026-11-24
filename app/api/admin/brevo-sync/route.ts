@@ -23,19 +23,24 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(data)
 }
 
-// POST: add contacts from TC DB (by status) to a Brevo list
+// POST: add TC alumni (is_tc_member=false) to a Brevo list
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { listId, statuses } = await req.json() as { listId: number; statuses: string[] }
+  const { listId, filter } = await req.json() as { listId: number; filter?: string }
 
   const db = tcDb()
-  const { data: members, error } = await db
-    .from('members')
-    .select('email, full_name, status')
-    .in('status', statuses)
-    .not('email', 'is', null)
+  let query = db.from('members').select('email, full_name').not('email', 'is', null)
+
+  if (filter === 'alumni') {
+    // Former TC members: in DB but no longer active TC members
+    query = query.eq('is_tc_member', false) as typeof query
+  } else if (filter === 'active') {
+    query = query.eq('is_tc_member', true) as typeof query
+  }
+
+  const { data: members, error } = await query
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!members?.length) return NextResponse.json({ ok: true, added: 0, contacts: [] })
@@ -57,5 +62,5 @@ export async function POST(req: NextRequest) {
   })
 
   const importData = await importRes.json()
-  return NextResponse.json({ ok: true, count: emails.length, brevo: importData, contacts: members.map((m) => ({ email: m.email, status: m.status })) })
+  return NextResponse.json({ ok: true, count: emails.length, brevo: importData, contacts: members.map((m) => ({ email: m.email, name: m.full_name })) })
 }
