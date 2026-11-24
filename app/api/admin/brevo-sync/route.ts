@@ -23,18 +23,54 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(data)
 }
 
-// POST: add TC alumni (is_tc_member=false) to a Brevo list
+// POST: copy contacts between Brevo lists, or add TC members from DB to a Brevo list
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-internal-secret') !== process.env.INTERNAL_API_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { listId, filter } = await req.json() as { listId: number; filter?: string }
+  const body = await req.json() as { listId: number; filter?: string; sourceListId?: number }
+  const { listId, filter, sourceListId } = body
 
+  // Copy contacts from one Brevo list to another
+  if (sourceListId) {
+    const contacts: { email: string; attributes?: Record<string, string> }[] = []
+    let offset = 0
+    const limit = 500
+    while (true) {
+      const res = await fetch(`https://api.brevo.com/v3/contacts/lists/${sourceListId}/contacts?limit=${limit}&offset=${offset}`, {
+        headers: { 'api-key': BREVO_KEY! },
+      })
+      const data = await res.json()
+      if (!data.contacts?.length) break
+      for (const c of data.contacts) {
+        contacts.push({
+          email: c.email,
+          attributes: {
+            FIRSTNAME: c.attributes?.FIRSTNAME ?? '',
+            LASTNAME: c.attributes?.LASTNAME ?? '',
+          },
+        })
+      }
+      if (data.contacts.length < limit) break
+      offset += limit
+    }
+
+    if (!contacts.length) return NextResponse.json({ ok: true, added: 0 })
+
+    const importRes = await fetch('https://api.brevo.com/v3/contacts/import', {
+      method: 'POST',
+      headers: { 'api-key': BREVO_KEY!, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ listIds: [listId], updateEnabled: true, jsonBody: contacts }),
+    })
+    const importData = await importRes.json()
+    return NextResponse.json({ ok: true, count: contacts.length, brevo: importData })
+  }
+
+  // Otherwise pull from TC DB
   const db = tcDb()
   let query = db.from('members').select('email, full_name').not('email', 'is', null)
 
   if (filter === 'alumni') {
-    // Former TC members: in DB but no longer active TC members
     query = query.eq('is_tc_member', false) as typeof query
   } else if (filter === 'active') {
     query = query.eq('is_tc_member', true) as typeof query
@@ -45,9 +81,6 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!members?.length) return NextResponse.json({ ok: true, added: 0, contacts: [] })
 
-  const emails = members.map((m) => m.email.toLowerCase().trim()).filter(Boolean)
-
-  // Brevo batch import
   const importRes = await fetch('https://api.brevo.com/v3/contacts/import', {
     method: 'POST',
     headers: { 'api-key': BREVO_KEY!, 'Content-Type': 'application/json' },
@@ -62,5 +95,5 @@ export async function POST(req: NextRequest) {
   })
 
   const importData = await importRes.json()
-  return NextResponse.json({ ok: true, count: emails.length, brevo: importData, contacts: members.map((m) => ({ email: m.email, name: m.full_name })) })
+  return NextResponse.json({ ok: true, count: members.length, brevo: importData, contacts: members.map((m) => ({ email: m.email, name: m.full_name })) })
 }
