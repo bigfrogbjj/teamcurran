@@ -155,6 +155,10 @@ export async function POST(request: NextRequest) {
   const tcUserMap = new Map(allTcUsers.map((u) => [u.email?.toLowerCase(), u]));
   const bfnUserMap = new Map(allBfnUsers.map((u) => [u.email?.toLowerCase(), u]));
 
+  // Pre-fetch all BFN member tiers to avoid per-row queries and prevent downgrading paid members
+  const { data: allBfnMembers } = await bfnAdmin.from("members").select("id, tier");
+  const bfnTierMap = new Map((allBfnMembers ?? []).map((m: { id: string; tier: string }) => [m.id, m.tier]));
+
   // Track which emails have already had a welcome email sent
   const { data: existingMembers } = await tcAdmin.from("members").select("email, welcome_sent");
   const welcomeSentSet = new Set(
@@ -232,14 +236,8 @@ export async function POST(request: NextRequest) {
           const accessUntil = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
             .toISOString().slice(0, 10);
 
-          // Check existing BFN tier — don't downgrade all_access members
-          const { data: existingBfnMember } = await bfnAdmin
-            .from("members")
-            .select("tier, status")
-            .eq("id", bfnUserId)
-            .maybeSingle();
-
-          const isAlreadyPaidTier = existingBfnMember?.tier === "all_access";
+          // Don't downgrade paid all_access members — tier was pre-fetched before sync
+          const isAlreadyPaidTier = bfnTierMap.get(bfnUserId) === "all_access";
 
           await bfnAdmin.from("members").upsert(
             {
