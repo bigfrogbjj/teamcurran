@@ -231,14 +231,24 @@ export async function POST(request: NextRequest) {
         if (bfnUserId) {
           const accessUntil = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
             .toISOString().slice(0, 10);
+
+          // Check existing BFN tier — don't downgrade all_access members
+          const { data: existingBfnMember } = await bfnAdmin
+            .from("members")
+            .select("tier, status")
+            .eq("id", bfnUserId)
+            .maybeSingle();
+
+          const isAlreadyPaidTier = existingBfnMember?.tier === "all_access";
+
           await bfnAdmin.from("members").upsert(
             {
               id: bfnUserId,
               email: row.email,
               full_name: row.name || row.email,
               gym_id: process.env.BFN_TC_GYM_ID,
-              tier: "nation",
-              status: "active",
+              // Don't overwrite tier/status for paid all_access members
+              ...(!isAlreadyPaidTier ? { tier: "nation", status: "active" } : {}),
               gym_tchq_access_until: accessUntil,
             },
             { onConflict: "id" }
