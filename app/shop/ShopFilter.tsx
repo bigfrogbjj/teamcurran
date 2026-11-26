@@ -24,7 +24,7 @@ export default function ShopFilter({ products }: { products: TCProduct[] }) {
     <>
       {/* Preorder banner */}
       <div className="bg-blue-700 text-white text-center text-xs font-bold uppercase tracking-widest py-2.5 px-4">
-        🛒 Preorder Open — All Items Ship After Production · Order Deadline: <span className="text-yellow-300">November 26th</span>
+        🛒 Preorder Open — All Items Ship After Production · Order Deadline: <span className="text-yellow-300">November 29th (Sunday) at Midnight</span>
       </div>
 
       {/* Filter nav */}
